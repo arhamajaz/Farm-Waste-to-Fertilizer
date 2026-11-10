@@ -1,0 +1,101 @@
+/**
+ * KrishiUrja | BioRefinery Dashboard
+ * Service Worker for Offline PWA Functionality in Rural India
+ * Network-First with Cache Fallback for offline resilience
+ */
+
+const CACHE_NAME = 'biorefinery-dashboard-v1';
+
+// Core static assets required for complete offline functionality
+const STATIC_ASSETS = [
+  './',
+  './index.html',
+  './style.css',
+  './app.js',
+  './translations.js',
+  './manifest.json',
+  './icon.svg',
+  './icon-192.png',
+  './icon-512.png',
+  'https://cdn.jsdelivr.net/npm/chart.js'
+];
+
+// Install Event: Pre-cache all core static assets
+self.addEventListener('install', (event) => {
+  event.waitUntil(
+    caches.open(CACHE_NAME)
+      .then((cache) => {
+        console.log('[ServiceWorker] Pre-caching offline static assets');
+        return cache.addAll(STATIC_ASSETS);
+      })
+      .then(() => {
+        // Activate worker immediately without waiting for page reload
+        return self.skipWaiting();
+      })
+      .catch((err) => {
+        console.warn('[ServiceWorker] Pre-cache warning:', err);
+      })
+  );
+});
+
+// Activate Event: Clean up outdated caches and claim clients immediately
+self.addEventListener('activate', (event) => {
+  event.waitUntil(
+    caches.keys()
+      .then((cacheNames) => {
+        return Promise.all(
+          cacheNames.map((name) => {
+            if (name !== CACHE_NAME) {
+              console.log('[ServiceWorker] Removing obsolete cache:', name);
+              return caches.delete(name);
+            }
+          })
+        );
+      })
+      .then(() => {
+        // Take control of all clients immediately
+        return self.clients.claim();
+      })
+  );
+});
+
+// Fetch Event: Network-first strategy with offline cache fallback
+self.addEventListener('fetch', (event) => {
+  // Only intercept GET requests
+  if (event.request.method !== 'GET') return;
+
+  event.respondWith(
+    // Attempt to fetch from network first
+    fetch(event.request)
+      .then((networkResponse) => {
+        // If network fetch succeeded, clone response and update cache dynamically
+        if (networkResponse && networkResponse.status === 200) {
+          const responseToCache = networkResponse.clone();
+          caches.open(CACHE_NAME).then((cache) => {
+            cache.put(event.request, responseToCache);
+          });
+        }
+        return networkResponse;
+      })
+      .catch(() => {
+        // Network fetch failed -> User is offline
+        // Intercept request and serve the cached asset
+        return caches.match(event.request).then((cachedResponse) => {
+          if (cachedResponse) {
+            return cachedResponse;
+          }
+
+          // If navigation request and offline, fallback to root index.html
+          if (event.request.mode === 'navigate') {
+            return caches.match('./index.html');
+          }
+
+          return new Response('Offline: Resource not cached.', {
+            status: 503,
+            statusText: 'Service Unavailable',
+            headers: new Headers({ 'Content-Type': 'text/plain' })
+          });
+        });
+      })
+  );
+});

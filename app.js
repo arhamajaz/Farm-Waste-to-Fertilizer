@@ -2119,5 +2119,29 @@ document.addEventListener('DOMContentLoaded', () => {
   calculateFarmerROI();
   renderFMEATable();
   renderFCOChecklist();
+
+  // =========================================================================
+  // 9. Progressive Web App (PWA) Service Worker Registration & Offline Resilience
+  // =========================================================================
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('./service-worker.js')
+        .then((registration) => {
+          console.log('[PWA] ServiceWorker registered with scope:', registration.scope);
+        })
+        .catch((error) => {
+          console.warn('[PWA] ServiceWorker registration failed:', error);
+        });
+    });
+  }
+
+  // Network state listeners for rural connectivity awareness
+  window.addEventListener('online', () => {
+    showToast('📶 Connectivity restored. All online services active.');
+  });
+
+  window.addEventListener('offline', () => {
+    showToast('📡 Offline mode active: Biorefinery maps, calculators & compliance tables available offline.');
+  });
 });
 

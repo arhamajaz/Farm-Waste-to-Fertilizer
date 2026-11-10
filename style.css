@@ -6,33 +6,50 @@
 /* --- 1. CSS Custom Properties / Design Tokens --- */
 :root {
   /* Backgrounds */
-  --bg-primary: #F8FAF9;           /* Crisp, breathable white to greenish-white */
-  --bg-surface: #FFFFFF;           /* Pure clean white card surface */
-  --bg-surface-tint: #F0FDF4;      /* Soft organic pale-green tint */
-  --bg-surface-amber: #FFFBEB;     /* Warm amber tint */
-  --bg-subtle-tint: #F3F8F5;       /* Secondary section alternating tint */
+  --bg-primary: #F8FAF9;
+  /* Crisp, breathable white to greenish-white */
+  --bg-surface: #FFFFFF;
+  /* Pure clean white card surface */
+  --bg-surface-tint: #F0FDF4;
+  /* Soft organic pale-green tint */
+  --bg-surface-amber: #FFFBEB;
+  /* Warm amber tint */
+  --bg-subtle-tint: #F3F8F5;
+  /* Secondary section alternating tint */
   --bg-glass: rgba(255, 255, 255, 0.92);
 
   /* Typography / Text Colors */
-  --text-primary: #1F2937;         /* Deep Charcoal (never pure black) for supreme readability */
-  --text-secondary: #4B5563;       /* Balanced charcoal slate */
-  --text-muted: #6B7280;           /* Soft accessible muted text */
+  --text-primary: #1F2937;
+  /* Deep Charcoal (never pure black) for supreme readability */
+  --text-secondary: #4B5563;
+  /* Balanced charcoal slate */
+  --text-muted: #6B7280;
+  /* Soft accessible muted text */
   --text-white: #FFFFFF;
 
   /* Subtle Indian Tricolor Accents */
   /* Saffron / Orange (Primary Call-To-Action & High-Priority Accents) */
-  --saffron-primary: #EA580C;      /* Energetic Indian Saffron / Deep Orange */
-  --saffron-hover: #C2410C;        /* Rich dark saffron hover state */
-  --saffron-light: #FFEDD5;        /* Soft saffron wash */
-  --saffron-border: #FDBA74;       /* Subtle border for saffron elements */
+  --saffron-primary: #EA580C;
+  /* Energetic Indian Saffron / Deep Orange */
+  --saffron-hover: #C2410C;
+  /* Rich dark saffron hover state */
+  --saffron-light: #FFEDD5;
+  /* Soft saffron wash */
+  --saffron-border: #FDBA74;
+  /* Subtle border for saffron elements */
   --saffron-glow: rgba(234, 88, 12, 0.25);
 
   /* India Agriculture Green (Success States & Organic Elements) */
-  --green-primary: #15803D;        /* Deep Fertile India Green */
-  --green-hover: #166534;          /* Dark rich green hover */
-  --green-emerald: #16A34A;        /* Vibrant organic leaf green */
-  --green-light: #DCFCE7;          /* Soft green badge wash */
-  --green-border: #86EFAC;         /* Delicate organic border */
+  --green-primary: #15803D;
+  /* Deep Fertile India Green */
+  --green-hover: #166534;
+  /* Dark rich green hover */
+  --green-emerald: #16A34A;
+  /* Vibrant organic leaf green */
+  --green-light: #DCFCE7;
+  /* Soft green badge wash */
+  --green-border: #86EFAC;
+  /* Delicate organic border */
   --green-glow: rgba(21, 128, 61, 0.2);
 
   /* Ashok Chakra Navy / Technical Precision (Tertiary Accent) */
@@ -73,7 +90,9 @@
 }
 
 /* --- 2. Baseline Reset & Global Standards --- */
-*, *::before, *::after {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
@@ -96,7 +115,8 @@ body {
   min-height: 100vh;
 }
 
-img, svg {
+img,
+svg {
   display: block;
   max-width: 100%;
 }
@@ -165,7 +185,8 @@ button {
   align-items: center;
   gap: 12px;
   text-decoration: none;
-  min-height: 48px; /* Accessible tap target */
+  min-height: 48px;
+  /* Accessible tap target */
   padding: 4px 0;
 }
 
@@ -196,7 +217,7 @@ button {
   height: 3px;
   border-radius: 2px;
   background: linear-gradient(90deg, #F97316 0%, #F97316 33.3%, #FFFFFF 33.3%, #FFFFFF 66.6%, #15803D 66.6%, #15803D 100%);
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 .brand-text {
@@ -252,7 +273,8 @@ button {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  height: 46px; /* Generous accessible tap target */
+  height: 46px;
+  /* Generous accessible tap target */
   padding: 0 16px;
   font-size: 0.94rem;
   font-weight: 600;
@@ -312,7 +334,8 @@ button {
   height: 3px;
   background: var(--green-primary);
   border-radius: 2px 2px 0 0;
-  display: none; /* Managed by JS indicator; displays if JS disabled */
+  display: none;
+  /* Managed by JS indicator; displays if JS disabled */
 }
 
 /* Nav Actions & Quick CTA */
@@ -413,9 +436,11 @@ button {
 .mobile-toggle[aria-expanded="true"] .hamburger-bar:nth-child(1) {
   transform: translateY(7.5px) rotate(45deg);
 }
+
 .mobile-toggle[aria-expanded="true"] .hamburger-bar:nth-child(2) {
   opacity: 0;
 }
+
 .mobile-toggle[aria-expanded="true"] .hamburger-bar:nth-child(3) {
   transform: translateY(-7.5px) rotate(-45deg);
 }
@@ -467,7 +492,8 @@ button {
   transition: all var(--transition-fast);
 }
 
-.mobile-nav-link:hover, .mobile-nav-link.active {
+.mobile-nav-link:hover,
+.mobile-nav-link.active {
   background: var(--bg-surface-tint);
   border-color: var(--green-border);
   color: var(--green-primary);
@@ -478,8 +504,14 @@ button {
   height: 10px;
   border-radius: 50%;
 }
-.badge-dot.green { background-color: var(--green-emerald); }
-.badge-dot.saffron { background-color: var(--saffron-primary); }
+
+.badge-dot.green {
+  background-color: var(--green-emerald);
+}
+
+.badge-dot.saffron {
+  background-color: var(--saffron-primary);
+}
 
 /* --- 4. Button System & Smooth Interactivity --- */
 /* Designed with large tap targets (minimum 48px) for rural field accessibility */
@@ -659,9 +691,19 @@ button {
   height: 8px;
   border-radius: 50%;
 }
-.tricolor-dot.saffron { background-color: var(--saffron-primary); }
-.tricolor-dot.white { background-color: #E2E8F0; border: 1px solid #CBD5E1; }
-.tricolor-dot.green { background-color: var(--green-primary); }
+
+.tricolor-dot.saffron {
+  background-color: var(--saffron-primary);
+}
+
+.tricolor-dot.white {
+  background-color: #E2E8F0;
+  border: 1px solid #CBD5E1;
+}
+
+.tricolor-dot.green {
+  background-color: var(--green-primary);
+}
 
 .pill-text {
   font-size: 0.84rem;
@@ -739,10 +781,21 @@ button {
   margin-left: 2px;
 }
 
-.text-saffron { color: var(--saffron-primary); }
-.text-green { color: var(--green-primary); }
-.text-charcoal { color: var(--text-primary); }
-.text-danger { color: #DC2626; }
+.text-saffron {
+  color: var(--saffron-primary);
+}
+
+.text-green {
+  color: var(--green-primary);
+}
+
+.text-charcoal {
+  color: var(--text-primary);
+}
+
+.text-danger {
+  color: #DC2626;
+}
 
 .stat-label {
   font-size: 0.78rem;
@@ -822,9 +875,20 @@ button {
 }
 
 @keyframes pulseGreen {
-  0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(22, 163, 74, 0.7); }
-  70% { transform: scale(1); box-shadow: 0 0 0 8px rgba(22, 163, 74, 0); }
-  100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(22, 163, 74, 0); }
+  0% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(22, 163, 74, 0.7);
+  }
+
+  70% {
+    transform: scale(1);
+    box-shadow: 0 0 0 8px rgba(22, 163, 74, 0);
+  }
+
+  100% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(22, 163, 74, 0);
+  }
 }
 
 /* Feedstock Selector Chips */
@@ -909,9 +973,17 @@ button {
   margin-bottom: 8px;
 }
 
-.bg-amber-soft { background: #FEF3C7; }
-.bg-green-soft { background: #DCFCE7; }
-.bg-blue-soft { background: #DBEAFE; }
+.bg-amber-soft {
+  background: #FEF3C7;
+}
+
+.bg-green-soft {
+  background: #DCFCE7;
+}
+
+.bg-blue-soft {
+  background: #DBEAFE;
+}
 
 .step-title {
   font-size: 0.82rem;
@@ -1321,9 +1393,18 @@ button {
   border-radius: 50%;
   flex-shrink: 0;
 }
-.sg-bullet.saffron { background: var(--saffron-primary); }
-.sg-bullet.green { background: var(--green-primary); }
-.sg-bullet.charcoal { background: var(--chakra-blue); }
+
+.sg-bullet.saffron {
+  background: var(--saffron-primary);
+}
+
+.sg-bullet.green {
+  background: var(--green-primary);
+}
+
+.sg-bullet.charcoal {
+  background: var(--chakra-blue);
+}
 
 /* Quick Modern Fade-In Animation for Injected Content */
 @keyframes quickFadeIn {
@@ -1331,6 +1412,7 @@ button {
     opacity: 0;
     transform: translateY(8px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -1404,7 +1486,8 @@ button {
   font-family: var(--font-family-title);
   font-size: 1.5rem;
   font-weight: 800;
-  color: var(--green-primary); /* Prominent Green Accent Color */
+  color: var(--green-primary);
+  /* Prominent Green Accent Color */
   line-height: 1.15;
 }
 
@@ -1522,8 +1605,13 @@ button {
   margin-bottom: 10px;
 }
 
-.ap-col-title.green { color: var(--green-primary); }
-.ap-col-title.amber { color: var(--saffron-hover); }
+.ap-col-title.green {
+  color: var(--green-primary);
+}
+
+.ap-col-title.amber {
+  color: var(--saffron-hover);
+}
 
 .ap-list {
   list-style: none;
@@ -1774,8 +1862,8 @@ button {
   transition: fill 0.2s ease;
 }
 
-.map-state:hover + .state-code-label,
-.map-state.state-selected + .state-code-label {
+.map-state:hover+.state-code-label,
+.map-state.state-selected+.state-code-label {
   fill: #FFFFFF;
 }
 
@@ -1863,6 +1951,7 @@ button {
     opacity: 0.3;
     transform: translateY(6px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -2154,10 +2243,25 @@ button {
   color: var(--saffron-primary);
 }
 
-.depot-point.p1 { top: 22%; left: 24%; }
-.depot-point.p2 { top: 18%; right: 26%; }
-.depot-point.p3 { bottom: 25%; left: 32%; }
-.depot-point.p4 { bottom: 20%; right: 28%; }
+.depot-point.p1 {
+  top: 22%;
+  left: 24%;
+}
+
+.depot-point.p2 {
+  top: 18%;
+  right: 26%;
+}
+
+.depot-point.p3 {
+  bottom: 25%;
+  left: 32%;
+}
+
+.depot-point.p4 {
+  bottom: 20%;
+  right: 28%;
+}
 
 .map-footer-notes {
   display: flex;
@@ -2180,9 +2284,18 @@ button {
   height: 8px;
   border-radius: 50%;
 }
-.bullet.green { background: var(--green-primary); }
-.bullet.saffron { background: var(--saffron-primary); }
-.bullet.charcoal { background: var(--text-primary); }
+
+.bullet.green {
+  background: var(--green-primary);
+}
+
+.bullet.saffron {
+  background: var(--saffron-primary);
+}
+
+.bullet.charcoal {
+  background: var(--text-primary);
+}
 
 /* Metrics Panel */
 .metrics-panel {
@@ -2365,6 +2478,7 @@ button {
     opacity: 0;
     transform: translateY(8px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -2680,7 +2794,7 @@ button {
   border-radius: 50%;
   background: var(--green-primary);
   border: 3px solid #FFFFFF;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
   cursor: pointer;
   transition: transform var(--transition-fast), background-color var(--transition-fast);
 }
@@ -2696,7 +2810,7 @@ button {
   border-radius: 50%;
   background: var(--green-primary);
   border: 3px solid #FFFFFF;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
   cursor: pointer;
 }
 
@@ -3036,8 +3150,14 @@ button {
   height: 10px;
   border-radius: 50%;
 }
-.tab-indicator.saffron { background: var(--saffron-primary); }
-.tab-indicator.green { background: var(--green-primary); }
+
+.tab-indicator.saffron {
+  background: var(--saffron-primary);
+}
+
+.tab-indicator.green {
+  background: var(--green-primary);
+}
 
 .tab-pane {
   display: flex;
@@ -3047,8 +3167,15 @@ button {
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(6px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .tea-summary-grid {
@@ -3141,10 +3268,21 @@ button {
   transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.bg-green { background: linear-gradient(90deg, #16A34A, #15803D); }
-.bg-saffron { background: linear-gradient(90deg, #F97316, #EA580C); }
-.bg-charcoal { background: #374151; }
-.bg-red { background: #EF4444; }
+.bg-green {
+  background: linear-gradient(90deg, #16A34A, #15803D);
+}
+
+.bg-saffron {
+  background: linear-gradient(90deg, #F97316, #EA580C);
+}
+
+.bg-charcoal {
+  background: #374151;
+}
+
+.bg-red {
+  background: #EF4444;
+}
 
 /* Comparison Bars in LCA */
 .comparison-row {
@@ -3283,7 +3421,8 @@ button {
 .fmea-table thead th {
   position: sticky;
   top: 0;
-  background-color: var(--text-primary); /* Deep charcoal #1F2937 */
+  background-color: var(--text-primary);
+  /* Deep charcoal #1F2937 */
   color: #FFFFFF;
   font-family: var(--font-family-title);
   font-size: 0.78rem;
@@ -3320,7 +3459,8 @@ button {
 }
 
 .fmea-table tbody tr:nth-child(even) {
-  background-color: rgba(21, 128, 61, 0.035); /* Faint green tint for zebra striping */
+  background-color: rgba(21, 128, 61, 0.035);
+  /* Faint green tint for zebra striping */
 }
 
 .fmea-table tbody tr:nth-child(odd) {
@@ -3328,7 +3468,8 @@ button {
 }
 
 .fmea-table tbody tr:hover {
-  background-color: rgba(21, 128, 61, 0.08); /* Interactive hover highlight */
+  background-color: rgba(21, 128, 61, 0.08);
+  /* Interactive hover highlight */
 }
 
 .td-failure {
@@ -3759,7 +3900,7 @@ button {
     grid-template-columns: 1fr;
     gap: 32px;
   }
-  
+
   .mapping-grid {
     grid-template-columns: 1fr;
   }
@@ -4065,6 +4206,7 @@ button {
     opacity: 0.3;
     transform: translateY(8px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -4309,8 +4451,6 @@ button {
   .rhr-massive-value {
     font-size: 2.6rem;
   }
-}
-
 
   .fco-item {
     flex-direction: column;
@@ -4368,4 +4508,3 @@ button {
     grid-template-columns: 1fr;
   }
 }
-
