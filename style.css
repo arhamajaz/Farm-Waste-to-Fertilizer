@@ -1649,10 +1649,355 @@ button {
   box-shadow: 0 4px 12px rgba(21, 128, 61, 0.25);
 }
 
-.mapping-grid {
+/* ==========================================================================
+   Interactive Crop/Waste Regional Map of India & Regional Profile Panel
+   ========================================================================== */
+.regional-map-container {
   display: grid;
-  grid-template-columns: 1.25fr 0.95fr;
-  gap: 32px;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: 28px;
+  align-items: stretch;
+  margin-top: 24px;
+}
+
+@media (max-width: 992px) {
+  .regional-map-container {
+    grid-template-columns: 1fr;
+  }
+}
+
+.map-interactive-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-card);
+  border-radius: var(--radius-xl);
+  padding: 26px;
+  box-shadow: var(--shadow-md);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.mic-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
+  flex-wrap: wrap;
+}
+
+.mic-eyebrow {
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 4px;
+  display: block;
+}
+
+.mic-title {
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0;
+  font-family: var(--font-family-title);
+}
+
+.mic-subtitle {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  margin-bottom: 16px;
+  line-height: 1.5;
+}
+
+.svg-map-wrapper {
+  position: relative;
+  width: 100%;
+  flex: 1;
+  min-height: 480px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-surface-tint);
+  border: 1px solid var(--green-border);
+  border-radius: var(--radius-lg);
+  padding: 18px;
+  overflow: hidden;
+}
+
+.india-map-svg {
+  width: 100%;
+  max-width: 500px;
+  height: auto;
+  filter: drop-shadow(0 6px 16px rgba(31, 41, 55, 0.08));
+  user-select: none;
+}
+
+/* Base State Styling: Crisp White with subtle grey stroke */
+.map-state {
+  fill: #FFFFFF;
+  stroke: #CBD5E1;
+  stroke-width: 1.5;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+  cursor: pointer;
+  transition: fill 0.22s ease, stroke 0.22s ease, filter 0.22s ease;
+}
+
+/* Hover State: Fill with Saffron/Orange Accent */
+.map-state:hover {
+  fill: var(--saffron-primary);
+  stroke: var(--saffron-hover);
+  stroke-width: 2.2;
+  filter: drop-shadow(0 4px 10px rgba(234, 88, 12, 0.45));
+}
+
+/* Selected State: Highlighted using Green Accent Color */
+.map-state.state-selected,
+.map-state[aria-selected="true"] {
+  fill: var(--green-primary);
+  stroke: #14532D;
+  stroke-width: 2.5;
+  filter: drop-shadow(0 6px 14px rgba(21, 128, 61, 0.5));
+}
+
+/* State Abbreviation Code Labels */
+.state-code-label {
+  fill: #475569;
+  font-size: 10.5px;
+  font-weight: 800;
+  text-anchor: middle;
+  dominant-baseline: central;
+  pointer-events: none;
+  font-family: var(--font-family-title);
+  user-select: none;
+  transition: fill 0.2s ease;
+}
+
+.map-state:hover + .state-code-label,
+.map-state.state-selected + .state-code-label {
+  fill: #FFFFFF;
+}
+
+/* Floating State Hover Tooltip */
+.map-tooltip {
+  position: absolute;
+  pointer-events: none;
+  background: var(--text-primary);
+  color: #FFFFFF;
+  padding: 6px 12px;
+  border-radius: var(--radius-sm);
+  font-size: 0.82rem;
+  font-weight: 600;
+  box-shadow: var(--shadow-md);
+  opacity: 0;
+  transform: translate(-50%, -120%);
+  transition: opacity 0.15s ease, transform 0.15s ease;
+  z-index: 100;
+  white-space: nowrap;
+}
+
+.map-tooltip.visible {
+  opacity: 1;
+}
+
+/* Legend */
+.map-legend-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border-subtle);
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+}
+
+.legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.legend-swatch {
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
+  border: 1px solid var(--border-medium);
+}
+
+.legend-swatch.swatch-white {
+  background: #FFFFFF;
+  border-color: #CBD5E1;
+}
+
+.legend-swatch.swatch-saffron {
+  background: var(--saffron-primary);
+  border-color: var(--saffron-hover);
+}
+
+.legend-swatch.swatch-green {
+  background: var(--green-primary);
+  border-color: #14532D;
+}
+
+/* Regional Profile Card Panel */
+.regional-profile-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-card);
+  border-radius: var(--radius-xl);
+  padding: 28px;
+  box-shadow: var(--shadow-md);
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+.regional-profile-card.fade-in {
+  animation: fadeInProfile 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes fadeInProfile {
+  from {
+    opacity: 0.3;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.rp-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  border-bottom: 1px solid var(--border-subtle);
+  padding-bottom: 14px;
+}
+
+.rp-state-badge {
+  display: inline-block;
+  padding: 4px 10px;
+  background: var(--green-light);
+  color: var(--green-primary);
+  border-radius: var(--radius-full);
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 4px;
+}
+
+.rp-state-title {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin: 0;
+  font-family: var(--font-family-title);
+}
+
+.rp-waste-card {
+  background: var(--bg-surface-amber);
+  border: 1.5px solid var(--saffron-border);
+  border-radius: var(--radius-md);
+  padding: 16px 18px;
+}
+
+.rp-waste-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--saffron-hover);
+  margin-bottom: 6px;
+  display: block;
+}
+
+.rp-waste-value {
+  font-size: 1.22rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin: 0 0 6px 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.rp-waste-meta {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.rp-tech-card {
+  background: var(--bg-surface-tint);
+  border: 1.5px solid var(--green-border);
+  border-radius: var(--radius-md);
+  padding: 16px 18px;
+}
+
+.rp-tech-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--green-primary);
+  margin-bottom: 6px;
+  display: block;
+}
+
+.rp-tech-value {
+  font-size: 1.22rem;
+  font-weight: 800;
+  color: var(--green-primary);
+  margin: 0 0 6px 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.rp-rationale-box {
+  background: var(--bg-primary);
+  border-left: 3.5px solid var(--green-primary);
+  padding: 12px 16px;
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+  line-height: 1.55;
+}
+
+.rp-metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.rp-metric-box {
+  background: var(--bg-primary);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 12px;
+}
+
+.rpm-label {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  display: block;
+  margin-bottom: 4px;
+}
+
+.rpm-val {
+  font-size: 1.02rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.rp-action-wrap {
+  margin-top: auto;
+  padding-top: 8px;
 }
 
 /* Schematic Map Card */

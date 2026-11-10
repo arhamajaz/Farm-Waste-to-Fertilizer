@@ -710,124 +710,494 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // =========================================================================
-  // 5. Module 01: Baseline Regional Geospatial Selector
+  // 5. Module 01: Interactive Crop/Waste Regional Map of India Engine
   // =========================================================================
-  const regionalData = {
-    punjab: {
-      title: "Punjab Agrarian Cluster",
-      sub: "Districts: Sangrur, Ludhiana, Bathinda, Patiala",
-      status: "Peak Burning Risk Window: Oct 15 - Nov 20",
-      density: "18.4 Million MT/Yr",
-      feedstock: "Paddy Straw (Basmati & Non-Basmati)",
-      moisture: "18% - 24% (Requires field drying)",
-      silica: "11.2% - 14.8% (Pyrolysis optimized)",
-      units: "12 Decentralized Plants",
-      soc: "SOC: 0.38% (Critically Low)",
-      desc: "Decades of chemical NPK overuse have depleted soil organic carbon. Our organo-mineral biofertilizers reintroduce stable biochar humic structures to replenish native microbiological health.",
-      depots: ["Depot Sangrur", "Depot Bathinda", "Depot Patiala", "Ludhiana Hub"]
+  const regionalWasteProfiles = [
+    {
+      id: "UP",
+      name: "Uttar Pradesh",
+      dominantWaste: "Sugarcane Bagasse",
+      tech: "Biochar Pyrolysis & Organo-Mineral Co-Granulation",
+      reason: "Immense sugar belt biomass volumes across Western and Central UP combine bagasse carbon matrix with pressmud organic phosphorus.",
+      cn: "92:1",
+      density: "39.8 Million MT/Yr",
+      output: "14.2 Million MT Bio-Fertilizer",
+      feedstockType: "Agro-Industrial Residue",
+      regionKey: "up"
     },
-    haryana: {
-      title: "Haryana Grain Belt",
-      sub: "Districts: Karnal, Kaithal, Kurukshetra, Fatehabad",
-      status: "Residue Aggregation Window: Oct 20 - Nov 25",
+    {
+      id: "MH",
+      name: "Maharashtra",
+      dominantWaste: "Sugarcane Bagasse",
+      tech: "Biochar Pyrolysis & Anaerobic Co-Digestion",
+      reason: "Extensive sugarcane crushing cooperatives in Western Maharashtra supply bagasse to generate steam and biochar organo-mineral NPK.",
+      cn: "115:1",
+      density: "28.5 Million MT/Yr",
+      output: "10.2 Million MT Bio-Fertilizer",
+      feedstockType: "Sugar Mill Residue",
+      regionKey: "maharashtra"
+    },
+    {
+      id: "PB",
+      name: "Punjab",
+      dominantWaste: "Rice Husk",
+      tech: "Biochar Pyrolysis",
+      reason: "High C:N ratio (85:1) and elevated silica (13%) make paddy straw optimal for catalytic pyrolysis kiln valorization instead of open field burning.",
+      cn: "85:1",
+      density: "19.5 Million MT/Yr",
+      output: "6.8 Million MT Biochar & Bio-NPK",
+      feedstockType: "Crop Stubble (Parali)",
+      regionKey: "punjab"
+    },
+    {
+      id: "WB",
+      name: "West Bengal",
+      dominantWaste: "Rice Husk",
+      tech: "Biochar Pyrolysis & Aerobic Composting",
+      reason: "World's largest paddy production belt generates high-silica rice husk, pyrolyzed into biochar to reinforce alluvial rice paddy root zones.",
+      cn: "82:1",
+      density: "22.4 Million MT/Yr",
+      output: "7.9 Million MT Bio-Fertilizer",
+      feedstockType: "Paddy Milling By-Product",
+      regionKey: "wb"
+    },
+    {
+      id: "HR",
+      name: "Haryana",
+      dominantWaste: "Paddy Straw",
+      tech: "Biochar Pyrolysis & Biogas",
+      reason: "Dense paddy-wheat stubble clusters across Karnal and Kaithal feed decentralized torrefaction hubs producing carbon-negative bio-granules.",
+      cn: "78:1",
       density: "11.2 Million MT/Yr",
-      feedstock: "Paddy Straw & Mustard Residue",
-      moisture: "15% - 20% (Fast dry)",
-      silica: "10.5% - 13.9%",
-      units: "8 Decentralized Plants",
-      soc: "SOC: 0.42% (Low Deficit)",
-      desc: "High salinity soils in south-central Haryana benefit dramatically from our neutral pH buffered biochar formulation to restore ion balance and moisture retention.",
-      depots: ["Karnal Central", "Kaithal North", "Fatehabad West", "Kurukshetra"]
+      output: "4.1 Million MT Bio-Fertilizer",
+      feedstockType: "Crop Stubble (Parali)",
+      regionKey: "haryana"
     },
-    up: {
-      title: "Western Uttar Pradesh Sugar & Grain Corridor",
-      sub: "Districts: Meerut, Muzaffarnagar, Shamli, Bulandshahr",
-      status: "Dual Season Harvest: Nov - Dec & April - May",
+    {
+      id: "GJ",
+      name: "Gujarat",
+      dominantWaste: "Cotton Stalks",
+      tech: "Biochar Pyrolysis & Humic Inoculation",
+      reason: "Woody cotton stalks from Saurashtra and Vidarbha are converted into biochar to counteract salinity and boost cation exchange capacity.",
+      cn: "72:1",
+      density: "15.4 Million MT/Yr",
+      output: "5.5 Million MT Bio-Fertilizer",
+      feedstockType: "Woody Crop Residue",
+      regionKey: "gj"
+    },
+    {
+      id: "MP",
+      name: "Madhya Pradesh",
+      dominantWaste: "Soybean Stubble & Wheat Straw",
+      tech: "Anaerobic Digestion & Biochar Inoculation",
+      reason: "Soybean residues rich in native nitrogen co-processed with high-carbon wheat straw provide the optimal 25:1 C:N digestate balance.",
+      cn: "45:1",
+      density: "18.6 Million MT/Yr",
+      output: "6.7 Million MT Bio-Fertilizer",
+      feedstockType: "Legume & Cereal Stover",
+      regionKey: "mp"
+    },
+    {
+      id: "RJ",
+      name: "Rajasthan",
+      dominantWaste: "Mustard Stalks & Husk",
+      tech: "Biochar Pyrolysis",
+      reason: "Dry, lignified brassica stalks create high-surface-area biochar that boosts sandy soil water retention by up to 40%.",
+      cn: "68:1",
+      density: "12.8 Million MT/Yr",
+      output: "4.6 Million MT Bio-Fertilizer",
+      feedstockType: "Oilseed Crop Biomass",
+      regionKey: "rj"
+    },
+    {
+      id: "BR",
+      name: "Bihar",
+      dominantWaste: "Rice Husk & Maize Stalks",
+      tech: "Biochar Pyrolysis & Bio-Enriched Granulation",
+      reason: "Abundant maize cob and paddy husk supplies in Seemanchal provide silica-rich structural matrices for fortified NPK fertilizers.",
+      cn: "75:1",
       density: "16.8 Million MT/Yr",
-      feedstock: "Sugarcane Trash & Wheat / Paddy Residue",
-      moisture: "14% - 22%",
-      silica: "8.5% - 12.0%",
-      units: "14 Decentralized Plants",
-      soc: "SOC: 0.45% (Depleted)",
-      desc: "Abundant sugarcane trash and stubble combined in co-pyrolysis produce an ultra-rich potassium organo-mineral fertilizer suitable for intensive cash crops.",
-      depots: ["Muzaffarnagar Hub", "Meerut Agro Depot", "Shamli East", "Bulandshahr South"]
+      output: "5.9 Million MT Bio-Fertilizer",
+      feedstockType: "Cereal & Stalk Waste",
+      regionKey: "br"
     },
-    maharashtra: {
-      title: "Maharashtra Western Sugar Belt",
-      sub: "Districts: Kolhapur, Sangli, Pune, Solapur",
-      status: "Crushing Season Aggregation: Nov - March",
-      density: "14.1 Million MT/Yr",
-      feedstock: "Sugarcane Bagasse & Cotton Stalks",
-      moisture: "12% - 18%",
-      silica: "6.2% - 9.4%",
-      units: "10 Decentralized Plants",
-      soc: "SOC: 0.52% (Moderate Deficit)",
-      desc: "Drought-prone black cotton soils achieve +35% moisture retention capacity when treated with our biochar organo-mineral formula.",
-      depots: ["Kolhapur Mill Depot", "Sangli Agro Depot", "Pune East Hub", "Solapur Central"]
+    {
+      id: "JH",
+      name: "Jharkhand",
+      dominantWaste: "Rice Husk & Forest Leaf Biomass",
+      tech: "Biochar Pyrolysis & Vermicomposting",
+      reason: "Acidic red soils of the Chota Nagpur plateau benefit significantly from alkaline biochar application to neutralize toxic aluminum ions.",
+      cn: "52:1",
+      density: "7.4 Million MT/Yr",
+      output: "2.6 Million MT Bio-Fertilizer",
+      feedstockType: "Agro-Forestry Biomass",
+      regionKey: "jh"
     },
-    mp: {
-      title: "Madhya Pradesh Narmada Basin",
-      sub: "Districts: Hoshangabad, Sehore, Raisen, Harda",
-      status: "Rabi Season Wheat Stubble Aggregation: April - May",
-      density: "9.6 Million MT/Yr",
-      feedstock: "Wheat Straw & Soybean Stubble",
-      moisture: "8% - 12% (Dry climate)",
-      silica: "7.1% - 10.5%",
-      units: "7 Decentralized Plants",
-      soc: "SOC: 0.48% (Low to Moderate)",
-      desc: "High organic matter potential from soybean crop residues combined with rock phosphate fortification provides an ideal slow-release legume fertilizer.",
-      depots: ["Hoshangabad Hub", "Sehore Depot", "Harda North", "Raisen Central"]
+    {
+      id: "OR",
+      name: "Odisha",
+      dominantWaste: "Rice Husk & Straw",
+      tech: "Biochar Pyrolysis & Bio-Formulation",
+      reason: "Cyclone-prone coastal delta soils gain high organic carbon stability and shear strength through pyrolyzed rice husk incorporation.",
+      cn: "74:1",
+      density: "13.6 Million MT/Yr",
+      output: "4.8 Million MT Bio-Fertilizer",
+      feedstockType: "Paddy Agro-Residue",
+      regionKey: "or"
+    },
+    {
+      id: "CH",
+      name: "Chhattisgarh",
+      dominantWaste: "Rice Husk (Dhan Kuti)",
+      tech: "Biochar Pyrolysis & Microbial Inoculation",
+      reason: "The Rice Bowl of Central India processes thousands of rice mill husk mounds into high-silica biochar for phosphorus chelation.",
+      cn: "80:1",
+      density: "12.2 Million MT/Yr",
+      output: "4.3 Million MT Bio-Fertilizer",
+      feedstockType: "Mill Milling Residue",
+      regionKey: "ch"
+    },
+    {
+      id: "TG",
+      name: "Telangana",
+      dominantWaste: "Cotton Stalks & Paddy Husk",
+      tech: "Biochar Pyrolysis & Azotobacter Fortification",
+      reason: "Semi-arid cotton belts convert post-harvest woody stalks into biochar, cutting synthetic DAP needs by 35% in red chalka soils.",
+      cn: "70:1",
+      density: "12.8 Million MT/Yr",
+      output: "4.5 Million MT Bio-Fertilizer",
+      feedstockType: "Fiber Crop Stems",
+      regionKey: "tg"
+    },
+    {
+      id: "AP",
+      name: "Andhra Pradesh",
+      dominantWaste: "Paddy Straw & Chili Crop Residue",
+      tech: "Biochar Pyrolysis & Bio-Manure",
+      reason: "Coastal Andhra delta tracts upcycle dense paddy residues and chili plant stalks into disease-suppressive bio-organics.",
+      cn: "65:1",
+      density: "17.2 Million MT/Yr",
+      output: "6.1 Million MT Bio-Fertilizer",
+      feedstockType: "Delta Crop Residue",
+      regionKey: "ap"
+    },
+    {
+      id: "KA",
+      name: "Karnataka",
+      dominantWaste: "Sugarcane Bagasse & Maize Stover",
+      tech: "Biochar Pyrolysis & Micro-Nutrient Bio-Enrichment",
+      reason: "Diverse agro-climatic zones provide bagasse in Belagavi and coffee husk in Malnad, creating balanced multi-nutrient organo-mineral fertilizers.",
+      cn: "88:1",
+      density: "16.4 Million MT/Yr",
+      output: "5.8 Million MT Bio-Fertilizer",
+      feedstockType: "Agro-Industrial Residue",
+      regionKey: "ka"
+    },
+    {
+      id: "TN",
+      name: "Tamil Nadu",
+      dominantWaste: "Sugarcane Bagasse & Coir Pith",
+      tech: "Biochar Pyrolysis & Pressmud Co-Granulation",
+      reason: "Cauvery delta bagasse and Pollachi coir pith combine with sugar mill pressmud, producing high-grade phosphorus-rich bio-granules.",
+      cn: "95:1",
+      density: "18.2 Million MT/Yr",
+      output: "6.5 Million MT Bio-Fertilizer",
+      feedstockType: "Horticulture & Mill By-Product",
+      regionKey: "tn"
+    },
+    {
+      id: "KL",
+      name: "Kerala",
+      dominantWaste: "Coir Pith & Coconut Residues",
+      tech: "Lignin Degrading Fungal Inoculation & Biochar",
+      reason: "Abundant coir pith mounds treated with Pleurotus mushrooms yield high-moisture organic sponges ideal for spice and plantation crops.",
+      cn: "110:1",
+      density: "6.8 Million MT/Yr",
+      output: "2.4 Million MT Bio-Fertilizer",
+      feedstockType: "Plantation Residue",
+      regionKey: "kl"
+    },
+    {
+      id: "AS",
+      name: "Assam & North East",
+      dominantWaste: "Tea Prunings, Bamboo & Paddy Husk",
+      tech: "Biochar Pyrolysis & Bio-Enzymatic Composting",
+      reason: "High tea estate bio-residues and bamboo fibers produce structured activated carbon matrices to rebalance acidic tea soils.",
+      cn: "64:1",
+      density: "9.8 Million MT/Yr",
+      output: "3.4 Million MT Bio-Fertilizer",
+      feedstockType: "Plantation & Cane Biomass",
+      regionKey: "as"
+    },
+    {
+      id: "HP",
+      name: "Himachal Pradesh",
+      dominantWaste: "Apple Pomace & Pine Needles",
+      tech: "Biochar Pyrolysis",
+      reason: "High-resin pine needles and orchard pomace prevent forest wildfires when pyrolyzed into porous carrier biochar.",
+      cn: "55:1",
+      density: "2.8 Million MT/Yr",
+      output: "950,000 MT Bio-Fertilizer",
+      feedstockType: "Orchard & Forest Biomass",
+      regionKey: "hp"
+    },
+    {
+      id: "UK",
+      name: "Uttarakhand",
+      dominantWaste: "Pine Needles & Sugarcane Trash",
+      tech: "Pyrolysis & Vermicomposting",
+      reason: "Combines hillside pine residue torrefaction with terai sugarcane bio-inoculation to replenish organic hill soils.",
+      cn: "62:1",
+      density: "3.5 Million MT/Yr",
+      output: "1.1 Million MT Bio-Fertilizer",
+      feedstockType: "Hill Agriculture Residue",
+      regionKey: "uk"
+    },
+    {
+      id: "JK",
+      name: "Jammu & Kashmir & Ladakh",
+      dominantWaste: "Apple Pomace & Walnut Shells",
+      tech: "Biochar Pyrolysis & Composting",
+      reason: "High lignin and polyphenolic residues from intensive horticulture are ideal for low-temperature torrefaction to produce soil warming biochar.",
+      cn: "48:1",
+      density: "3.2 Million MT/Yr",
+      output: "1.2 Million MT Bio-Fertilizer",
+      feedstockType: "Temperate Orchard Biomass",
+      regionKey: "jk"
+    },
+    {
+      id: "GA",
+      name: "Goa",
+      dominantWaste: "Cashew Apple Pomace & Coconut Husk",
+      tech: "Organic Bio-Composting",
+      reason: "High moisture cashew residue rich in ascorbic acid and sugars accelerates fermentation kinetics for coastal fruit orchards.",
+      cn: "35:1",
+      density: "380,000 MT/Yr",
+      output: "140,000 MT Bio-Fertilizer",
+      feedstockType: "Horticulture Fruit Waste",
+      regionKey: "ga"
+    },
+    {
+      id: "SK",
+      name: "Sikkim",
+      dominantWaste: "Organic Horticulture & Cardamom Biomass",
+      tech: "100% Organic Vermicomposting",
+      reason: "As India's first 100% certified organic state, residues are bio-converted exclusively through non-chemical cold-tolerant microbial consortiums.",
+      cn: "28:1",
+      density: "420,000 MT/Yr",
+      output: "180,000 MT Certified Organic Manure",
+      feedstockType: "Organic Plantation Biomass",
+      regionKey: "sk"
+    },
+    {
+      id: "DL",
+      name: "Delhi NCR",
+      dominantWaste: "Urban Green & Agro-Mandi Waste",
+      tech: "Rapid In-Vessel Composting",
+      reason: "High-nitrogen wholesale mandi organic pulp co-composts with urban forestry prunings for horticulture bio-fertilizer.",
+      cn: "22:1",
+      density: "1.4 Million MT/Yr",
+      output: "480,000 MT Bio-Fertilizer",
+      feedstockType: "Market Wholesale Surplus",
+      regionKey: "dl"
     }
-  };
+  ];
 
+  const mapSvg = document.getElementById('india-map-svg');
+  const statePaths = Array.from(document.querySelectorAll('.map-state'));
+  const regionalProfilePanel = document.getElementById('regional-profile-panel');
+  const mapTooltip = document.getElementById('map-tooltip');
+  const mapPillState = document.getElementById('map-pill-state');
   const regionChips = document.querySelectorAll('.chip-filter');
-  const mapRegionName = document.getElementById('map-region-name');
-  const mapRegionSub = document.getElementById('map-region-sub');
-  const mapStatus = document.getElementById('map-status');
-  const valBiomassDensity = document.getElementById('val-biomass-density');
-  const valFeedstockPrimary = document.getElementById('val-feedstock-primary');
-  const valMoisture = document.getElementById('val-moisture');
-  const valSilica = document.getElementById('val-silica');
-  const valUnitsNeeded = document.getElementById('val-units-needed');
-  const valSoilSoc = document.getElementById('val-soil-soc');
-  const valSoilDesc = document.getElementById('val-soil-desc');
-  const depotPoints = document.querySelectorAll('.depot-point');
 
+  /**
+   * Dynamically renders the 'Regional Profile' HTML panel
+   * @param {Object} profile - State profile object
+   */
+  function renderRegionalProfile(profile) {
+    if (!regionalProfilePanel || !profile) return;
+
+    regionalProfilePanel.classList.remove('fade-in');
+    void regionalProfilePanel.offsetWidth; // Force CSS animation restart
+    regionalProfilePanel.classList.add('fade-in');
+
+    regionalProfilePanel.innerHTML = `
+      <div class="rp-header">
+        <div>
+          <span class="rp-state-badge">State Code: ${profile.id} &bull; ${profile.feedstockType}</span>
+          <h3 class="rp-state-title" id="profile-state-name">${profile.name}</h3>
+        </div>
+        <span class="status-pill status-ready">
+          <span class="pulse-dot"></span> Active Profile
+        </span>
+      </div>
+
+      <!-- Dominant Waste Callout Card -->
+      <div class="rp-waste-card">
+        <span class="rp-waste-label">Dominant Farm Waste Type</span>
+        <h4 class="rp-waste-value">
+          <span aria-hidden="true">🌾</span>
+          <span id="profile-waste-type">${profile.dominantWaste}</span>
+        </h4>
+        <p class="rp-waste-meta">
+          <strong>Average C:N Ratio:</strong> ${profile.cn} &bull; <strong>Annual Surplus:</strong> ${profile.density}
+        </p>
+      </div>
+
+      <!-- Recommended Conversion Technology Card (Green Accent) -->
+      <div class="rp-tech-card">
+        <span class="rp-tech-label">Recommended Conversion Technology</span>
+        <h4 class="rp-tech-value">
+          <span aria-hidden="true">⚡</span>
+          <span id="profile-tech-name">${profile.tech}</span>
+        </h4>
+        <p class="rp-waste-meta">
+          Targeted biochemical valorization matching substrate moisture and stoichiometric kinetics.
+        </p>
+      </div>
+
+      <!-- Technical Rationale Breakdown -->
+      <div class="rp-rationale-box">
+        <strong>Biochemical Selection Rationale:</strong>
+        <p style="margin: 6px 0 0 0;">${profile.reason}</p>
+      </div>
+
+      <!-- Regional Impact Metrics Grid -->
+      <div class="rp-metrics-grid">
+        <div class="rp-metric-box">
+          <span class="rpm-label">Annual Biomass Volume</span>
+          <span class="rpm-val text-charcoal">${profile.density}</span>
+        </div>
+        <div class="rp-metric-box">
+          <span class="rpm-label">Bio-Fertilizer Potential</span>
+          <span class="rpm-val text-green">${profile.output}</span>
+        </div>
+      </div>
+
+      <!-- Action Footer -->
+      <div class="rp-action-wrap">
+        <a href="#formulation" class="btn btn-saffron btn-full" id="btn-profile-formulate">
+          <span>Configure Formulation for ${profile.dominantWaste}</span>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
+            <path d="M5 12h14M12 5l7 7-7 7"/>
+          </svg>
+        </a>
+      </div>
+    `;
+
+    if (mapPillState) {
+      mapPillState.textContent = `${profile.name} Active`;
+    }
+  }
+
+  /**
+   * Select a state on the map by its ID (e.g. 'UP', 'PB', 'MH')
+   * Highlights the state in Green, clears previous highlight, and updates Regional Profile panel
+   */
+  function selectRegionalState(stateId, triggerToast = false) {
+    const profile = regionalWasteProfiles.find(p => p.id === stateId);
+    if (!profile) return;
+
+    // Highlight selected state on SVG map using Green accent color
+    statePaths.forEach(path => {
+      const isMatch = path.getAttribute('id') === stateId;
+      if (isMatch) {
+        path.classList.add('state-selected');
+        path.setAttribute('aria-selected', 'true');
+      } else {
+        path.classList.remove('state-selected');
+        path.setAttribute('aria-selected', 'false');
+      }
+    });
+
+    // Dynamically update the adjacent 'Regional Profile' HTML panel
+    renderRegionalProfile(profile);
+
+    // Sync region filter chips if matching regionKey exists
+    if (regionChips.length > 0) {
+      regionChips.forEach(chip => {
+        const chipRegion = chip.getAttribute('data-region');
+        const isMatch = (profile.regionKey && chipRegion === profile.regionKey) ||
+                        (chipRegion === 'punjab' && stateId === 'PB') ||
+                        (chipRegion === 'haryana' && stateId === 'HR') ||
+                        (chipRegion === 'up' && stateId === 'UP') ||
+                        (chipRegion === 'maharashtra' && stateId === 'MH') ||
+                        (chipRegion === 'mp' && stateId === 'MP');
+        if (isMatch) {
+          chip.classList.add('active');
+          chip.setAttribute('aria-pressed', 'true');
+        } else {
+          chip.classList.remove('active');
+          chip.setAttribute('aria-pressed', 'false');
+        }
+      });
+    }
+
+    if (triggerToast && typeof showToast === 'function') {
+      showToast(`Selected ${profile.name}: Dominant waste is ${profile.dominantWaste}`);
+    }
+  }
+
+  // Attach Click & Keyboard Event Listeners to all SVG State Paths
+  statePaths.forEach(path => {
+    const stateId = path.getAttribute('id');
+    const profile = regionalWasteProfiles.find(p => p.id === stateId);
+
+    // Click event listener
+    path.addEventListener('click', () => {
+      selectRegionalState(stateId, true);
+    });
+
+    // Keyboard accessibility (Enter or Space)
+    path.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        selectRegionalState(stateId, true);
+      }
+    });
+
+    // Hover Tooltip Interaction
+    path.addEventListener('mouseenter', (e) => {
+      if (!mapTooltip || !profile) return;
+      mapTooltip.textContent = `${profile.name} • ${profile.dominantWaste}`;
+      mapTooltip.classList.add('visible');
+    });
+
+    path.addEventListener('mousemove', (e) => {
+      if (!mapTooltip) return;
+      const wrapperRect = mapSvg.getBoundingClientRect();
+      const x = e.clientX - wrapperRect.left;
+      const y = e.clientY - wrapperRect.top;
+      mapTooltip.style.left = `${x}px`;
+      mapTooltip.style.top = `${y}px`;
+    });
+
+    path.addEventListener('mouseleave', () => {
+      if (!mapTooltip) return;
+      mapTooltip.classList.remove('visible');
+    });
+  });
+
+  // Attach Click Handlers to Top Region Selector Chips to drive the SVG Map
   regionChips.forEach(chip => {
     chip.addEventListener('click', () => {
-      regionChips.forEach(c => {
-        c.classList.remove('active');
-        c.setAttribute('aria-pressed', 'false');
-      });
-      chip.classList.add('active');
-      chip.setAttribute('aria-pressed', 'true');
-
       const regionKey = chip.getAttribute('data-region');
-      const data = regionalData[regionKey];
-
-      if (data) {
-        mapRegionName.textContent = data.title;
-        mapRegionSub.textContent = data.sub;
-        mapStatus.textContent = data.status;
-        valBiomassDensity.textContent = data.density;
-        valFeedstockPrimary.textContent = data.feedstock;
-        valMoisture.textContent = data.moisture;
-        valSilica.textContent = data.silica;
-        valUnitsNeeded.textContent = data.units;
-        valSoilSoc.textContent = data.soc;
-        valSoilDesc.textContent = data.desc;
-
-        // Update depot labels
-        depotPoints.forEach((point, idx) => {
-          if (data.depots[idx]) {
-            point.textContent = `📍 ${data.depots[idx]}`;
-          }
-        });
-
-        showToast(`Baseline mapped for ${data.title}`);
+      const keyToStateId = {
+        punjab: 'PB',
+        haryana: 'HR',
+        up: 'UP',
+        maharashtra: 'MH',
+        mp: 'MP'
+      };
+      const stateId = keyToStateId[regionKey];
+      if (stateId) {
+        selectRegionalState(stateId, true);
       }
     });
   });
+
+  // Initialize Default State: Punjab (PB)
+  selectRegionalState('PB', false);
 
   // =========================================================================
   // 5. Module 02: Product Formulation & Future Scope Tabs

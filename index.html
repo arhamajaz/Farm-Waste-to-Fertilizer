@@ -545,95 +545,110 @@
           </div>
         </div>
 
-        <!-- Regional Data Dashboard Layout -->
-        <div class="mapping-grid">
+        <!-- Regional Data Dashboard Layout: Interactive SVG Map & Dynamic Regional Profile -->
+        <div class="regional-map-container" id="regional-map-container">
           
-          <!-- Visual Map Simulation Card -->
-          <div class="map-visual-card">
-            <div class="map-header">
-              <div>
-                <h3 class="map-title" id="map-region-name">Punjab Agrarian Cluster</h3>
-                <span class="map-sub" id="map-region-sub">Districts: Sangrur, Ludhiana, Bathinda, Patiala</span>
+          <!-- Left Column: Interactive Inline SVG Map Card -->
+          <div class="map-interactive-card">
+            <div class="mic-header">
+              <div class="mic-title-group">
+                <span class="mic-eyebrow text-saffron">Geospatial Agrarian Intelligence</span>
+                <h3 class="mic-title">National Crop &amp; Farm-Waste Regional Map</h3>
               </div>
-              <span class="status-pill status-ready" id="map-status">
-                Peak Burning Risk Window: Oct 15 - Nov 20
+              <span class="status-pill status-ready" id="map-selection-pill">
+                <span class="pulse-dot"></span> <span id="map-pill-state">Punjab Selected</span>
               </span>
             </div>
 
-            <!-- Schematic Diagram of Regional Supply Radius -->
-            <div class="schematic-map-container" aria-label="Biorefinery Hub-and-Spoke Logistics Radius Diagram">
-              <div class="schematic-rings">
-                <div class="ring ring-outer">
-                  <span class="ring-label">25 km Radius: Secondary Aggregation</span>
-                </div>
-                <div class="ring ring-mid">
-                  <span class="ring-label">15 km Radius: Direct Baler Corridors</span>
-                </div>
-                <div class="ring ring-inner">
-                  <span class="ring-label">5 km Radius: High Density Catchment</span>
-                </div>
-                <div class="central-biorefinery-node">
-                  <div class="node-pulse"></div>
-                  <div class="node-icon">🏭</div>
-                  <span class="node-title">Central Biorefinery</span>
-                </div>
-                <!-- Hub points -->
-                <div class="depot-point p1" title="Primary Collection Depot Alpha">📍 Depot A</div>
-                <div class="depot-point p2" title="Primary Collection Depot Beta">📍 Depot B</div>
-                <div class="depot-point p3" title="Primary Collection Depot Gamma">📍 Depot C</div>
-                <div class="depot-point p4" title="Village Baler Center">🚜 Baler Hub</div>
-              </div>
+            <p class="mic-subtitle">
+              Select any Indian agrarian state on the map to inspect regional crop residues, agro-industrial waste volumes, and recommended biorefinery conversion pathways.
+            </p>
+
+            <!-- Map Interactive Canvas Card -->
+            <div class="svg-map-wrapper" id="svg-map-wrapper">
+              <!-- Inline SVG Map of India with id attributes corresponding to state codes -->
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 620 680" class="india-map-svg" id="india-map-svg" role="img" aria-label="Interactive Crop and Waste Regional Map of India">
+                <defs>
+                  <filter id="map-shadow" x="-5%" y="-5%" width="110%" height="110%">
+                    <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#1F2937" flood-opacity="0.08" />
+                  </filter>
+                </defs>
+                <g class="states-layer" id="states-layer">
+                  <path id="JK" class="map-state" data-state="JK" data-name="Jammu &amp; Kashmir &amp; Ladakh" d="M 205,32 C 220,18 245,20 262,35 C 278,48 296,65 292,90 C 288,110 270,122 258,125 C 242,128 230,132 222,130 C 215,124 200,120 188,105 C 172,85 170,60 185,42 Z" tabindex="0" role="button" aria-label="Jammu &amp; Kashmir &amp; Ladakh" />
+                  <path id="HP" class="map-state" data-state="HP" data-name="Himachal Pradesh" d="M 222,130 C 235,128 250,126 258,125 C 268,124 275,138 272,150 C 265,160 252,164 242,162 C 232,158 224,152 216,142 Z" tabindex="0" role="button" aria-label="Himachal Pradesh" />
+                  <path id="PB" class="map-state state-selected" data-state="PB" data-name="Punjab" d="M 188,105 C 200,120 215,124 222,130 C 216,142 224,152 218,162 C 208,172 195,182 178,182 C 162,178 155,162 162,145 C 168,132 175,118 188,105 Z" tabindex="0" role="button" aria-label="Punjab" aria-selected="true" />
+                  <path id="UK" class="map-state" data-state="UK" data-name="Uttarakhand" d="M 272,150 C 285,138 298,142 308,155 C 318,168 305,182 288,188 C 274,185 260,178 252,164 C 265,160 270,154 272,150 Z" tabindex="0" role="button" aria-label="Uttarakhand" />
+                  <path id="HR" class="map-state" data-state="HR" data-name="Haryana" d="M 218,162 C 232,158 242,162 252,164 C 260,178 255,195 248,212 C 238,225 222,228 212,220 C 200,210 190,198 178,182 C 195,182 208,172 218,162 Z" tabindex="0" role="button" aria-label="Haryana" />
+                  <path id="DL" class="map-state" data-state="DL" data-name="Delhi NCR" d="M 226,198 C 232,196 236,200 234,206 C 230,210 225,208 224,202 Z" tabindex="0" role="button" aria-label="Delhi NCR" />
+                  <path id="RJ" class="map-state" data-state="RJ" data-name="Rajasthan" d="M 178,182 C 190,198 200,210 212,220 C 222,228 220,242 208,258 C 195,274 172,286 150,292 C 128,288 105,272 92,245 C 82,222 108,198 135,188 C 152,182 166,182 178,182 Z" tabindex="0" role="button" aria-label="Rajasthan" />
+                  <path id="UP" class="map-state" data-state="UP" data-name="Uttar Pradesh" d="M 248,212 C 255,195 260,178 288,188 C 315,195 348,208 375,225 C 392,238 395,258 384,272 C 362,278 335,272 305,266 C 275,260 252,254 235,244 C 230,230 238,220 248,212 Z" tabindex="0" role="button" aria-label="Uttar Pradesh" />
+                  <path id="GJ" class="map-state" data-state="GJ" data-name="Gujarat" d="M 92,245 C 105,272 128,288 150,292 C 158,318 162,342 148,368 C 135,378 118,368 112,352 C 98,365 72,358 60,335 C 50,312 68,292 88,288 C 72,282 52,285 45,275 C 48,260 75,252 92,245 Z" tabindex="0" role="button" aria-label="Gujarat" />
+                  <path id="MP" class="map-state" data-state="MP" data-name="Madhya Pradesh" d="M 150,292 C 172,286 195,274 208,258 C 220,242 235,244 260,256 C 285,262 315,268 340,280 C 342,305 335,332 318,354 C 290,360 255,362 225,358 C 190,352 165,348 158,318 Z" tabindex="0" role="button" aria-label="Madhya Pradesh" />
+                  <path id="BR" class="map-state" data-state="BR" data-name="Bihar" d="M 375,225 C 405,224 435,226 452,238 C 458,255 448,268 430,274 C 408,276 392,274 384,272 C 395,258 392,238 375,225 Z" tabindex="0" role="button" aria-label="Bihar" />
+                  <path id="JH" class="map-state" data-state="JH" data-name="Jharkhand" d="M 384,272 C 408,276 430,274 432,284 C 435,305 425,324 402,335 C 380,332 362,318 350,295 C 345,282 362,278 384,272 Z" tabindex="0" role="button" aria-label="Jharkhand" />
+                  <path id="WB" class="map-state" data-state="WB" data-name="West Bengal" d="M 452,238 C 465,222 470,205 466,192 C 468,212 478,230 472,252 C 468,275 480,312 474,352 C 455,358 440,355 432,342 C 425,324 435,305 432,284 C 430,274 448,268 452,238 Z" tabindex="0" role="button" aria-label="West Bengal" />
+                  <path id="SK" class="map-state" data-state="SK" data-name="Sikkim" d="M 456,186 C 464,184 468,188 466,198 C 460,202 454,196 456,186 Z" tabindex="0" role="button" aria-label="Sikkim" />
+                  <path id="AS" class="map-state" data-state="AS" data-name="Assam &amp; North East" d="M 478,230 C 510,210 545,190 575,195 C 590,208 582,240 568,262 C 545,285 515,288 488,278 C 475,270 472,252 478,230 Z" tabindex="0" role="button" aria-label="Assam &amp; North East" />
+                  <path id="OR" class="map-state" data-state="OR" data-name="Odisha" d="M 402,335 C 425,324 432,342 440,350 C 448,375 442,408 412,434 C 388,432 375,410 368,382 C 362,358 380,342 402,335 Z" tabindex="0" role="button" aria-label="Odisha" />
+                  <path id="CH" class="map-state" data-state="CH" data-name="Chhattisgarh" d="M 340,280 C 362,278 350,295 368,318 C 375,345 368,382 355,422 C 338,440 324,428 318,398 C 315,372 328,340 340,280 Z" tabindex="0" role="button" aria-label="Chhattisgarh" />
+                  <path id="MH" class="map-state" data-state="MH" data-name="Maharashtra" d="M 148,368 C 162,342 190,352 225,358 C 255,362 290,360 318,354 C 315,372 312,395 288,422 C 265,432 232,434 200,444 C 172,450 152,432 142,398 Z" tabindex="0" role="button" aria-label="Maharashtra" />
+                  <path id="GA" class="map-state" data-state="GA" data-name="Goa" d="M 160,455 C 168,452 172,460 168,468 C 162,472 158,465 160,455 Z" tabindex="0" role="button" aria-label="Goa" />
+                  <path id="TG" class="map-state" data-state="TG" data-name="Telangana" d="M 288,422 C 312,395 318,398 325,420 C 322,442 305,465 282,475 C 262,472 248,455 252,438 C 265,432 278,428 288,422 Z" tabindex="0" role="button" aria-label="Telangana" />
+                  <path id="AP" class="map-state" data-state="AP" data-name="Andhra Pradesh" d="M 355,422 C 375,410 412,434 395,465 C 372,502 342,532 308,545 C 292,548 280,530 282,475 C 305,465 322,442 325,420 Z" tabindex="0" role="button" aria-label="Andhra Pradesh" />
+                  <path id="KA" class="map-state" data-state="KA" data-name="Karnataka" d="M 200,444 C 232,434 248,455 252,438 C 262,472 280,530 274,545 C 255,562 232,560 215,550 C 195,532 178,485 182,458 C 188,452 195,448 200,444 Z" tabindex="0" role="button" aria-label="Karnataka" />
+                  <path id="KL" class="map-state" data-state="KL" data-name="Kerala" d="M 215,550 C 232,560 238,582 234,612 C 228,638 218,652 210,645 C 200,622 198,588 205,562 Z" tabindex="0" role="button" aria-label="Kerala" />
+                  <path id="TN" class="map-state" data-state="TN" data-name="Tamil Nadu" d="M 274,545 C 280,530 292,548 308,545 C 312,572 298,612 268,646 C 242,652 228,638 234,612 C 238,582 255,562 274,545 Z" tabindex="0" role="button" aria-label="Tamil Nadu" />
+                </g>
+                <g class="labels-layer" aria-hidden="true">
+                  <text x="235" y="75" class="state-code-label">JK</text>
+                  <text x="245" y="145" class="state-code-label">HP</text>
+                  <text x="188" y="152" class="state-code-label">PB</text>
+                  <text x="280" y="165" class="state-code-label">UK</text>
+                  <text x="215" y="195" class="state-code-label">HR</text>
+                  <text x="150" y="240" class="state-code-label">RJ</text>
+                  <text x="310" y="235" class="state-code-label">UP</text>
+                  <text x="105" y="315" class="state-code-label">GJ</text>
+                  <text x="245" y="315" class="state-code-label">MP</text>
+                  <text x="415" y="250" class="state-code-label">BR</text>
+                  <text x="390" y="305" class="state-code-label">JH</text>
+                  <text x="455" y="315" class="state-code-label">WB</text>
+                  <text x="535" y="245" class="state-code-label">AS</text>
+                  <text x="405" y="385" class="state-code-label">OR</text>
+                  <text x="340" y="365" class="state-code-label">CH</text>
+                  <text x="225" y="405" class="state-code-label">MH</text>
+                  <text x="164" y="465" class="state-code-label">GA</text>
+                  <text x="285" y="448" class="state-code-label">TG</text>
+                  <text x="335" y="490" class="state-code-label">AP</text>
+                  <text x="215" y="505" class="state-code-label">KA</text>
+                  <text x="215" y="605" class="state-code-label">KL</text>
+                  <text x="270" y="605" class="state-code-label">TN</text>
+                </g>
+              </svg>
+
+              <!-- State Quick Hover Tooltip -->
+              <div class="map-tooltip" id="map-tooltip" role="tooltip" aria-hidden="true"></div>
             </div>
 
-            <div class="map-footer-notes">
-              <span class="note-item"><span class="bullet green"></span> Sourced via GPS-tagged Baler Fleets</span>
-              <span class="note-item"><span class="bullet saffron"></span> Guaranteed 48-Hour Farmgate Clearing</span>
-              <span class="note-item"><span class="bullet charcoal"></span> Direct DBT Payout: ₹1,850/Ton</span>
+            <!-- Visual Legend Strip -->
+            <div class="map-legend-strip">
+              <div class="legend-item">
+                <span class="legend-swatch swatch-white"></span>
+                <span>Unselected (#FFFFFF)</span>
+              </div>
+              <div class="legend-item">
+                <span class="legend-swatch swatch-saffron"></span>
+                <span>Hovered State (Saffron Accent)</span>
+              </div>
+              <div class="legend-item">
+                <span class="legend-swatch swatch-green"></span>
+                <span>Active Profile (Green Accent)</span>
+              </div>
             </div>
           </div>
 
-          <!-- Regional Metrics Panel -->
-          <div class="metrics-panel">
-            <div class="panel-card">
-              <h4 class="panel-heading">Regional Agro-Residue Metrics</h4>
-              <ul class="data-list">
-                <li class="data-row">
-                  <span class="d-label">Surplus Biomass Density</span>
-                  <strong class="d-val text-charcoal" id="val-biomass-density">18.4 Million MT/Yr</strong>
-                </li>
-                <li class="data-row">
-                  <span class="d-label">Primary Feedstock</span>
-                  <strong class="d-val text-saffron" id="val-feedstock-primary">Paddy Straw (Basmati & Non-Basmati)</strong>
-                </li>
-                <li class="data-row">
-                  <span class="d-label">Average Infield Moisture</span>
-                  <strong class="d-val text-charcoal" id="val-moisture">18% - 24% (Requires field drying)</strong>
-                </li>
-                <li class="data-row">
-                  <span class="d-label">Silica Content Range</span>
-                  <strong class="d-val text-charcoal" id="val-silica">11.2% - 14.8% (Pyrolysis optimized)</strong>
-                </li>
-                <li class="data-row">
-                  <span class="d-label">Target Biorefinery Units</span>
-                  <strong class="d-val text-green" id="val-units-needed">12 Decentralized Plants</strong>
-                </li>
-              </ul>
-            </div>
-
-            <div class="panel-card highlight-card">
-              <div class="hc-header">
-                <span class="hc-tag">Soil Degradation Alert</span>
-                <span class="hc-stat text-saffron" id="val-soil-soc">SOC: 0.38% (Critically Low)</span>
-              </div>
-              <p class="hc-text" id="val-soil-desc">
-                Decades of chemical NPK overuse have depleted soil organic carbon. Our organo-mineral biofertilizers reintroduce stable biochar humic structures to replenish native microbiological health.
-              </p>
-              <div class="hc-action">
-                <a href="#formulation" class="btn btn-sm btn-outline-saffron">
-                  View Recommended Soil Recipe
-                </a>
-              </div>
-            </div>
+          <!-- Right Column: Dynamic 'Regional Profile' HTML Panel -->
+          <div class="regional-profile-card" id="regional-profile-panel" aria-live="polite">
+            <!-- Dynamically injected via JavaScript -->
           </div>
 
         </div>
