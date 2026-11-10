@@ -3830,10 +3830,487 @@ button {
   }
 }
 
-@media (max-width: 480px) {
-  .matrix-card {
-    padding: 20px 16px;
+/* ==========================================================================
+   'Will it Pay Off?' Neobrutalist ROI & Savings Calculator
+   ========================================================================== */
+.roi-calculator-section {
+  margin-top: 36px;
+  width: 100%;
+}
+
+.roi-neobrutalist-card {
+  background: var(--bg-surface);
+  border: 2.5px solid var(--text-primary);
+  border-radius: var(--radius-xl);
+  box-shadow: 8px 8px 0px var(--text-primary);
+  padding: 36px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.roi-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-bottom: 28px;
+  padding-bottom: 22px;
+  border-bottom: 2.5px solid var(--text-primary);
+}
+
+.roi-title-wrap {
+  flex: 1;
+  min-width: 280px;
+}
+
+.roi-eyebrow-tag {
+  display: inline-block;
+  background: var(--bg-surface-amber);
+  color: var(--saffron-primary);
+  border: 1.5px solid var(--text-primary);
+  box-shadow: 2px 2px 0px var(--text-primary);
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 3px 10px;
+  border-radius: var(--radius-full);
+  margin-bottom: 10px;
+}
+
+.roi-card-title {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  font-family: var(--font-family-title);
+  margin: 0 0 8px 0;
+  line-height: 1.25;
+}
+
+.roi-card-desc {
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  line-height: 1.55;
+  margin: 0;
+  max-width: 680px;
+}
+
+.roi-badge-box {
+  align-self: flex-start;
+}
+
+.roi-highlight-badge {
+  display: inline-flex;
+  align-items: center;
+  background: var(--green-light);
+  color: var(--green-primary);
+  border: 2px solid var(--text-primary);
+  box-shadow: 3px 3px 0px var(--text-primary);
+  font-size: 0.88rem;
+  font-weight: 800;
+  padding: 8px 16px;
+  border-radius: var(--radius-full);
+  white-space: nowrap;
+}
+
+/* Inputs Grid */
+.roi-inputs-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 28px;
+  margin-bottom: 24px;
+}
+
+@media (max-width: 768px) {
+  .roi-inputs-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
   }
+}
+
+.roi-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.roi-label {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  cursor: pointer;
+}
+
+.roi-label-hint {
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--text-muted);
+}
+
+.roi-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  background: #FFFFFF;
+  border: 2.2px solid var(--text-primary);
+  border-radius: 12px;
+  box-shadow: 4px 4px 0px var(--text-primary);
+  transition: all 0.15s ease;
+  overflow: hidden;
+}
+
+.roi-input-wrapper:focus-within {
+  border-color: var(--green-primary);
+  box-shadow: 5px 5px 0px var(--green-primary);
+  transform: translate(-1px, -1px);
+}
+
+.roi-input-prefix {
+  font-weight: 800;
+  font-size: 1.15rem;
+  color: var(--text-primary);
+  padding: 0 14px;
+  user-select: none;
+}
+
+.roi-input-field {
+  flex: 1;
+  height: 56px;
+  min-height: 56px;
+  border: none;
+  background: transparent;
+  padding: 0 12px;
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  font-family: var(--font-family-title);
+  outline: none;
+  width: 100%;
+}
+
+.roi-input-suffix {
+  font-weight: 800;
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  padding: 0 16px;
+  background: var(--bg-primary);
+  height: 100%;
+  display: flex;
+  align-items: center;
+  border-left: 2px solid var(--text-primary);
+  user-select: none;
+}
+
+/* Calculate Button */
+.roi-btn-wrapper {
+  margin-top: 10px;
+  display: flex;
+}
+
+.roi-btn-calculate {
+  background: var(--green-primary);
+  color: #FFFFFF;
+  border: 2.5px solid var(--text-primary);
+  box-shadow: 5px 5px 0px var(--text-primary);
+  border-radius: 12px;
+  height: 58px;
+  min-height: 58px;
+  padding: 0 36px;
+  font-size: 1.15rem;
+  font-weight: 800;
+  font-family: var(--font-family-title);
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  user-select: none;
+  transition: all 0.15s ease;
+}
+
+.roi-btn-calculate:hover {
+  background: var(--green-hover);
+  transform: translate(-2px, -2px);
+  box-shadow: 7px 7px 0px var(--text-primary);
+}
+
+.roi-btn-calculate:active {
+  transform: translate(3px, 3px);
+  box-shadow: 2px 2px 0px var(--text-primary);
+}
+
+.roi-btn-calculate svg {
+  transition: transform 0.2s ease;
+}
+
+.roi-btn-calculate:hover svg {
+  transform: translateX(4px);
+}
+
+/* Dynamic Results Container */
+.roi-results-container {
+  margin-top: 32px;
+  padding-top: 28px;
+  border-top: 2.5px dashed var(--border-medium);
+}
+
+.roi-results-container.roi-fade-in {
+  animation: roiPopIn 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes roiPopIn {
+  from {
+    opacity: 0.3;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.roi-results-card {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+/* Hero Result Card */
+.roi-hero-result {
+  background: var(--bg-surface-tint);
+  border: 2.5px solid var(--text-primary);
+  box-shadow: 6px 6px 0px var(--text-primary);
+  border-radius: 14px;
+  padding: 30px 34px;
+  position: relative;
+}
+
+.rhr-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+
+.rhr-badge {
+  font-size: 0.8rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--green-primary);
+}
+
+.rhr-guarantee-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #FFFFFF;
+  border: 1.8px solid var(--text-primary);
+  border-radius: var(--radius-full);
+  padding: 4px 12px;
+  font-size: 0.82rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  box-shadow: 2px 2px 0px var(--text-primary);
+}
+
+.rhr-title-label {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+/* Massive Bold Font for 3-Year Projected Savings */
+.rhr-massive-value {
+  font-size: clamp(3rem, 7vw, 4.4rem);
+  font-weight: 900;
+  font-family: var(--font-family-title);
+  color: var(--green-primary);
+  line-height: 1.05;
+  margin: 6px 0 14px 0;
+  letter-spacing: -0.03em;
+  text-shadow: 2px 2px 0px rgba(21, 128, 61, 0.15);
+}
+
+.rhr-subtext {
+  font-size: 1.02rem;
+  color: var(--text-primary);
+  line-height: 1.55;
+  margin: 0;
+  max-width: 720px;
+}
+
+/* Metrics Grid */
+.roi-metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+@media (max-width: 992px) {
+  .roi-metrics-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 540px) {
+  .roi-metrics-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.roi-stat-box {
+  background: #FFFFFF;
+  border: 2px solid var(--text-primary);
+  box-shadow: 4px 4px 0px var(--text-primary);
+  border-radius: 12px;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.rsb-label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+}
+
+.rsb-value {
+  font-size: 1.35rem;
+  font-weight: 900;
+  font-family: var(--font-family-title);
+  line-height: 1.2;
+}
+
+.rsb-sub {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  line-height: 1.4;
+  margin-top: 4px;
+}
+
+/* 3-Year Trajectory Timeline */
+.roi-trajectory-container {
+  background: #FFFFFF;
+  border: 2px solid var(--text-primary);
+  box-shadow: 5px 5px 0px var(--text-primary);
+  border-radius: 14px;
+  padding: 24px 28px;
+}
+
+.rtc-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 18px;
+  flex-wrap: wrap;
+}
+
+.rtc-title {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  font-family: var(--font-family-title);
+}
+
+.rtc-tag {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--text-muted);
+}
+
+.rtc-steps-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+@media (max-width: 768px) {
+  .rtc-steps-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.rtc-step {
+  background: var(--bg-primary);
+  border: 1.8px solid var(--text-primary);
+  border-radius: 10px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.rtc-step.rtc-step-highlight {
+  background: var(--bg-surface-tint);
+  border: 2.2px solid var(--green-primary);
+  box-shadow: 3px 3px 0px var(--green-primary);
+}
+
+.rtc-step-badge {
+  display: inline-block;
+  align-self: flex-start;
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 2px 8px;
+  border-radius: 4px;
+  background: #FFFFFF;
+  border: 1px solid var(--text-primary);
+  color: var(--text-primary);
+}
+
+.rtc-step-amount {
+  font-size: 1.4rem;
+  font-weight: 900;
+  font-family: var(--font-family-title);
+  line-height: 1.2;
+}
+
+.rtc-step-note {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+
+.roi-error-msg {
+  background: #FEE2E2;
+  border: 2px solid #DC2626;
+  box-shadow: 4px 4px 0px #DC2626;
+  border-radius: 10px;
+  padding: 16px 20px;
+  color: #991B1B;
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+
+@media (max-width: 480px) {
+  .roi-neobrutalist-card {
+    padding: 24px 18px;
+    box-shadow: 5px 5px 0px var(--text-primary);
+  }
+
+  .roi-btn-calculate {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .rhr-massive-value {
+    font-size: 2.6rem;
+  }
+}
+
 
   .fco-item {
     flex-direction: column;

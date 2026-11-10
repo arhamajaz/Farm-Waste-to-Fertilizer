@@ -1755,6 +1755,154 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // =========================================================================
+  // 6.1 'Will it Pay Off?' On-Farm ROI & Savings Calculator Engine
+  // =========================================================================
+  const roiForm = document.getElementById('roi-form');
+  const roiFarmSizeInput = document.getElementById('roi-farm-size');
+  const roiSyntheticSpendInput = document.getElementById('roi-synthetic-spend');
+  const roiResultsContainer = document.getElementById('roi-results');
+
+  /**
+   * Calculates estimated savings over a 3-year timeline
+   * Mock baseline: localized farm-waste bio-fertilizer production costs 40% less than synthetics
+   */
+  function calculateFarmerROI(e) {
+    if (e && typeof e.preventDefault === 'function') {
+      e.preventDefault();
+    }
+
+    const farmSize = parseFloat(roiFarmSizeInput?.value) || 0;
+    const syntheticSpend = parseFloat(roiSyntheticSpendInput?.value) || 0;
+
+    if (syntheticSpend <= 0 || farmSize <= 0) {
+      if (roiResultsContainer) {
+        roiResultsContainer.innerHTML = `
+          <div class="roi-error-msg">
+            Please enter a valid farm size (&gt; 0 ha) and annual fertilizer spend (&gt; ₹0) to compute your 3-year projected savings.
+          </div>
+        `;
+      }
+      return;
+    }
+
+    // Baseline assumption: bio-fertilizer costs 40% less than synthetics
+    const discountRate = 0.40;
+    const annualSavings = syntheticSpend * discountRate;
+    const threeYearSavings = annualSavings * 3;
+    const newAnnualSpend = syntheticSpend * (1 - discountRate);
+    const savingsPerHaAnnual = annualSavings / farmSize;
+    const savingsPerHaThreeYear = threeYearSavings / farmSize;
+
+    // Environmental metrics
+    const carbonAvoided = (farmSize * 1.8 * 3).toFixed(1); // 1.8 tCO2e / ha / year
+
+    // Helper formatter for Indian Rupee currency display
+    const formatINR = (num) => '₹ ' + Math.round(num).toLocaleString('en-IN');
+
+    if (!roiResultsContainer) return;
+
+    roiResultsContainer.classList.remove('roi-fade-in');
+    void roiResultsContainer.offsetWidth; // Force CSS animation restart
+    roiResultsContainer.classList.add('roi-fade-in');
+
+    roiResultsContainer.innerHTML = `
+      <div class="roi-results-card">
+        
+        <!-- Hero Result: 3-Year Projected Savings in Massive Bold Font (Green Accent) -->
+        <div class="roi-hero-result">
+          <div class="rhr-header-row">
+            <span class="rhr-badge">Projected Farmer Profitability</span>
+            <span class="rhr-guarantee-pill">
+              <span class="pulse-dot"></span> 40% Cost Advantage
+            </span>
+          </div>
+
+          <div class="rhr-title-label" data-i18n="roi_3yr_savings">3-Year Projected Savings</div>
+          <div class="rhr-massive-value text-green" id="roi-massive-savings">
+            ${formatINR(threeYearSavings)}
+          </div>
+          
+          <p class="rhr-subtext">
+            By switching your <strong>${farmSize} hectare</strong> farm to a localized farm-waste biorefinery organo-mineral fertilizer model, you save <strong>${formatINR(annualSavings)}</strong> every single year compared to synthetic Urea &amp; DAP.
+          </p>
+        </div>
+
+        <!-- Metric Statistics Grid -->
+        <div class="roi-metrics-grid">
+          <div class="roi-stat-box">
+            <span class="rsb-label">Annual Cost Savings</span>
+            <strong class="rsb-value text-green">${formatINR(annualSavings)} / yr</strong>
+            <span class="rsb-sub">40% direct input spend reduction</span>
+          </div>
+
+          <div class="roi-stat-box">
+            <span class="rsb-label">Savings Per Hectare</span>
+            <strong class="rsb-value text-charcoal">${formatINR(savingsPerHaAnnual)} / ha / yr</strong>
+            <span class="rsb-sub">${formatINR(savingsPerHaThreeYear)} total over 3 years</span>
+          </div>
+
+          <div class="roi-stat-box">
+            <span class="rsb-label">New Annual Bio-Fertilizer Spend</span>
+            <strong class="rsb-value text-charcoal">${formatINR(newAnnualSpend)} / yr</strong>
+            <span class="rsb-sub">Down from ${formatINR(syntheticSpend)} on synthetics</span>
+          </div>
+
+          <div class="roi-stat-box">
+            <span class="rsb-label">3-Yr Carbon Abatement</span>
+            <strong class="rsb-value text-saffron">${carbonAvoided} tCO₂e</strong>
+            <span class="rsb-sub">Avoided stubble burning &amp; soil carbon sequestration</span>
+          </div>
+        </div>
+
+        <!-- 3-Year Cumulative Savings Trajectory Timeline -->
+        <div class="roi-trajectory-container">
+          <div class="rtc-header">
+            <span class="rtc-title">3-Year Cumulative Savings Trajectory</span>
+            <span class="rtc-tag">Zero Capital Expenditure &bull; FPO Farmgate Delivery</span>
+          </div>
+          <div class="rtc-steps-grid">
+            <div class="rtc-step">
+              <span class="rtc-step-badge">Year 1</span>
+              <div class="rtc-step-amount text-charcoal">${formatINR(annualSavings)}</div>
+              <div class="rtc-step-note">Immediate 40% input cut</div>
+            </div>
+            <div class="rtc-step">
+              <span class="rtc-step-badge">Year 2</span>
+              <div class="rtc-step-amount text-charcoal">${formatINR(annualSavings * 2)}</div>
+              <div class="rtc-step-note">Soil carbon &amp; moisture retention gains</div>
+            </div>
+            <div class="rtc-step rtc-step-highlight">
+              <span class="rtc-step-badge bg-green text-white">Year 3 Total</span>
+              <div class="rtc-step-amount text-green">${formatINR(threeYearSavings)}</div>
+              <div class="rtc-step-note">Cumulative net profit &amp; improved yield</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    `;
+
+    if (e && typeof showToast === 'function') {
+      showToast(`Projected 3-Year Savings calculated: ${formatINR(threeYearSavings)}`);
+    }
+  }
+
+  // Prevent default form submission and trigger calculation
+  roiForm?.addEventListener('submit', (e) => {
+    calculateFarmerROI(e);
+  });
+
+  // Calculate button click listener
+  const btnCalculateRoi = document.getElementById('btn-calculate-roi');
+  btnCalculateRoi?.addEventListener('click', (e) => {
+    calculateFarmerROI(e);
+  });
+
+  // Live calculation updates on input change for fluid experience
+  roiFarmSizeInput?.addEventListener('input', () => calculateFarmerROI(null));
+  roiSyntheticSpendInput?.addEventListener('input', () => calculateFarmerROI(null));
+
+  // =========================================================================
   // 7. Module 04: Risk Management & Regulatory Compliance Matrix
   // =========================================================================
   const fmeaMockData = [
@@ -1968,6 +2116,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Initial calculation and data rendering runs
   calculateFormulation();
   calculateDashboard();
+  calculateFarmerROI();
   renderFMEATable();
   renderFCOChecklist();
 });

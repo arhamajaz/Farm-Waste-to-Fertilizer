@@ -45,6 +45,11 @@ const translations = {
     // Module 03: TEA, LCA & Circularity Dashboard
     "module3_tag": "Module 03: Economic, Ecological & Circularity Modeling",
     "module3_title": "TEA, LCA & Circularity Dashboard",
+    "roi_title": "'Will it Pay Off?' On-Farm ROI Calculator",
+    "roi_calculate": "Calculate Savings",
+    "roi_farm_size": "Farm Size (in Hectares)",
+    "roi_synthetic_spend": "Current Annual Synthetic Fertilizer Spend (₹)",
+    "roi_3yr_savings": "3-Year Projected Savings",
 
     // Module 04: Risk & Compliance
     "module4_tag": "Module 04: Statutory Governance & Risk Mitigation",
@@ -95,6 +100,11 @@ const translations = {
     // Module 03: TEA, LCA & Circularity Dashboard
     "module3_tag": "मॉड्यूल 03: आर्थिक, पर्यावरणीय एवं चक्रीयता मॉडलिंग",
     "module3_title": "टीईए, एलसीए एवं चक्रीयता डैशबोर्ड",
+    "roi_title": "'क्या इससे लाभ होगा?' किसान आरओआई कैलकुलेटर",
+    "roi_calculate": "बचत की गणना करें",
+    "roi_farm_size": "खेत का आकार (हेक्टेयर में)",
+    "roi_synthetic_spend": "वर्तमान वार्षिक रासायनिक उर्वरक खर्च (₹)",
+    "roi_3yr_savings": "3-वर्षीय अनुमानित बचत",
 
     // Module 04: Risk & Compliance
     "module4_tag": "मॉड्यूल 04: वैधानिक शासन एवं जोखिम निवारण",
