@@ -14,6 +14,9 @@
   <!-- Chart.js CDN (v4.4.2) for Financial, LCA & Circularity Data Visualizations -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
+  <!-- Localization (i18n) Data Dictionary -->
+  <script src="translations.js"></script>
+
   <!-- Main Stylesheet -->
   <link rel="stylesheet" href="style.css">
 </head>
@@ -52,7 +55,7 @@
                   <line x1="16" y1="6" x2="16" y2="22"></line>
                 </svg>
               </span>
-              <span class="nav-text">Baseline Mapping</span>
+              <span class="nav-text" data-i18n="nav_baseline">Baseline &amp; Tech Selection</span>
             </a>
           </li>
           <li role="none">
@@ -62,7 +65,7 @@
                   <path d="M10 2v7.31M14 2v7.31M8.5 2h7M14 9.3a6.5 6.5 0 1 1-4 0"></path>
                 </svg>
               </span>
-              <span class="nav-text">Formulation</span>
+              <span class="nav-text" data-i18n="nav_formulation">Product Formulation</span>
             </a>
           </li>
           <li role="none">
@@ -74,7 +77,7 @@
                   <line x1="6" y1="20" x2="6" y2="14"></line>
                 </svg>
               </span>
-              <span class="nav-text">TEA, LCA & Circularity</span>
+              <span class="nav-text" data-i18n="nav_tealca">TEA, LCA &amp; Circularity</span>
             </a>
           </li>
           <li role="none">
@@ -85,7 +88,7 @@
                   <polyline points="9 12 11 14 15 10"></polyline>
                 </svg>
               </span>
-              <span class="nav-text">Risk &amp; Compliance</span>
+              <span class="nav-text" data-i18n="nav_compliance">Risk &amp; Compliance</span>
             </a>
           </li>
         </ul>
@@ -93,10 +96,16 @@
         <div class="nav-indicator" id="nav-indicator" aria-hidden="true"></div>
       </nav>
 
-      <!-- Action Button & Mobile Menu Toggle -->
+      <!-- Action Button & Language Switcher & Mobile Menu Toggle -->
       <div class="nav-actions">
+        <!-- Language Switcher Toggle Button (i18n) -->
+        <button class="lang-toggle-btn" id="lang-toggle-btn" type="button" aria-label="Switch Language / भाषा बदलें" title="Switch Language / भाषा बदलें">
+          <span class="lang-icon" aria-hidden="true">🌐</span>
+          <span class="lang-text" id="lang-text">English / हिन्दी</span>
+        </button>
+
         <a href="#tealca-dashboard" class="btn btn-saffron btn-nav" id="btn-quick-audit">
-          <span>Run Simulation</span>
+          <span data-i18n="nav_run_sim">Run Simulation</span>
           <svg class="btn-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
             <path d="M5 12h14M12 5l7 7-7 7"/>
           </svg>
@@ -113,35 +122,41 @@
 
     <!-- Mobile Drawer Navigation -->
     <div class="mobile-nav" id="mobile-nav" aria-hidden="true">
+      <div class="mobile-lang-wrap">
+        <button class="lang-toggle-btn btn-full" id="mobile-lang-toggle-btn" type="button">
+          <span class="lang-icon" aria-hidden="true">🌐</span>
+          <span class="mobile-lang-label" id="mobile-lang-label">English / हिन्दी</span>
+        </button>
+      </div>
       <ul class="mobile-nav-links">
         <li>
           <a href="#baseline-mapping" class="mobile-nav-link active" data-section="baseline-mapping">
             <span class="badge-dot green"></span>
-            Baseline Mapping
+            <span data-i18n="nav_baseline">Baseline &amp; Tech Selection</span>
           </a>
         </li>
         <li>
           <a href="#formulation" class="mobile-nav-link" data-section="formulation">
             <span class="badge-dot green"></span>
-            Formulation Engine
+            <span data-i18n="nav_formulation">Product Formulation</span>
           </a>
         </li>
         <li>
           <a href="#tealca-dashboard" class="mobile-nav-link" data-section="tealca-dashboard">
             <span class="badge-dot saffron"></span>
-            TEA/LCA Dashboard
+            <span data-i18n="nav_tealca">TEA, LCA &amp; Circularity</span>
           </a>
         </li>
         <li>
           <a href="#compliance" class="mobile-nav-link" data-section="compliance">
             <span class="badge-dot green"></span>
-            Regulatory Compliance
+            <span data-i18n="nav_compliance">Risk &amp; Compliance</span>
           </a>
         </li>
       </ul>
       <div class="mobile-nav-cta">
         <a href="#tealca-dashboard" class="btn btn-saffron btn-full">
-          Run Biorefinery Simulation
+          <span data-i18n="nav_run_sim">Run Biorefinery Simulation</span>
         </a>
       </div>
     </div>
@@ -163,23 +178,23 @@
               <span class="tricolor-dot white"></span>
               <span class="tricolor-dot green"></span>
             </span>
-            <span class="pill-text">India National Bio-Economy & Clean Air Initiative</span>
+            <span class="pill-text" data-i18n="hero_initiative_badge">India National Bio-Economy & Clean Air Initiative</span>
           </div>
 
           <h1 class="hero-title">
-            Next-Generation <br>
-            <span class="title-highlight">Farm-Waste-to-Fertilizer</span> <br>
-            Biorefinery
+            <span data-i18n="hero_title_p1">Next-Generation</span> <br>
+            <span class="title-highlight" data-i18n="hero_title_highlight">Farm-Waste-to-Fertilizer</span> <br>
+            <span data-i18n="hero_title_p2">Biorefinery</span>
           </h1>
 
-          <p class="hero-lead">
+          <p class="hero-lead" data-i18n="hero_lead">
             Eliminating open-field crop burning (<em>Parali</em>) across Punjab, Haryana, and the Indo-Gangetic plains. We thermochemically convert crop residue into carbon-negative organo-mineral fertilizers and clean renewable rural bio-energy.
           </p>
 
           <!-- Large Accessible CTAs for Rural & Technical Operators -->
           <div class="hero-cta-group">
             <a href="#formulation" class="btn btn-saffron btn-hero" id="btn-explore-formulation">
-              <span>Configure Formulation</span>
+              <span data-i18n="hero_btn_formulation">Configure Formulation</span>
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
                 <path d="M5 12h14M12 5l7 7-7 7"/>
               </svg>
@@ -190,7 +205,7 @@
                 <circle cx="12" cy="12" r="10"></circle>
                 <polygon points="10 8 16 12 10 16 10 8"></polygon>
               </svg>
-              <span>Explore TEA & LCA Model</span>
+              <span data-i18n="hero_btn_lca">Explore TEA & LCA Model</span>
             </a>
           </div>
 
@@ -198,19 +213,19 @@
           <div class="hero-stats-strip" aria-label="Key Biorefinery Impact Metrics">
             <div class="stat-card">
               <div class="stat-number text-saffron">85,000<span class="stat-unit">MT</span></div>
-              <div class="stat-label">Crop Residue Diverted/Yr</div>
+              <div class="stat-label" data-i18n="stat_residue_diverted">Crop Residue Diverted/Yr</div>
             </div>
             <div class="stat-card">
               <div class="stat-number text-green">42,500<span class="stat-unit">MT</span></div>
-              <div class="stat-label">Bio-Fertilizer Output</div>
+              <div class="stat-label" data-i18n="stat_biofertilizer_out">Bio-Fertilizer Output</div>
             </div>
             <div class="stat-card">
               <div class="stat-number text-charcoal">-68%</div>
-              <div class="stat-label">Carbon Abatement (tCO₂e)</div>
+              <div class="stat-label" data-i18n="stat_carbon_abatement">Carbon Abatement (tCO₂e)</div>
             </div>
             <div class="stat-card">
               <div class="stat-number text-green">+28%</div>
-              <div class="stat-label">Farmer Net Income Boost</div>
+              <div class="stat-label" data-i18n="stat_farmer_income">Farmer Net Income Boost</div>
             </div>
           </div>
         </div>
@@ -331,9 +346,9 @@
         <div class="section-header-block">
           <div class="section-tag-pill green">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
-            Module 01: Resource Assessment & Technology Selection
+            <span data-i18n="module1_tag">Module 01: Resource Assessment & Technology Selection</span>
           </div>
-          <h2 class="section-title">Baseline Mapping & Tech Selection Engine</h2>
+          <h2 class="section-title" data-i18n="module1_title">Baseline Mapping & Tech Selection Engine</h2>
           <p class="section-description">
             Evaluate local Indian farm waste streams by their stoichiometric C:N ratio and moisture dynamics to dynamically match the optimal biorefinery conversion pathway: Biochar Pyrolysis, Anaerobic Digestion, or Vermicomposting.
           </p>
@@ -520,7 +535,7 @@
 
         <!-- Regional Cluster Selector (Buttons with high-contrast accessibility) -->
         <div class="cluster-toolbar" role="region" aria-label="Region selector">
-          <span class="toolbar-label">Select Agricultural Zone:</span>
+          <span class="toolbar-label" data-i18n="select_region">Select Agricultural Zone:</span>
           <div class="toolbar-chips" id="region-chips">
             <button class="chip-filter active" data-region="punjab" aria-pressed="true">Punjab (Malwa & Majha)</button>
             <button class="chip-filter" data-region="haryana" aria-pressed="false">Haryana (Karnal-Kaithal)</button>
@@ -633,9 +648,9 @@
         <div class="section-header-block">
           <div class="section-tag-pill saffron">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
-            Module 02: Advanced R&D & Product Formulation
+            <span data-i18n="module2_tag">Module 02: Advanced R&D & Product Formulation</span>
           </div>
-          <h2 class="section-title">Product Formulation & Future Scope</h2>
+          <h2 class="section-title" data-i18n="module2_title">Product Formulation & Future Scope</h2>
           <p class="section-description">
             Pioneering organo-mineral bio-inoculation, smart biopolymer nano-delivery systems, and pyrolyzed biochar carriers engineered for extreme shelf life in tropical Indian soils.
           </p>
@@ -648,17 +663,17 @@
           <div class="ft-tab-nav" role="tablist" aria-label="Product Formulation & Future Scope Tabs">
             <button class="ft-tab-btn active" role="tab" id="tab-btn-microbial" aria-selected="true" aria-controls="panel-microbial" data-tab="microbial" tabindex="0">
               <span class="ft-tab-icon" aria-hidden="true">🧫</span>
-              <span class="ft-tab-text">Microbial Consortia</span>
+              <span class="ft-tab-text" data-i18n="tab_microbial">Microbial Consortia</span>
               <span class="ft-active-bar" aria-hidden="true"></span>
             </button>
             <button class="ft-tab-btn" role="tab" id="tab-btn-delivery" aria-selected="false" aria-controls="panel-delivery" data-tab="delivery" tabindex="0">
               <span class="ft-tab-icon" aria-hidden="true">🔬</span>
-              <span class="ft-tab-text">Advanced Delivery</span>
+              <span class="ft-tab-text" data-i18n="tab_delivery">Advanced Delivery</span>
               <span class="ft-active-bar" aria-hidden="true"></span>
             </button>
             <button class="ft-tab-btn" role="tab" id="tab-btn-biochar" aria-selected="false" aria-controls="panel-biochar" data-tab="biochar" tabindex="0">
               <span class="ft-tab-icon" aria-hidden="true">🌿</span>
-              <span class="ft-tab-text">Biochar Carriers</span>
+              <span class="ft-tab-text" data-i18n="tab_biochar">Biochar Carriers</span>
               <span class="ft-active-bar" aria-hidden="true"></span>
             </button>
           </div>
@@ -1056,9 +1071,9 @@
         <div class="section-header-block">
           <div class="section-tag-pill green">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg>
-            Module 03: Economic, Ecological & Circularity Modeling
+            <span data-i18n="module3_tag">Module 03: Economic, Ecological & Circularity Modeling</span>
           </div>
-          <h2 class="section-title">TEA, LCA & Circularity Dashboard</h2>
+          <h2 class="section-title" data-i18n="module3_title">TEA, LCA & Circularity Dashboard</h2>
           <p class="section-description">
             Holistic techno-economic feasibility (TEA), cradle-to-gate greenhouse gas life cycle assessment (LCA), and ISO 59020 circularity performance metrics for rural decentralized Indian biorefineries.
           </p>
@@ -1294,9 +1309,9 @@
         <div class="section-header-block">
           <div class="section-tag-pill green">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
-            Module 04: Statutory Governance & Risk Mitigation
+            <span data-i18n="module4_tag">Module 04: Statutory Governance & Risk Mitigation</span>
           </div>
-          <h2 class="section-title">Risk Management &amp; Regulatory Compliance Matrix</h2>
+          <h2 class="section-title" data-i18n="module4_title">Risk Management &amp; Regulatory Compliance Matrix</h2>
           <p class="section-description">
             Rigorous Failure Mode and Effects Analysis (FMEA) operational risk management combined with real-time Fertilizer Control Order (FCO 1985 &amp; 2021) statutory verification.
           </p>
@@ -1483,7 +1498,7 @@
                 <polyline points="7 10 12 15 17 10"></polyline>
                 <line x1="12" y1="15" x2="12" y2="3"></line>
               </svg>
-              <span>Download Statutory Dossier</span>
+              <span data-i18n="btn_download_dossier">Download Statutory Dossier</span>
             </button>
           </div>
         </div>
@@ -1506,13 +1521,13 @@
       <div class="footer-brand-col">
         <div class="footer-logo">
           <span class="brand-name">Krishi<span class="brand-highlight">Urja</span></span>
-          <span class="footer-tagline">National Farm-Waste-to-Fertilizer Biorefinery Platform</span>
+          <span class="footer-tagline" data-i18n="footer_tagline">National Farm-Waste-to-Fertilizer Biorefinery Platform</span>
         </div>
         <p class="footer-desc">
           Empowering Indian farmers through circular bio-economy engineering, clean rural air, and soil carbon restoration.
         </p>
         <div class="footer-rural-badge">
-          <span class="frb-icon">🇮🇳</span> Designed for rural accessibility & high-contrast outdoor visibility.
+          <span class="frb-icon">🇮🇳</span> <span data-i18n="footer_rural_badge">Designed for rural accessibility & high-contrast outdoor visibility.</span>
         </div>
       </div>
 

@@ -153,6 +153,92 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // =========================================================================
+  // 1.1 Vanilla JavaScript Localization (i18n) Engine
+  // =========================================================================
+  const langToggleBtn = document.getElementById('lang-toggle-btn');
+  const mobileLangToggleBtn = document.getElementById('mobile-lang-toggle-btn');
+  const langText = document.getElementById('lang-text');
+  const mobileLangLabel = document.getElementById('mobile-lang-label');
+
+  let currentLang = 'en';
+
+  /**
+   * Set application language and translate all DOM elements with data-i18n attribute
+   * @param {string} lang - 'en' or 'hi'
+   * @param {boolean} notifyUser - whether to trigger a toast message
+   */
+  function setLanguage(lang, notifyUser = false) {
+    const dict = (typeof translations !== 'undefined') ? translations : (window.translations || null);
+    if (!dict || !dict[lang]) {
+      console.warn(`[i18n] Translation dictionary not available for language: ${lang}`);
+      return;
+    }
+
+    currentLang = lang;
+    document.documentElement.lang = lang;
+
+    // Loop through all DOM elements with data-i18n
+    const translatableElements = document.querySelectorAll('[data-i18n]');
+    translatableElements.forEach(el => {
+      const key = el.getAttribute('data-i18n');
+      if (key && dict[lang][key]) {
+        el.textContent = dict[lang][key];
+      }
+    });
+
+    // Update Language Toggle Button Displays
+    const buttonText = lang === 'hi' ? 'हिन्दी / English' : 'English / हिन्दी';
+    if (langText) langText.textContent = buttonText;
+    if (mobileLangLabel) mobileLangLabel.textContent = buttonText;
+
+    if (langToggleBtn) {
+      langToggleBtn.setAttribute('aria-label', lang === 'hi' ? 'Switch to English' : 'Switch to Hindi / हिन्दी में बदलें');
+      langToggleBtn.classList.toggle('lang-active-hi', lang === 'hi');
+    }
+    if (mobileLangToggleBtn) {
+      mobileLangToggleBtn.setAttribute('aria-label', lang === 'hi' ? 'Switch to English' : 'Switch to Hindi / हिन्दी में बदलें');
+      mobileLangToggleBtn.classList.toggle('lang-active-hi', lang === 'hi');
+    }
+
+    // Persist user preference across reloads
+    try {
+      localStorage.setItem('krishiurja_lang', lang);
+    } catch (err) {
+      // Storage might be restricted
+    }
+
+    // Recompute the animated active indicator for spatial awareness since nav text width changes
+    const activeDesktopNav = document.querySelector('.nav-link.active');
+    if (activeDesktopNav) {
+      setTimeout(() => updateNavIndicator(activeDesktopNav), 50);
+    }
+
+    if (notifyUser && typeof showToast === 'function') {
+      showToast(lang === 'hi' ? 'भाषा बदलकर हिन्दी कर दी गई है।' : 'Language changed to English.');
+    }
+  }
+
+  function handleLanguageToggle() {
+    const targetLang = currentLang === 'en' ? 'hi' : 'en';
+    setLanguage(targetLang, true);
+  }
+
+  langToggleBtn?.addEventListener('click', handleLanguageToggle);
+  mobileLangToggleBtn?.addEventListener('click', handleLanguageToggle);
+
+  // Initialize language from localStorage or default to 'en'
+  let initialLang = 'en';
+  try {
+    const saved = localStorage.getItem('krishiurja_lang');
+    if (saved === 'en' || saved === 'hi') {
+      initialLang = saved;
+    }
+  } catch (err) {
+    initialLang = 'en';
+  }
+  setLanguage(initialLang, false);
+
+  // =========================================================================
   // 2. Scrollspy with IntersectionObserver for Continuous Spatial Awareness
   // =========================================================================
   const trackedSections = [
