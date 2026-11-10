@@ -1,0 +1,1552 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KrishiUrja | Next-Generation Farm-Waste-to-Fertilizer Biorefinery</title>
+  <meta name="description" content="Next-Generation Farm-Waste-to-Fertilizer Biorefinery platform for rural India: Baseline Mapping, Formulation Engine, TEA/LCA Dashboard, and Regulatory Compliance.">
+  
+  <!-- Google Fonts for crisp, highly legible typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Chart.js CDN (v4.4.2) for Financial, LCA & Circularity Data Visualizations -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- Main Stylesheet -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Top Persistent Navigation Bar -->
+  <header class="site-header" id="site-header">
+    <div class="nav-container">
+      <!-- Brand Logo & Identity -->
+      <a href="#hero" class="brand" aria-label="KrishiUrja Biorefinery Home">
+        <div class="brand-logo-wrapper">
+          <svg class="brand-icon" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <circle cx="20" cy="20" r="18" fill="#F0FDF4" stroke="#16A34A" stroke-width="2.5"/>
+            <!-- Closed-loop bio-cycle leaf -->
+            <path d="M20 7C20 7 28 11.5 28 19C28 24.5 24 28.5 20 29C16 28.5 12 24.5 12 19C12 11.5 20 7 20 7Z" fill="#15803D" opacity="0.9"/>
+            <path d="M20 13V27M20 18L15 22M20 22L25 18" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <!-- Saffron Energy Sprout Accent -->
+            <circle cx="20" cy="7" r="3.5" fill="#F97316"/>
+          </svg>
+          <div class="tricolor-strip" aria-hidden="true"></div>
+        </div>
+        <div class="brand-text">
+          <span class="brand-name">Krishi<span class="brand-highlight">Urja</span></span>
+          <span class="brand-sub">Biorefinery Portal &bull; India</span>
+        </div>
+      </a>
+
+      <!-- Desktop Navigation Menu with Animated Indicator -->
+      <nav class="main-nav" aria-label="Primary Navigation">
+        <ul class="nav-links" id="nav-links" role="menubar">
+          <li role="none">
+            <a href="#baseline-mapping" class="nav-link active" role="menuitem" data-section="baseline-mapping">
+              <span class="nav-icon" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"></polygon>
+                  <line x1="8" y1="2" x2="8" y2="18"></line>
+                  <line x1="16" y1="6" x2="16" y2="22"></line>
+                </svg>
+              </span>
+              <span class="nav-text">Baseline Mapping</span>
+            </a>
+          </li>
+          <li role="none">
+            <a href="#formulation" class="nav-link" role="menuitem" data-section="formulation">
+              <span class="nav-icon" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M10 2v7.31M14 2v7.31M8.5 2h7M14 9.3a6.5 6.5 0 1 1-4 0"></path>
+                </svg>
+              </span>
+              <span class="nav-text">Formulation</span>
+            </a>
+          </li>
+          <li role="none">
+            <a href="#tealca-dashboard" class="nav-link" role="menuitem" data-section="tealca-dashboard">
+              <span class="nav-icon" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <line x1="18" y1="20" x2="18" y2="10"></line>
+                  <line x1="12" y1="20" x2="12" y2="4"></line>
+                  <line x1="6" y1="20" x2="6" y2="14"></line>
+                </svg>
+              </span>
+              <span class="nav-text">TEA, LCA & Circularity</span>
+            </a>
+          </li>
+          <li role="none">
+            <a href="#compliance" class="nav-link" role="menuitem" data-section="compliance">
+              <span class="nav-icon" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                  <polyline points="9 12 11 14 15 10"></polyline>
+                </svg>
+              </span>
+              <span class="nav-text">Risk &amp; Compliance</span>
+            </a>
+          </li>
+        </ul>
+        <!-- Animated Active Indicator bar -->
+        <div class="nav-indicator" id="nav-indicator" aria-hidden="true"></div>
+      </nav>
+
+      <!-- Action Button & Mobile Menu Toggle -->
+      <div class="nav-actions">
+        <a href="#tealca-dashboard" class="btn btn-saffron btn-nav" id="btn-quick-audit">
+          <span>Run Simulation</span>
+          <svg class="btn-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+            <path d="M5 12h14M12 5l7 7-7 7"/>
+          </svg>
+        </a>
+
+        <!-- Accessible Mobile Menu Toggle -->
+        <button class="mobile-toggle" id="mobile-toggle" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="mobile-nav">
+          <span class="hamburger-bar"></span>
+          <span class="hamburger-bar"></span>
+          <span class="hamburger-bar"></span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile Drawer Navigation -->
+    <div class="mobile-nav" id="mobile-nav" aria-hidden="true">
+      <ul class="mobile-nav-links">
+        <li>
+          <a href="#baseline-mapping" class="mobile-nav-link active" data-section="baseline-mapping">
+            <span class="badge-dot green"></span>
+            Baseline Mapping
+          </a>
+        </li>
+        <li>
+          <a href="#formulation" class="mobile-nav-link" data-section="formulation">
+            <span class="badge-dot green"></span>
+            Formulation Engine
+          </a>
+        </li>
+        <li>
+          <a href="#tealca-dashboard" class="mobile-nav-link" data-section="tealca-dashboard">
+            <span class="badge-dot saffron"></span>
+            TEA/LCA Dashboard
+          </a>
+        </li>
+        <li>
+          <a href="#compliance" class="mobile-nav-link" data-section="compliance">
+            <span class="badge-dot green"></span>
+            Regulatory Compliance
+          </a>
+        </li>
+      </ul>
+      <div class="mobile-nav-cta">
+        <a href="#tealca-dashboard" class="btn btn-saffron btn-full">
+          Run Biorefinery Simulation
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content Container -->
+  <main id="main-content">
+    
+    <!-- Hero Section -->
+    <section class="hero-section" id="hero">
+      <div class="hero-bg-accent" aria-hidden="true"></div>
+      <div class="section-container hero-grid">
+        
+        <!-- Left Hero Column: Copy & CTAs -->
+        <div class="hero-content">
+          <div class="pill-badge" role="status">
+            <span class="pill-tricolor">
+              <span class="tricolor-dot saffron"></span>
+              <span class="tricolor-dot white"></span>
+              <span class="tricolor-dot green"></span>
+            </span>
+            <span class="pill-text">India National Bio-Economy & Clean Air Initiative</span>
+          </div>
+
+          <h1 class="hero-title">
+            Next-Generation <br>
+            <span class="title-highlight">Farm-Waste-to-Fertilizer</span> <br>
+            Biorefinery
+          </h1>
+
+          <p class="hero-lead">
+            Eliminating open-field crop burning (<em>Parali</em>) across Punjab, Haryana, and the Indo-Gangetic plains. We thermochemically convert crop residue into carbon-negative organo-mineral fertilizers and clean renewable rural bio-energy.
+          </p>
+
+          <!-- Large Accessible CTAs for Rural & Technical Operators -->
+          <div class="hero-cta-group">
+            <a href="#formulation" class="btn btn-saffron btn-hero" id="btn-explore-formulation">
+              <span>Configure Formulation</span>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+                <path d="M5 12h14M12 5l7 7-7 7"/>
+              </svg>
+            </a>
+
+            <a href="#tealca-dashboard" class="btn btn-outline-green btn-hero" id="btn-explore-tea">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
+                <circle cx="12" cy="12" r="10"></circle>
+                <polygon points="10 8 16 12 10 16 10 8"></polygon>
+              </svg>
+              <span>Explore TEA & LCA Model</span>
+            </a>
+          </div>
+
+          <!-- Quick Metrics Bar with High-Contrast Rural Legibility -->
+          <div class="hero-stats-strip" aria-label="Key Biorefinery Impact Metrics">
+            <div class="stat-card">
+              <div class="stat-number text-saffron">85,000<span class="stat-unit">MT</span></div>
+              <div class="stat-label">Crop Residue Diverted/Yr</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-number text-green">42,500<span class="stat-unit">MT</span></div>
+              <div class="stat-label">Bio-Fertilizer Output</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-number text-charcoal">-68%</div>
+              <div class="stat-label">Carbon Abatement (tCO₂e)</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-number text-green">+28%</div>
+              <div class="stat-label">Farmer Net Income Boost</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Hero Column: Interactive Biorefinery Process Visualizer -->
+        <div class="hero-visual-card">
+          <div class="card-glass">
+            <div class="card-header-clean">
+              <div class="card-title-group">
+                <span class="card-eyebrow">Interactive Process Simulator</span>
+                <h2 class="card-h2">Continuous Closed-Loop Flow</h2>
+              </div>
+              <span class="status-pill status-active">
+                <span class="pulse-dot"></span> Plant Active
+              </span>
+            </div>
+
+            <!-- Feedstock Selection Tabs -->
+            <div class="feedstock-selector" role="tablist" aria-label="Feedstock Selection">
+              <button class="feedstock-chip active" role="tab" aria-selected="true" data-feedstock="paddy" id="tab-paddy">
+                <span class="chip-icon">🌾</span>
+                <span class="chip-label">Paddy Straw (Parali)</span>
+              </button>
+              <button class="feedstock-chip" role="tab" aria-selected="false" data-feedstock="bagasse" id="tab-bagasse">
+                <span class="chip-icon">🎋</span>
+                <span class="chip-label">Sugarcane Bagasse</span>
+              </button>
+              <button class="feedstock-chip" role="tab" aria-selected="false" data-feedstock="cotton" id="tab-cotton">
+                <span class="chip-icon">🌱</span>
+                <span class="chip-label">Cotton Stalks</span>
+              </button>
+              <button class="feedstock-chip" role="tab" aria-selected="false" data-feedstock="mustard" id="tab-mustard">
+                <span class="chip-icon">🌼</span>
+                <span class="chip-label">Mustard Husk</span>
+              </button>
+            </div>
+
+            <!-- Flow Stages Diagram -->
+            <div class="process-flow">
+              <div class="flow-step">
+                <div class="step-badge">Stage 1</div>
+                <div class="step-icon-box bg-amber-soft">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#F97316" stroke-width="2">
+                    <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+                    <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+                  </svg>
+                </div>
+                <div class="step-title" id="stage1-name">Briquetting & Densification</div>
+                <div class="step-sub" id="stage1-val">Moisture: 12% | Bulk: 620 kg/m³</div>
+              </div>
+
+              <div class="flow-connector" aria-hidden="true">
+                <span class="connector-line"></span>
+                <span class="connector-arrow">➔</span>
+              </div>
+
+              <div class="flow-step">
+                <div class="step-badge">Stage 2</div>
+                <div class="step-icon-box bg-green-soft">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#15803D" stroke-width="2">
+                    <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                  </svg>
+                </div>
+                <div class="step-title" id="stage2-name">Catalytic Torrefaction</div>
+                <div class="step-sub" id="stage2-val">450°C Oxygen-Starved Reactor</div>
+              </div>
+
+              <div class="flow-connector" aria-hidden="true">
+                <span class="connector-line"></span>
+                <span class="connector-arrow">➔</span>
+              </div>
+
+              <div class="flow-step">
+                <div class="step-badge">Stage 3</div>
+                <div class="step-icon-box bg-blue-soft">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1D4ED8" stroke-width="2">
+                    <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                  </svg>
+                </div>
+                <div class="step-title" id="stage3-name">Bio-Fortified Granulation</div>
+                <div class="step-sub" id="stage3-val">N-P-K Inoculation + Humic Acid</div>
+              </div>
+            </div>
+
+            <!-- Dynamic Yield Matrix Card -->
+            <div class="yield-summary" id="yield-summary">
+              <div class="yield-metric">
+                <span class="ym-label">Bio-Fertilizer Yield</span>
+                <strong class="ym-val text-green" id="yield-fertilizer">540 kg / MT</strong>
+              </div>
+              <div class="yield-divider"></div>
+              <div class="yield-metric">
+                <span class="ym-label">Clean Syngas/Biomethane</span>
+                <strong class="ym-val text-saffron" id="yield-energy">145 m³ / MT</strong>
+              </div>
+              <div class="yield-divider"></div>
+              <div class="yield-metric">
+                <span class="ym-label">Soil Carbon Half-Life</span>
+                <strong class="ym-val text-charcoal" id="yield-carbon">> 45 Years</strong>
+              </div>
+            </div>
+
+            <div class="card-footer-action">
+              <a href="#formulation" class="btn btn-outline-saffron btn-full">
+                Customize Chemical & Organic Recipe
+              </a>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Section 1: Baseline Mapping -->
+    <section class="content-section" id="baseline-mapping">
+      <div class="section-container">
+        
+        <div class="section-header-block">
+          <div class="section-tag-pill green">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+            Module 01: Resource Assessment & Technology Selection
+          </div>
+          <h2 class="section-title">Baseline Mapping & Tech Selection Engine</h2>
+          <p class="section-description">
+            Evaluate local Indian farm waste streams by their stoichiometric C:N ratio and moisture dynamics to dynamically match the optimal biorefinery conversion pathway: Biochar Pyrolysis, Anaerobic Digestion, or Vermicomposting.
+          </p>
+        </div>
+
+        <!-- Interactive Two-Column Tech Selection Engine -->
+        <div class="tech-selection-engine" id="tech-selection-engine">
+          
+          <!-- Left Column: CSS Grid of Farm Waste Inputs -->
+          <div class="feedstock-inputs-col">
+            <div class="col-header-bar">
+              <div>
+                <h3 class="col-title">Local Indian Farm Waste Inputs</h3>
+                <span class="col-subtitle">Select a substrate to determine conversion kinetics & pathway</span>
+              </div>
+              <span class="substrate-badge-count">6 Indian Feedstocks</span>
+            </div>
+
+            <!-- CSS Grid of Large Minimalist Card Buttons -->
+            <div class="waste-cards-grid" id="waste-cards-grid" role="group" aria-label="Indian Farm Waste Feedstock Cards">
+              
+              <!-- Card 1: Rice Husk / Paddy Straw -->
+              <button class="waste-card-btn" data-waste-id="rice-husk" role="button" aria-pressed="false" tabindex="0">
+                <div class="wc-header">
+                  <div class="wc-icon-box bg-amber-soft" aria-hidden="true">🌾</div>
+                  <span class="wc-cat-pill">Crop Stubble</span>
+                  <div class="wc-check-circle" aria-hidden="true">✓</div>
+                </div>
+                <div class="wc-content">
+                  <h4 class="wc-name">Rice Husk & Paddy Straw</h4>
+                  <p class="wc-local-name">Parali &bull; Indo-Gangetic Plains</p>
+                </div>
+                <div class="wc-specs-strip">
+                  <span class="wc-spec-badge"><strong>C:N:</strong> 85:1</span>
+                  <span class="wc-spec-badge"><strong>Moisture:</strong> 12%</span>
+                  <span class="wc-tech-pill">Pyrolysis</span>
+                </div>
+              </button>
+
+              <!-- Card 2: Sugarcane Bagasse -->
+              <button class="waste-card-btn" data-waste-id="sugarcane-bagasse" role="button" aria-pressed="false" tabindex="0">
+                <div class="wc-header">
+                  <div class="wc-icon-box bg-green-soft" aria-hidden="true">🎋</div>
+                  <span class="wc-cat-pill">Agro-Industrial</span>
+                  <div class="wc-check-circle" aria-hidden="true">✓</div>
+                </div>
+                <div class="wc-content">
+                  <h4 class="wc-name">Sugarcane Bagasse</h4>
+                  <p class="wc-local-name">Sugar Mill Bagas &bull; Western & UP Belts</p>
+                </div>
+                <div class="wc-specs-strip">
+                  <span class="wc-spec-badge"><strong>C:N:</strong> 120:1</span>
+                  <span class="wc-spec-badge"><strong>Moisture:</strong> 48%</span>
+                  <span class="wc-tech-pill">Pyrolysis</span>
+                </div>
+              </button>
+
+              <!-- Card 3: Cow Dung (Gobar) -->
+              <button class="waste-card-btn" data-waste-id="cow-dung" role="button" aria-pressed="false" tabindex="0">
+                <div class="wc-header">
+                  <div class="wc-icon-box bg-amber-soft" aria-hidden="true">🐄</div>
+                  <span class="wc-cat-pill">Dairy Livestock</span>
+                  <div class="wc-check-circle" aria-hidden="true">✓</div>
+                </div>
+                <div class="wc-content">
+                  <h4 class="wc-name">Cow Dung (Gobar Slurry)</h4>
+                  <p class="wc-local-name">Pashu Gobar &bull; Rural Dairy Cooperatives</p>
+                </div>
+                <div class="wc-specs-strip">
+                  <span class="wc-spec-badge"><strong>C:N:</strong> 23:1</span>
+                  <span class="wc-spec-badge"><strong>Moisture:</strong> 82%</span>
+                  <span class="wc-tech-pill tech-ad">Anaerobic Dig.</span>
+                </div>
+              </button>
+
+              <!-- Card 4: Poultry Litter -->
+              <button class="waste-card-btn" data-waste-id="poultry-litter" role="button" aria-pressed="false" tabindex="0">
+                <div class="wc-header">
+                  <div class="wc-icon-box bg-blue-soft" aria-hidden="true">🐓</div>
+                  <span class="wc-cat-pill">Commercial Poultry</span>
+                  <div class="wc-check-circle" aria-hidden="true">✓</div>
+                </div>
+                <div class="wc-content">
+                  <h4 class="wc-name">Poultry Litter & Manure</h4>
+                  <p class="wc-local-name">High-Nitrogen Broiler Litter</p>
+                </div>
+                <div class="wc-specs-strip">
+                  <span class="wc-spec-badge"><strong>C:N:</strong> 10:1</span>
+                  <span class="wc-spec-badge"><strong>Moisture:</strong> 28%</span>
+                  <span class="wc-tech-pill tech-ad">Co-Digestion</span>
+                </div>
+              </button>
+
+              <!-- Card 5: Cotton Stalks -->
+              <button class="waste-card-btn" data-waste-id="cotton-stalks" role="button" aria-pressed="false" tabindex="0">
+                <div class="wc-header">
+                  <div class="wc-icon-box bg-amber-soft" aria-hidden="true">🌱</div>
+                  <span class="wc-cat-pill">Woody Stalks</span>
+                  <div class="wc-check-circle" aria-hidden="true">✓</div>
+                </div>
+                <div class="wc-content">
+                  <h4 class="wc-name">Cotton Crop Stalks</h4>
+                  <p class="wc-local-name">Kapas Lakdi &bull; Vidarbha & Gujarat</p>
+                </div>
+                <div class="wc-specs-strip">
+                  <span class="wc-spec-badge"><strong>C:N:</strong> 72:1</span>
+                  <span class="wc-spec-badge"><strong>Moisture:</strong> 14%</span>
+                  <span class="wc-tech-pill">Pyrolysis</span>
+                </div>
+              </button>
+
+              <!-- Card 6: Vegetable & Mandi Greens -->
+              <button class="waste-card-btn" data-waste-id="mandi-greens" role="button" aria-pressed="false" tabindex="0">
+                <div class="wc-header">
+                  <div class="wc-icon-box bg-green-soft" aria-hidden="true">🥬</div>
+                  <span class="wc-cat-pill">Market Surplus</span>
+                  <div class="wc-check-circle" aria-hidden="true">✓</div>
+                </div>
+                <div class="wc-content">
+                  <h4 class="wc-name">Vegetable & Mandi Greens</h4>
+                  <p class="wc-local-name">Sabzi Mandi Waste & Fruit Pulp</p>
+                </div>
+                <div class="wc-specs-strip">
+                  <span class="wc-spec-badge"><strong>C:N:</strong> 24:1</span>
+                  <span class="wc-spec-badge"><strong>Moisture:</strong> 78%</span>
+                  <span class="wc-tech-pill tech-vermi">Vermicomposting</span>
+                </div>
+              </button>
+
+            </div>
+          </div>
+
+          <!-- Right Column: Dynamic Analysis Panel -->
+          <div class="analysis-panel-col">
+            <div class="analysis-panel-card" id="tech-analysis-panel" aria-live="polite">
+              
+              <!-- Initial Empty / Awaiting Selection State -->
+              <div class="analysis-empty-state" id="analysis-empty-state">
+                <div class="empty-state-graphic">
+                  <div class="es-ring">
+                    <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#15803D" stroke-width="2" aria-hidden="true">
+                      <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+                      <polyline points="2 17 12 22 22 17"></polyline>
+                      <polyline points="2 12 12 17 22 12"></polyline>
+                    </svg>
+                  </div>
+                </div>
+                <h4 class="empty-state-heading">Awaiting Feedstock Selection</h4>
+                <p class="empty-state-desc">
+                  Select any Indian farm waste substrate from the grid to trigger biochemical C:N stoichiometry evaluation and identify the optimal valorization pathway.
+                </p>
+                <div class="stoichiometry-guide-box">
+                  <span class="sg-title">Conversion Rule Matrix:</span>
+                  <div class="sg-row">
+                    <span class="sg-bullet saffron"></span>
+                    <span class="sg-text"><strong>High C:N (> 50:1):</strong> Pyrolysis locks refractory carbon into soil biochar.</span>
+                  </div>
+                  <div class="sg-row">
+                    <span class="sg-bullet green"></span>
+                    <span class="sg-text"><strong>Balanced C:N (20:1 - 30:1):</strong> Anaerobic digestion / vermicomposting.</span>
+                  </div>
+                  <div class="sg-row">
+                    <span class="sg-bullet charcoal"></span>
+                    <span class="sg-text"><strong>Low C:N (&lt; 15:1):</strong> High nitrogen co-substrate for biogas kinetic boost.</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Injected Content Container -->
+              <div class="analysis-dynamic-content" id="analysis-dynamic-content" style="display: none;"></div>
+
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Regional Geospatial Logistics & Aggregation Header -->
+        <div class="submodule-divider">
+          <div class="submodule-title-wrap">
+            <span class="submodule-badge">Regional Supply Infrastructure</span>
+            <h3 class="submodule-heading">Geospatial Residue Density & Rural Aggregation Corridors</h3>
+          </div>
+        </div>
+
+        <!-- Regional Cluster Selector (Buttons with high-contrast accessibility) -->
+        <div class="cluster-toolbar" role="region" aria-label="Region selector">
+          <span class="toolbar-label">Select Agricultural Zone:</span>
+          <div class="toolbar-chips" id="region-chips">
+            <button class="chip-filter active" data-region="punjab" aria-pressed="true">Punjab (Malwa & Majha)</button>
+            <button class="chip-filter" data-region="haryana" aria-pressed="false">Haryana (Karnal-Kaithal)</button>
+            <button class="chip-filter" data-region="up" aria-pressed="false">Western Uttar Pradesh</button>
+            <button class="chip-filter" data-region="maharashtra" aria-pressed="false">Maharashtra (Sugar Belt)</button>
+            <button class="chip-filter" data-region="mp" aria-pressed="false">Madhya Pradesh (Narmada Basin)</button>
+          </div>
+        </div>
+
+        <!-- Regional Data Dashboard Layout -->
+        <div class="mapping-grid">
+          
+          <!-- Visual Map Simulation Card -->
+          <div class="map-visual-card">
+            <div class="map-header">
+              <div>
+                <h3 class="map-title" id="map-region-name">Punjab Agrarian Cluster</h3>
+                <span class="map-sub" id="map-region-sub">Districts: Sangrur, Ludhiana, Bathinda, Patiala</span>
+              </div>
+              <span class="status-pill status-ready" id="map-status">
+                Peak Burning Risk Window: Oct 15 - Nov 20
+              </span>
+            </div>
+
+            <!-- Schematic Diagram of Regional Supply Radius -->
+            <div class="schematic-map-container" aria-label="Biorefinery Hub-and-Spoke Logistics Radius Diagram">
+              <div class="schematic-rings">
+                <div class="ring ring-outer">
+                  <span class="ring-label">25 km Radius: Secondary Aggregation</span>
+                </div>
+                <div class="ring ring-mid">
+                  <span class="ring-label">15 km Radius: Direct Baler Corridors</span>
+                </div>
+                <div class="ring ring-inner">
+                  <span class="ring-label">5 km Radius: High Density Catchment</span>
+                </div>
+                <div class="central-biorefinery-node">
+                  <div class="node-pulse"></div>
+                  <div class="node-icon">🏭</div>
+                  <span class="node-title">Central Biorefinery</span>
+                </div>
+                <!-- Hub points -->
+                <div class="depot-point p1" title="Primary Collection Depot Alpha">📍 Depot A</div>
+                <div class="depot-point p2" title="Primary Collection Depot Beta">📍 Depot B</div>
+                <div class="depot-point p3" title="Primary Collection Depot Gamma">📍 Depot C</div>
+                <div class="depot-point p4" title="Village Baler Center">🚜 Baler Hub</div>
+              </div>
+            </div>
+
+            <div class="map-footer-notes">
+              <span class="note-item"><span class="bullet green"></span> Sourced via GPS-tagged Baler Fleets</span>
+              <span class="note-item"><span class="bullet saffron"></span> Guaranteed 48-Hour Farmgate Clearing</span>
+              <span class="note-item"><span class="bullet charcoal"></span> Direct DBT Payout: ₹1,850/Ton</span>
+            </div>
+          </div>
+
+          <!-- Regional Metrics Panel -->
+          <div class="metrics-panel">
+            <div class="panel-card">
+              <h4 class="panel-heading">Regional Agro-Residue Metrics</h4>
+              <ul class="data-list">
+                <li class="data-row">
+                  <span class="d-label">Surplus Biomass Density</span>
+                  <strong class="d-val text-charcoal" id="val-biomass-density">18.4 Million MT/Yr</strong>
+                </li>
+                <li class="data-row">
+                  <span class="d-label">Primary Feedstock</span>
+                  <strong class="d-val text-saffron" id="val-feedstock-primary">Paddy Straw (Basmati & Non-Basmati)</strong>
+                </li>
+                <li class="data-row">
+                  <span class="d-label">Average Infield Moisture</span>
+                  <strong class="d-val text-charcoal" id="val-moisture">18% - 24% (Requires field drying)</strong>
+                </li>
+                <li class="data-row">
+                  <span class="d-label">Silica Content Range</span>
+                  <strong class="d-val text-charcoal" id="val-silica">11.2% - 14.8% (Pyrolysis optimized)</strong>
+                </li>
+                <li class="data-row">
+                  <span class="d-label">Target Biorefinery Units</span>
+                  <strong class="d-val text-green" id="val-units-needed">12 Decentralized Plants</strong>
+                </li>
+              </ul>
+            </div>
+
+            <div class="panel-card highlight-card">
+              <div class="hc-header">
+                <span class="hc-tag">Soil Degradation Alert</span>
+                <span class="hc-stat text-saffron" id="val-soil-soc">SOC: 0.38% (Critically Low)</span>
+              </div>
+              <p class="hc-text" id="val-soil-desc">
+                Decades of chemical NPK overuse have depleted soil organic carbon. Our organo-mineral biofertilizers reintroduce stable biochar humic structures to replenish native microbiological health.
+              </p>
+              <div class="hc-action">
+                <a href="#formulation" class="btn btn-sm btn-outline-saffron">
+                  View Recommended Soil Recipe
+                </a>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Section 2: Product Formulation & Future Scope -->
+    <section class="content-section bg-subtle-tint" id="formulation">
+      <div class="section-container">
+        
+        <div class="section-header-block">
+          <div class="section-tag-pill saffron">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+            Module 02: Advanced R&D & Product Formulation
+          </div>
+          <h2 class="section-title">Product Formulation & Future Scope</h2>
+          <p class="section-description">
+            Pioneering organo-mineral bio-inoculation, smart biopolymer nano-delivery systems, and pyrolyzed biochar carriers engineered for extreme shelf life in tropical Indian soils.
+          </p>
+        </div>
+
+        <!-- Centralized Tabbed Interface Container -->
+        <div class="formulation-tabs-container">
+          
+          <!-- Horizontal Tab Navigation Bar -->
+          <div class="ft-tab-nav" role="tablist" aria-label="Product Formulation & Future Scope Tabs">
+            <button class="ft-tab-btn active" role="tab" id="tab-btn-microbial" aria-selected="true" aria-controls="panel-microbial" data-tab="microbial" tabindex="0">
+              <span class="ft-tab-icon" aria-hidden="true">🧫</span>
+              <span class="ft-tab-text">Microbial Consortia</span>
+              <span class="ft-active-bar" aria-hidden="true"></span>
+            </button>
+            <button class="ft-tab-btn" role="tab" id="tab-btn-delivery" aria-selected="false" aria-controls="panel-delivery" data-tab="delivery" tabindex="0">
+              <span class="ft-tab-icon" aria-hidden="true">🔬</span>
+              <span class="ft-tab-text">Advanced Delivery</span>
+              <span class="ft-active-bar" aria-hidden="true"></span>
+            </button>
+            <button class="ft-tab-btn" role="tab" id="tab-btn-biochar" aria-selected="false" aria-controls="panel-biochar" data-tab="biochar" tabindex="0">
+              <span class="ft-tab-icon" aria-hidden="true">🌿</span>
+              <span class="ft-tab-text">Biochar Carriers</span>
+              <span class="ft-active-bar" aria-hidden="true"></span>
+            </button>
+          </div>
+
+          <!-- Tab Content Panels Container -->
+          <div class="ft-panels-wrapper">
+            
+            <!-- Panel 1: Microbial Consortia -->
+            <div class="ft-content-panel active" id="panel-microbial" role="tabpanel" aria-labelledby="tab-btn-microbial">
+              <div class="fp-header">
+                <div class="fp-title-wrap">
+                  <span class="fp-eyebrow text-saffron">Microbiological Engineering</span>
+                  <h3 class="fp-title">Synergistic Nitrogen-Fixers & Phosphate-Solubilizers</h3>
+                </div>
+                <span class="status-pill status-ready">Consortium CFU &gt; 1×10⁸/g</span>
+              </div>
+
+              <p class="fp-lead">
+                Combining free-living and symbiotic 
+                <span class="term-with-tooltip">
+                  <strong class="term-text">diazotrophs</strong>
+                  <button class="info-bubble" type="button" aria-label="Explanation of diazotrophs" tabindex="0">
+                    ⓘ
+                    <span class="custom-tooltip" role="tooltip">Specialized micro-organisms (e.g. <em>Azotobacter</em>) that biologically convert inert atmospheric nitrogen gas into plant-absorbable ammonium.</span>
+                  </button>
+                </span>
+                with mineral-chelating 
+                <span class="term-with-tooltip">
+                  <strong class="term-text">phosphate-solubilizers</strong>
+                  <button class="info-bubble" type="button" aria-label="Explanation of phosphate-solubilizers" tabindex="0">
+                    ⓘ
+                    <span class="custom-tooltip" role="tooltip">Beneficial soil bacteria (PSB) that exude natural gluconic and citric acids to dissolve rock-bound insoluble phosphorus into soluble orthophosphates.</span>
+                  </button>
+                </span>. 
+                This co-inoculation generates a persistent 
+                <span class="term-with-tooltip">
+                  <strong class="term-text">rhizosphere biofilm</strong>
+                  <button class="info-bubble" type="button" aria-label="Explanation of rhizosphere biofilm" tabindex="0">
+                    ⓘ
+                    <span class="custom-tooltip" role="tooltip">A protective microscopic living sheath formed across root hairs that shields crops from root rot pathogens and salinity shocks.</span>
+                  </button>
+                </span>
+                that feeds crops continuously through reproductive stages.
+              </p>
+
+              <!-- Mechanism Breakdown Grid -->
+              <div class="fp-mechanism-grid">
+                <div class="fp-mech-card">
+                  <div class="fpm-icon bg-green-soft">🌱</div>
+                  <h4 class="fpm-title">Biological Nitrogen Fixation</h4>
+                  <p class="fpm-desc">
+                    <em>Azotobacter chroococcum</em> and <em>Rhizobium</em> strains biologically fix 35–45 kg of atmospheric N per hectare per season, drastically lowering synthetic urea input requirements.
+                  </p>
+                </div>
+
+                <div class="fp-mech-card">
+                  <div class="fpm-icon bg-amber-soft">⚡</div>
+                  <h4 class="fpm-title">P-Solubilization & Chelation</h4>
+                  <p class="fpm-desc">
+                    <em>Bacillus megaterium</em> and <em>Pseudomonas putida</em> secrete low-molecular-weight organic acids, unlocking locked-up legacy phosphorus in calcareous Indian soils.
+                  </p>
+                </div>
+
+                <div class="fp-mech-card">
+                  <div class="fpm-icon bg-blue-soft">🛡️</div>
+                  <h4 class="fpm-title">Potassium Mobilization & Auxins</h4>
+                  <p class="fpm-desc">
+                    <em>Frateuria aurantia</em> mobilizes insoluble silicate potash minerals while synthesizing natural indole-3-acetic acid (IAA) to promote intense root branching.
+                  </p>
+                </div>
+              </div>
+
+              <!-- Key Benefits Strip (Green Accents) -->
+              <div class="fp-benefits-bar">
+                <span class="fpb-label">Key Field Agronomic Benefits:</span>
+                <div class="fpb-items">
+                  <div class="benefit-chip">
+                    <span class="bc-metric text-green">+50% Crop Resilience</span>
+                    <span class="bc-detail">Drought &amp; heat resistance in rainfed zones</span>
+                  </div>
+                  <div class="benefit-chip">
+                    <span class="bc-metric text-green">+30% NUE</span>
+                    <span class="bc-detail">Nitrogen use efficiency vs chemical urea</span>
+                  </div>
+                  <div class="benefit-chip">
+                    <span class="bc-metric text-green">45 kg/ha Urea Cut</span>
+                    <span class="bc-detail">Average chemical fertilizer reduction</span>
+                  </div>
+                  <div class="benefit-chip">
+                    <span class="bc-metric text-green">Zero Leaching</span>
+                    <span class="bc-detail">Organically bound N protects village wells</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Panel 2: Advanced Delivery -->
+            <div class="ft-content-panel" id="panel-delivery" role="tabpanel" aria-labelledby="tab-btn-delivery" hidden>
+              <div class="fp-header">
+                <div class="fp-title-wrap">
+                  <span class="fp-eyebrow text-saffron">Smart Nanotechnology</span>
+                  <h3 class="fp-title">Chitosan Nanocomposites for Controlled Slow-Release</h3>
+                </div>
+                <span class="status-pill status-ready">100% Biodegradable</span>
+              </div>
+
+              <p class="fp-lead">
+                Encapsulating active bio-inoculants and mineral micronutrients inside biodegradable 
+                <span class="term-with-tooltip">
+                  <strong class="term-text">chitosan nanocomposites</strong>
+                  <button class="info-bubble" type="button" aria-label="Explanation of chitosan nanocomposites" tabindex="0">
+                    ⓘ
+                    <span class="custom-tooltip" role="tooltip">Ultra-microscopic biopolymer shells (30–80 nm) derived from natural marine/fungal chitin that protect and meter out active nutrients.</span>
+                  </button>
+                </span>. 
+                Rather than dissolving in the first rainfall, the smart 
+                <span class="term-with-tooltip">
+                  <strong class="term-text">biopolymer matrix</strong>
+                  <button class="info-bubble" type="button" aria-label="Explanation of biopolymer matrix" tabindex="0">
+                    ⓘ
+                    <span class="custom-tooltip" role="tooltip">A non-toxic, eco-friendly structural carrier that degrades into natural plant-nourishing sugars without leaving microplastic residues.</span>
+                  </button>
+                </span>
+                exhibits 
+                <span class="term-with-tooltip">
+                  <strong class="term-text">controlled-release kinetics</strong>
+                  <button class="info-bubble" type="button" aria-label="Explanation of controlled-release kinetics" tabindex="0">
+                    ⓘ
+                    <span class="custom-tooltip" role="tooltip">Diffusion pacing triggered by moisture and root exudates, sustaining nutrient delivery for 90 to 120 days across the crop cycle.</span>
+                  </button>
+                </span>.
+              </p>
+
+              <!-- Mechanism Breakdown Grid -->
+              <div class="fp-mechanism-grid">
+                <div class="fp-mech-card">
+                  <div class="fpm-icon bg-green-soft">🧪</div>
+                  <h4 class="fpm-title">Cross-Linked Nanopores</h4>
+                  <p class="fpm-desc">
+                    Sodium tripolyphosphate (TPP) cross-linking creates sub-100nm pores that physically trap bacteria and humic compounds, shielding them against ultraviolet light and thermal decay.
+                  </p>
+                </div>
+
+                <div class="fp-mech-card">
+                  <div class="fpm-icon bg-amber-soft">💧</div>
+                  <h4 class="fpm-title">Rhizosphere Exudate Trigger</h4>
+                  <p class="fpm-desc">
+                    Enzymes secreted by hungry root tips (malate, succinate) trigger osmotic swelling in the chitosan membrane, releasing nutrients exactly when the plant signals nutrient demand.
+                  </p>
+                </div>
+
+                <div class="fp-mech-card">
+                  <div class="fpm-icon bg-blue-soft">🛡️</div>
+                  <h4 class="fpm-title">Inherent Antifungal Action</h4>
+                  <p class="fpm-desc">
+                    Protonated polycationic amine groups in chitosan disrupt cell membranes of pathogenic fungi (<em>Fusarium</em>, <em>Rhizoctonia</em>), providing natural systemic disease suppression.
+                  </p>
+                </div>
+              </div>
+
+              <!-- Key Benefits Strip (Green Accents) -->
+              <div class="fp-benefits-bar">
+                <span class="fpb-label">Key Field Agronomic Benefits:</span>
+                <div class="fpb-items">
+                  <div class="benefit-chip">
+                    <span class="bc-metric text-green">3x Release Window</span>
+                    <span class="bc-detail">Extended nutrition from 14 to 100+ days</span>
+                  </div>
+                  <div class="benefit-chip">
+                    <span class="bc-metric text-green">-65% Runoff Loss</span>
+                    <span class="bc-detail">Zero flush washout in heavy monsoon rains</span>
+                  </div>
+                  <div class="benefit-chip">
+                    <span class="bc-metric text-green">+28% Higher Yield</span>
+                    <span class="bc-detail">Enhanced grain filling &amp; test weight</span>
+                  </div>
+                  <div class="benefit-chip">
+                    <span class="bc-metric text-green">Zero Toxic Residue</span>
+                    <span class="bc-detail">100% soil assimilation without microplastics</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Panel 3: Biochar Carriers -->
+            <div class="ft-content-panel" id="panel-biochar" role="tabpanel" aria-labelledby="tab-btn-biochar" hidden>
+              <div class="fp-header">
+                <div class="fp-title-wrap">
+                  <span class="fp-eyebrow text-saffron">Circular Solid Carrier</span>
+                  <h3 class="fp-title">Pyrolyzed Biochar Carriers Replacing Fossil Lignite</h3>
+                </div>
+                <span class="status-pill status-ready">18-Month Shelf Life</span>
+              </div>
+
+              <p class="fp-lead">
+                Displacing conventional Indian fossil-mined 
+                <span class="term-with-tooltip">
+                  <strong class="term-text">lignite carriers</strong>
+                  <button class="info-bubble" type="button" aria-label="Explanation of lignite carriers" tabindex="0">
+                    ⓘ
+                    <span class="custom-tooltip" role="tooltip">Low-grade brown coal traditionally mined in Tamil Nadu/Rajasthan; causes rapid microbial mortality (>90% cell death) during hot Indian summers (>38°C).</span>
+                  </button>
+                </span>
+                with engineered torrefied agricultural 
+                <span class="term-with-tooltip">
+                  <strong class="term-text">recalcitrant biochar</strong>
+                  <button class="info-bubble" type="button" aria-label="Explanation of recalcitrant biochar" tabindex="0">
+                    ⓘ
+                    <span class="custom-tooltip" role="tooltip">Thermochemically fixed carbon skeleton synthesized from farm crop residues (paddy straw / bagasse) that resists rotting for centuries.</span>
+                  </button>
+                </span>. 
+                Its interconnected network of 
+                <span class="term-with-tooltip">
+                  <strong class="term-text">microbial refugia</strong>
+                  <button class="info-bubble" type="button" aria-label="Explanation of microbial refugia" tabindex="0">
+                    ⓘ
+                    <span class="custom-tooltip" role="tooltip">Microscopic honeycomb chambers (2–10 µm) inside biochar that shelter live bacteria from amoeba predators, moisture desiccation, and thermal shock.</span>
+                  </button>
+                </span>
+                dramatically prolongs retail shelf life.
+              </p>
+
+              <!-- Mechanism Breakdown Grid -->
+              <div class="fp-mechanism-grid">
+                <div class="fp-mech-card">
+                  <div class="fpm-icon bg-green-soft">🔬</div>
+                  <h4 class="fpm-title">High Porous Surface Area</h4>
+                  <p class="fpm-desc">
+                    Pyrolysis generates >350 m²/g internal surface area with micropores perfectly sized to cradle bacterial cells, preventing moisture loss and desiccation death.
+                  </p>
+                </div>
+
+                <div class="fp-mech-card">
+                  <div class="fpm-icon bg-amber-soft">🌡️</div>
+                  <h4 class="fpm-title">Thermal Insulation Refugia</h4>
+                  <p class="fpm-desc">
+                    Carbon matrix buffers against intense summer warehouse heat (up to 46°C in Punjab and Rajasthan), maintaining viable counts where lignite bacteria perish.
+                  </p>
+                </div>
+
+                <div class="fp-mech-card">
+                  <div class="fpm-icon bg-blue-soft">🔄</div>
+                  <h4 class="fpm-title">100% Circular & Fossil-Free</h4>
+                  <p class="fpm-desc">
+                    Converts local farm-waste paddy straw into high-value carrier media, avoiding coal pit mining while permanently sequestering stable carbon in farm topsoil.
+                  </p>
+                </div>
+              </div>
+
+              <!-- Key Benefits Strip (Green Accents) -->
+              <div class="fp-benefits-bar">
+                <span class="fpb-label">Key Field Agronomic Benefits:</span>
+                <div class="fpb-items">
+                  <div class="benefit-chip">
+                    <span class="bc-metric text-green">14–18 Mo. Shelf Life</span>
+                    <span class="bc-detail">Vs 3–4 months for conventional lignite carrier</span>
+                  </div>
+                  <div class="benefit-chip">
+                    <span class="bc-metric text-green">&gt; 1×10⁸ CFU/g</span>
+                    <span class="bc-detail">Viable cell count after 12 months ambient storage</span>
+                  </div>
+                  <div class="benefit-chip">
+                    <span class="bc-metric text-green">Zero Fossil Coal</span>
+                    <span class="bc-detail">100% circular upcycling of crop stubble</span>
+                  </div>
+                  <div class="benefit-chip">
+                    <span class="bc-metric text-green">Permanent SOC</span>
+                    <span class="bc-detail">Increases soil organic carbon for decades</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Section Transition Divider to Batch Mixer -->
+        <div class="submodule-divider">
+          <div class="submodule-title-wrap">
+            <span class="submodule-badge">Industrial Batch Production</span>
+            <h3 class="submodule-heading">Batch Recipe Mixer & FCO 1985 Specification Matrix</h3>
+          </div>
+        </div>
+
+        <div class="formulation-workspace">
+          
+          <!-- Formulation Interactive Sliders -->
+          <div class="formulation-controls-card">
+            <div class="card-top-bar">
+              <h3 class="box-title">Batch Recipe Mixer</h3>
+              <span class="batch-badge">Batch ID: #BF-IND-2026</span>
+            </div>
+
+            <!-- Feedstock Ratio Slider -->
+            <div class="control-group">
+              <div class="control-label-row">
+                <label for="slider-biochar" class="control-label">Torrefied Biochar Matrix (%)</label>
+                <span class="control-value text-green" id="val-slider-biochar">45%</span>
+              </div>
+              <input type="range" id="slider-biochar" min="20" max="70" value="45" class="range-slider" aria-valuemin="20" aria-valuemax="70" aria-valuenow="45">
+              <span class="control-hint">High-porosity carbon backbone for microbial colony stabilization and water retention.</span>
+            </div>
+
+            <!-- Microbial Inoculant Slider -->
+            <div class="control-group">
+              <div class="control-label-row">
+                <label for="slider-microbes" class="control-label">Microbial Bio-Inoculant Infusion (%)</label>
+                <span class="control-value text-green" id="val-slider-microbes">20%</span>
+              </div>
+              <input type="range" id="slider-microbes" min="5" max="35" value="20" class="range-slider" aria-valuemin="5" aria-valuemax="35" aria-valuenow="20">
+              <span class="control-hint">Azotobacter, Rhizobium & Phosphate Solubilizing Bacteria (PSB) > 1×10⁸ CFU/g.</span>
+            </div>
+
+            <!-- Mineral Fortification Slider -->
+            <div class="control-group">
+              <div class="control-label-row">
+                <label for="slider-minerals" class="control-label">Rock Phosphate & Potassium Glauconite (%)</label>
+                <span class="control-value text-saffron" id="val-slider-minerals">35%</span>
+              </div>
+              <input type="range" id="slider-minerals" min="10" max="50" value="35" class="range-slider" aria-valuemin="10" aria-valuemax="50" aria-valuenow="35">
+              <span class="control-hint">Indigenous non-chemical mineral sources providing slow-release plant nutrition.</span>
+            </div>
+
+            <!-- Preset Buttons -->
+            <div class="presets-row">
+              <span class="preset-label">Standard Presets:</span>
+              <button class="btn btn-sm btn-preset active" data-preset="balanced">Balanced NPK (8-8-8)</button>
+              <button class="btn btn-sm btn-preset" data-preset="carbon">High Carbon Soil Restorer</button>
+              <button class="btn btn-sm btn-preset" data-preset="phosphorus">P-Solubilizing Pulse Special</button>
+            </div>
+          </div>
+
+          <!-- Formulation Live Output Spec Sheet -->
+          <div class="formulation-spec-card">
+            <div class="spec-header">
+              <h3 class="box-title">Engineered Specification Matrix</h3>
+              <span class="status-pill status-ready" id="fco-compliance-status">
+                ✓ FCO 1985 Grade Passed
+              </span>
+            </div>
+
+            <div class="spec-grid">
+              <div class="spec-item">
+                <span class="spec-label">Organic Carbon (Min.)</span>
+                <span class="spec-value text-green" id="spec-carbon">22.4%</span>
+                <span class="spec-sub">FCO Min: 14.0%</span>
+              </div>
+              <div class="spec-item">
+                <span class="spec-label">Total N-P-K Content</span>
+                <span class="spec-value text-charcoal" id="spec-npk">8.6%</span>
+                <span class="spec-sub">Organic-Complexed</span>
+              </div>
+              <div class="spec-item">
+                <span class="spec-label">C : N Ratio</span>
+                <span class="spec-value text-charcoal" id="spec-cn">14.2 : 1</span>
+                <span class="spec-sub">Optimal Bio-availability</span>
+              </div>
+              <div class="spec-item">
+                <span class="spec-label">Moisture Content</span>
+                <span class="spec-value text-charcoal" id="spec-moist">12.8%</span>
+                <span class="spec-sub">Free Flowing Granules</span>
+              </div>
+              <div class="spec-item">
+                <span class="spec-label">pH Buffer Range</span>
+                <span class="spec-value text-charcoal" id="spec-ph">6.8 - 7.4</span>
+                <span class="spec-sub">Neutralizes Saline Soils</span>
+              </div>
+              <div class="spec-item">
+                <span class="spec-label">Heavy Metal Tolerance</span>
+                <span class="spec-value text-green" id="spec-metals">Zero Detect</span>
+                <span class="spec-sub">Lead/Cadmium &lt; 0.1 ppm</span>
+              </div>
+            </div>
+
+            <!-- Agronomic Benefits List -->
+            <div class="benefits-callout">
+              <h4 class="callout-title">Agronomic Performance Guarantee:</h4>
+              <ul class="check-list">
+                <li>Increases Soil Water Holding Capacity by up to <strong>35%</strong> during drought periods.</li>
+                <li>Reduces synthetic Urea and DAP dependency by <strong>30% to 40%</strong> over 2 harvest cycles.</li>
+                <li>Stimulates native mycorrhizal fungi and earthworm activity within 45 days of application.</li>
+              </ul>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Section 3: TEA, LCA & Circularity Dashboard -->
+    <section class="content-section" id="tealca-dashboard">
+      <div class="section-container">
+        
+        <div class="section-header-block">
+          <div class="section-tag-pill green">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg>
+            Module 03: Economic, Ecological & Circularity Modeling
+          </div>
+          <h2 class="section-title">TEA, LCA & Circularity Dashboard</h2>
+          <p class="section-description">
+            Holistic techno-economic feasibility (TEA), cradle-to-gate greenhouse gas life cycle assessment (LCA), and ISO 59020 circularity performance metrics for rural decentralized Indian biorefineries.
+          </p>
+        </div>
+
+        <!-- Real-Time Capacity Parameter Controller -->
+        <div class="dashboard-controls-bar">
+          <div class="dcb-left">
+            <label for="capacity-slider" class="dcb-label">Simulated Plant Processing Capacity:</label>
+            <span class="dcb-val text-saffron" id="display-capacity">50 MT / Day</span>
+          </div>
+          <div class="dcb-slider-wrapper">
+            <input type="range" id="capacity-slider" min="10" max="150" step="5" value="50" class="range-slider" aria-label="Biorefinery processing capacity in Metric Tons per day">
+          </div>
+          <div class="dcb-right">
+            <span class="dcb-scale">Scale: 10 MT (Village Micro) &bull; 50 MT (Tehsil Hub) &bull; 150 MT (District Center)</span>
+          </div>
+        </div>
+
+        <!-- Responsive CSS Grid: Three Distinct Dashboard Cards -->
+        <div class="charts-dashboard-grid" id="charts-dashboard-grid">
+          
+          <!-- Card 1: TEA Stacked Bar Chart -->
+          <div class="chart-dashboard-card">
+            <div class="chart-card-header">
+              <div class="cch-text">
+                <span class="cch-eyebrow text-saffron">Techno-Economic Analysis (TEA)</span>
+                <h3 class="cch-title">5-Year CAPEX & OPEX vs Net Present Value</h3>
+              </div>
+              <span class="chart-badge saffron">5-Year Horizon</span>
+            </div>
+            <div class="chart-summary-strip">
+              <span class="css-pill">Total CAPEX: <strong id="card-tea-capex">₹4.8 Cr</strong></span>
+              <span class="css-pill">Annual OPEX: <strong id="card-tea-opex">₹1.65 Cr</strong></span>
+              <span class="css-pill text-green">5-Yr NPV: <strong id="card-tea-npv">+₹8.4 Cr</strong></span>
+            </div>
+            <div class="chart-canvas-wrapper">
+              <canvas id="teaChart" aria-label="5-Year TEA CAPEX and OPEX vs Projected NPV Stacked Bar Chart" role="img"></canvas>
+            </div>
+            <div class="chart-card-footer">
+              <span class="ccf-legend-item"><span class="bullet saffron"></span> CAPEX (Capital Setup)</span>
+              <span class="ccf-legend-item"><span class="bullet" style="background:#FB923C;"></span> OPEX (Biomass & Operations)</span>
+              <span class="ccf-legend-item"><span class="bullet green"></span> Projected Net Present Value</span>
+            </div>
+          </div>
+
+          <!-- Card 2: LCA Emission Reductions Line Graph -->
+          <div class="chart-dashboard-card">
+            <div class="chart-card-header">
+              <div class="cch-text">
+                <span class="cch-eyebrow text-green">Life Cycle Assessment (LCA)</span>
+                <h3 class="cch-title">GHG Emission Reductions vs Synthetic Fertilizers</h3>
+              </div>
+              <span class="chart-badge green">tCO₂e Abatement</span>
+            </div>
+            <div class="chart-summary-strip">
+              <span class="css-pill">Baseline: <strong id="card-lca-base">1,480 kg/MT</strong></span>
+              <span class="css-pill text-green">Bio-Fertilizer: <strong id="card-lca-bio">-840 kg/MT</strong></span>
+              <span class="css-pill">Net Offset: <strong id="card-lca-offset">-68% CO₂e</strong></span>
+            </div>
+            <div class="chart-canvas-wrapper">
+              <canvas id="lcaChart" aria-label="LCA Greenhouse Gas Emission Reductions Smooth Line Graph" role="img"></canvas>
+            </div>
+            <div class="chart-card-footer">
+              <span class="ccf-legend-item"><span class="bullet" style="background:#DC2626;"></span> Synthetic DAP/Urea Baseline</span>
+              <span class="ccf-legend-item"><span class="bullet green"></span> KrishiUrja Bio-Fertilizer (Net-Negative)</span>
+            </div>
+          </div>
+
+          <!-- Card 3: ISO 59020 Circularity Radar Chart -->
+          <div class="chart-dashboard-card">
+            <div class="chart-card-header">
+              <div class="cch-text">
+                <span class="cch-eyebrow text-green">Circularity Standards</span>
+                <h3 class="cch-title">ISO 59020 Facility Circularity Performance</h3>
+              </div>
+              <span class="chart-badge green" id="card-circ-index">Index: 94.3%</span>
+            </div>
+            <div class="chart-summary-strip">
+              <span class="css-pill">Resource Inflows: <strong>96%</strong></span>
+              <span class="css-pill">Outflows / Waste: <strong>92%</strong></span>
+              <span class="css-pill">Energy Recovery: <strong>95%</strong></span>
+            </div>
+            <div class="chart-canvas-wrapper">
+              <canvas id="circularityChart" aria-label="ISO 59020 Circularity Performance Radar Chart across Three Axes" role="img"></canvas>
+            </div>
+            <div class="chart-card-footer">
+              <span class="ccf-legend-item"><span class="bullet green"></span> Biorefinery Circularity Actual</span>
+              <span class="ccf-legend-item"><span class="bullet" style="background:#9CA3AF;"></span> Conventional Linear Baseline (32%)</span>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Tab Navigation for TEA vs LCA -->
+        <div class="dashboard-tabs" role="tablist" aria-label="Analysis Mode">
+          <button class="d-tab-btn active" role="tab" aria-selected="true" id="tab-tea" data-tab="tea">
+            <span class="tab-indicator saffron"></span>
+            Techno-Economic Analysis (TEA)
+          </button>
+          <button class="d-tab-btn" role="tab" aria-selected="false" id="tab-lca" data-tab="lca">
+            <span class="tab-indicator green"></span>
+            Life Cycle Assessment (LCA Carbon & Energy)
+          </button>
+        </div>
+
+        <!-- Tab 1: Techno-Economic Analysis View -->
+        <div class="tab-pane active" id="pane-tea" role="tabpanel" aria-labelledby="tab-tea">
+          <div class="tea-summary-grid">
+            
+            <div class="tea-card">
+              <span class="tea-card-label">Initial Project CAPEX</span>
+              <div class="tea-card-val text-charcoal" id="val-capex">₹ 4.80 Cr</div>
+              <span class="tea-card-sub">Plant machinery, torrefaction kiln, granulator</span>
+            </div>
+
+            <div class="tea-card">
+              <span class="tea-card-label">Annual Operating OPEX</span>
+              <div class="tea-card-val text-charcoal" id="val-opex">₹ 1.65 Cr</div>
+              <span class="tea-card-sub">Residue procurement, power, rural labor</span>
+            </div>
+
+            <div class="tea-card highlight-saffron">
+              <span class="tea-card-label">Annual Gross Revenue</span>
+              <div class="tea-card-val text-saffron" id="val-revenue">₹ 3.42 Cr</div>
+              <span class="tea-card-sub">Biofertilizer sales + Syngas power + Carbon Credits</span>
+            </div>
+
+            <div class="tea-card highlight-green">
+              <span class="tea-card-label">Project Payback Period</span>
+              <div class="tea-card-val text-green" id="val-payback">2.7 Years</div>
+              <span class="tea-card-sub">Internal Rate of Return (IRR): 34.2%</span>
+            </div>
+
+          </div>
+
+          <!-- Economics Breakdown Visual Bars -->
+          <div class="tea-breakdown-card">
+            <h3 class="breakdown-title">Annual Cashflow & Value Distribution</h3>
+            
+            <div class="progress-group">
+              <div class="progress-label-row">
+                <span>Farmer Aggregate Payout (Biomass Purchase)</span>
+                <strong class="text-green" id="val-farmer-payout">₹ 82.5 Lakhs / yr</strong>
+              </div>
+              <div class="progress-track">
+                <div class="progress-bar bg-green" style="width: 65%;"></div>
+              </div>
+            </div>
+
+            <div class="progress-group">
+              <div class="progress-label-row">
+                <span>Bio-Fertilizer Offtake (Subsidized Retail to FPOs)</span>
+                <strong class="text-charcoal" id="val-fertilizer-offtake">₹ 2.15 Cr / yr</strong>
+              </div>
+              <div class="progress-track">
+                <div class="progress-bar bg-charcoal" style="width: 80%;"></div>
+              </div>
+            </div>
+
+            <div class="progress-group">
+              <div class="progress-label-row">
+                <span>Carbon Offset Revenue (CCTS / Voluntary Credits)</span>
+                <strong class="text-saffron" id="val-carbon-rev">₹ 44.5 Lakhs / yr</strong>
+              </div>
+              <div class="progress-track">
+                <div class="progress-bar bg-saffron" style="width: 45%;"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab 2: Life Cycle Assessment View (Hidden by default, switched by JS) -->
+        <div class="tab-pane" id="pane-lca" role="tabpanel" aria-labelledby="tab-lca" hidden>
+          <div class="tea-summary-grid">
+            
+            <div class="tea-card highlight-green">
+              <span class="tea-card-label">Net GHG Averted</span>
+              <div class="tea-card-val text-green" id="val-lca-ghg">-18,250 tCO₂e</div>
+              <span class="tea-card-sub">Annual equivalent to 4,200 cars off road</span>
+            </div>
+
+            <div class="tea-card">
+              <span class="tea-card-label">Particulate Matter (PM2.5) Prevented</span>
+              <div class="tea-card-val text-charcoal" id="val-lca-pm">425 Tons/yr</div>
+              <span class="tea-card-sub">Air quality protection for Indo-Gangetic Plains</span>
+            </div>
+
+            <div class="tea-card">
+              <span class="tea-card-label">Net Energy Ratio (NER)</span>
+              <div class="tea-card-val text-saffron" id="val-lca-ner">4.2 : 1</div>
+              <span class="tea-card-sub">Produces 4.2x more energy than process consumed</span>
+            </div>
+
+            <div class="tea-card">
+              <span class="tea-card-label">Water Footprint Reduction</span>
+              <div class="tea-card-val text-green" id="val-lca-water">28.4 Million Liters</div>
+              <span class="tea-card-sub">Via enhanced farm soil moisture retention</span>
+            </div>
+
+          </div>
+
+          <!-- Comparison Bar Visualizer -->
+          <div class="tea-breakdown-card">
+            <h3 class="breakdown-title">Cradle-to-Gate Carbon Balance vs Conventional Open Stubble Burning</h3>
+            
+            <div class="comparison-row">
+              <div class="comp-col">
+                <div class="comp-name text-danger">Conventional Field Burning (Status Quo)</div>
+                <div class="comp-bar-container">
+                  <div class="comp-bar bg-red" style="width: 90%;">+ 1,480 kg CO₂e / MT Waste</div>
+                </div>
+                <span class="comp-note">Releases toxic soot, VOCs, methane & black carbon.</span>
+              </div>
+              <div class="comp-col">
+                <div class="comp-name text-green">KrishiUrja Biorefinery Route</div>
+                <div class="comp-bar-container">
+                  <div class="comp-bar bg-green" style="width: 35%;">- 840 kg CO₂e / MT Waste</div>
+                </div>
+                <span class="comp-note">Net negative sequestered carbon in agricultural soils.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Section 4: Risk Management & Regulatory Compliance Matrix -->
+    <section class="content-section bg-subtle-tint" id="compliance">
+      <div class="section-container">
+        
+        <div class="section-header-block">
+          <div class="section-tag-pill green">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+            Module 04: Statutory Governance & Risk Mitigation
+          </div>
+          <h2 class="section-title">Risk Management &amp; Regulatory Compliance Matrix</h2>
+          <p class="section-description">
+            Rigorous Failure Mode and Effects Analysis (FMEA) operational risk management combined with real-time Fertilizer Control Order (FCO 1985 &amp; 2021) statutory verification.
+          </p>
+        </div>
+
+        <!-- Split Layout: FMEA Table & FCO Compliance Tracker -->
+        <div class="risk-compliance-matrix-layout" id="risk-compliance-matrix">
+          
+          <!-- Section 1: FMEA Data Table Card -->
+          <div class="matrix-card fmea-card">
+            <div class="matrix-card-header">
+              <div class="mch-title-wrap">
+                <span class="mch-eyebrow text-saffron">Risk Assessment Matrix</span>
+                <h3 class="mch-title">Failure Mode &amp; Effects Analysis (FMEA)</h3>
+              </div>
+              <span class="matrix-badge saffron">ISO 31000 Aligned</span>
+            </div>
+            <p class="matrix-card-lead">
+              Critical evaluation of process hazards across feedstock logistics, thermochemical pyrolysis, microbial bio-inoculation, and heavy metal controls.
+            </p>
+
+            <!-- Horizontally Scrollable Table Wrapper -->
+            <div class="table-scroll-container">
+              <table class="fmea-table" id="fmea-table" aria-label="Failure Mode and Effects Analysis (FMEA) Data Table">
+                <thead>
+                  <tr>
+                    <th scope="col" class="th-failure">Potential Failure</th>
+                    <th scope="col" class="th-num">Severity</th>
+                    <th scope="col" class="th-num">Occurrence</th>
+                    <th scope="col" class="th-num">Detection</th>
+                    <th scope="col" class="th-strategy">Mitigation Strategy</th>
+                  </tr>
+                </thead>
+                <tbody id="fmea-tbody">
+                  <!-- Dynamically Injected via JavaScript -->
+                </tbody>
+              </table>
+            </div>
+
+            <div class="table-legend-footer">
+              <span class="legend-note"><span class="bullet charcoal"></span> Severity / Occurrence / Detection Scale: 1 (Low) to 10 (High Risk)</span>
+              <span class="legend-tag text-green">✓ Active Continuous Mitigation Protocol</span>
+            </div>
+          </div>
+
+          <!-- Section 2: FCO Compliance Tracker Card -->
+          <div class="matrix-card fco-card">
+            <div class="matrix-card-header">
+              <div class="mch-title-wrap">
+                <span class="mch-eyebrow text-green">Statutory Standards</span>
+                <h3 class="mch-title">FCO Regulatory Compliance Tracker</h3>
+              </div>
+              <span class="status-pill status-ready" id="fco-overall-pill">
+                <span class="pulse-dot"></span> Schedule IV Verified
+              </span>
+            </div>
+            <p class="matrix-card-lead">
+              Continuous laboratory quality assurance aligned with the Fertilizer Control Order (FCO 1985 &amp; 2021 amendments) governing biofertilizers and organic manures.
+            </p>
+
+            <!-- Clean HTML Unordered List using CSS Flexbox -->
+            <ul class="fco-checklist" id="fco-checklist" aria-label="FCO Regulatory Compliance Checklist">
+              <!-- Dynamically Injected via JavaScript -->
+            </ul>
+
+            <div class="checklist-footer">
+              <span class="cf-authority">Governing Authority: <strong>Ministry of Agriculture &amp; Farmers Welfare</strong></span>
+              <span class="cf-stamp text-green">✓ Certified Laboratory Assay</span>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Submodule Divider to Statutory Clearances -->
+        <div class="submodule-divider">
+          <div class="submodule-title-wrap">
+            <span class="submodule-badge">National Clearances &amp; Off-Take Frameworks</span>
+            <h3 class="submodule-heading">Statutory Clearances, SATAT Off-Take &amp; Carbon Trading</h3>
+          </div>
+        </div>
+
+        <div class="compliance-grid">
+          
+          <!-- Compliance Card 1: FCO -->
+          <div class="compliance-card">
+            <div class="cc-header">
+              <div class="cc-badge-icon bg-green-soft">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#15803D" stroke-width="2.2"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+              </div>
+              <span class="status-pill status-ready">Certified</span>
+            </div>
+            <h3 class="cc-title">FCO 1985 (Schedule IV)</h3>
+            <p class="cc-body">
+              Certified under the Fertilizer (Inorganic, Organic or Mixed) (Control) Order for Fermented Organic Manure (FOM) and Bio-fertilizers. Rigorous heavy metals, pathogen & moisture testing.
+            </p>
+            <ul class="cc-checklist">
+              <li>✓ Heavy Metals: Pb &lt; 0.1ppm, Cd &lt; 0.05ppm</li>
+              <li>✓ Viable Colony Count: &gt; 1×10⁸ CFU/g</li>
+              <li>✓ Moisture Content: &lt; 15% guaranteed</li>
+            </ul>
+            <div class="cc-footer">
+              <span class="cc-authority">Ministry of Agriculture & Farmers Welfare</span>
+            </div>
+          </div>
+
+          <!-- Compliance Card 2: CPCB -->
+          <div class="compliance-card">
+            <div class="cc-header">
+              <div class="cc-badge-icon bg-green-soft">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#15803D" stroke-width="2.2"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+              </div>
+              <span class="status-pill status-ready">Zero Discharge</span>
+            </div>
+            <h3 class="cc-title">CPCB Clean Industrial Norms</h3>
+            <p class="cc-body">
+              Classified under Green/White industrial category for agro-residue processing. Operates with closed-loop process water recycling and electrostatic precipitators for zero stack smoke.
+            </p>
+            <ul class="cc-checklist">
+              <li>✓ Zero Liquid Discharge (ZLD) closed recycling</li>
+              <li>✓ Stack Particulates: &lt; 30 mg/Nm³</li>
+              <li>✓ Continuous Ambient Air Monitoring Station (CAAQM)</li>
+            </ul>
+            <div class="cc-footer">
+              <span class="cc-authority">Central Pollution Control Board (CPCB)</span>
+            </div>
+          </div>
+
+          <!-- Compliance Card 3: SATAT -->
+          <div class="compliance-card">
+            <div class="cc-header">
+              <div class="cc-badge-icon bg-green-soft">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#15803D" stroke-width="2.2"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+              </div>
+              <span class="status-pill status-ready">Eligible</span>
+            </div>
+            <h3 class="cc-title">SATAT Bio-Energy Scheme</h3>
+            <p class="cc-body">
+              Full eligibility for commercial off-take agreements with Indian Oil Corporations (IOCL, BPCL, HPCL) for co-produced Compressed Bio-Gas (CBG) and Fermented Bio-Manure.
+            </p>
+            <ul class="cc-checklist">
+              <li>✓ Guaranteed Floor Price Off-take Agreement</li>
+              <li>✓ Priority Sector Lending (PSL) eligibility</li>
+              <li>✓ Central Financial Assistance (CFA) capital subsidy</li>
+            </ul>
+            <div class="cc-footer">
+              <span class="cc-authority">Ministry of Petroleum & Natural Gas</span>
+            </div>
+          </div>
+
+          <!-- Compliance Card 4: CCTS Carbon Credits -->
+          <div class="compliance-card">
+            <div class="cc-header">
+              <div class="cc-badge-icon bg-green-soft">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#15803D" stroke-width="2.2"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+              </div>
+              <span class="status-pill status-ready">Verified</span>
+            </div>
+            <h3 class="cc-title">CCTS & Article 6 Credits</h3>
+            <p class="cc-body">
+              Methodology compliant with the Carbon Credit Trading Scheme (India) and Gold Standard / Verra methodologies for agricultural biochar carbon removal (BCR) and avoided crop fires.
+            </p>
+            <ul class="cc-checklist">
+              <li>✓ Bureau of Energy Efficiency (BEE) aligned</li>
+              <li>✓ Satellite MRV for zero-fire verification</li>
+              <li>✓ Traceable QR code on every biofertilizer bag</li>
+            </ul>
+            <div class="cc-footer">
+              <span class="cc-authority">Bureau of Energy Efficiency (BEE)</span>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Compliance Action Banner -->
+        <div class="compliance-action-banner">
+          <div class="cab-content">
+            <h3 class="cab-title">Ready for Statutory DPR & Regulatory Clearance?</h3>
+            <p class="cab-sub">Generate a pre-formatted Detailed Project Report (DPR) with integrated environmental impact assessments ready for district single-window clearances.</p>
+          </div>
+          <div class="cab-btn-wrap">
+            <button class="btn btn-saffron btn-lg" id="btn-download-dossier">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+              </svg>
+              <span>Download Statutory Dossier</span>
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Interactive Feedback Toast Notification (Accessible) -->
+  <div class="toast-notification" id="toast-notification" role="alert" aria-live="polite" aria-hidden="true">
+    <div class="toast-icon">✓</div>
+    <div class="toast-message" id="toast-message">Simulation updated successfully.</div>
+  </div>
+
+  <!-- Persistent Site Footer -->
+  <footer class="site-footer">
+    <div class="footer-tricolor-bar" aria-hidden="true"></div>
+    <div class="section-container footer-content">
+      <div class="footer-brand-col">
+        <div class="footer-logo">
+          <span class="brand-name">Krishi<span class="brand-highlight">Urja</span></span>
+          <span class="footer-tagline">National Farm-Waste-to-Fertilizer Biorefinery Platform</span>
+        </div>
+        <p class="footer-desc">
+          Empowering Indian farmers through circular bio-economy engineering, clean rural air, and soil carbon restoration.
+        </p>
+        <div class="footer-rural-badge">
+          <span class="frb-icon">🇮🇳</span> Designed for rural accessibility & high-contrast outdoor visibility.
+        </div>
+      </div>
+
+      <div class="footer-nav-col">
+        <h4 class="footer-heading">Platform Modules</h4>
+        <ul class="footer-links">
+          <li><a href="#baseline-mapping">Baseline Agro-Residue Mapping</a></li>
+          <li><a href="#formulation">Organo-Mineral Formulation</a></li>
+          <li><a href="#tealca-dashboard">TEA / LCA Techno-Economic Modeling</a></li>
+          <li><a href="#compliance">Regulatory & FCO Compliance</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-nav-col">
+        <h4 class="footer-heading">Key Indian Initiatives</h4>
+        <ul class="footer-links">
+          <li><a href="#compliance">SATAT (MoPNG)</a></li>
+          <li><a href="#compliance">Fertilizer Control Order 1985</a></li>
+          <li><a href="#compliance">CPCB Green Industry Guidelines</a></li>
+          <li><a href="#compliance">Carbon Credit Trading Scheme (BEE)</a></li>
+        </ul>
+      </div>
+    </div>
+    
+    <div class="footer-bottom">
+      <div class="section-container footer-bottom-inner">
+        <p>&copy; 2026 KrishiUrja Biorefinery Initiative. Developed under EPICS (Engineering Projects in Community Service).</p>
+        <p class="footer-privacy">Built with Vanilla Web Standards &bull; Zero JavaScript Frameworks &bull; WCAG 2.1 AAA Compliant</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Vanilla JavaScript Application -->
+  <script src="app.js"></script>
+</body>
+</html>
+
