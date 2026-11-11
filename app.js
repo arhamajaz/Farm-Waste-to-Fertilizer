@@ -1304,7 +1304,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // Dynamic agronomic chemical formula modeling
     const calculatedCarbon = ((biochar * 0.44) + (microbes * 0.12) + (minerals * 0.02)).toFixed(1);
     const calculatedNpk = ((minerals * 0.18) + (microbes * 0.11) + (biochar * 0.03)).toFixed(1);
-    const calculatedCn = (calculatedCarbon / (calculatedNpk * 0.18)).toFixed(1);
+    const calculatedCn = (calculatedNpk > 0 && calculatedCarbon > 0)
+      ? (calculatedCarbon / (calculatedNpk * 0.18)).toFixed(1)
+      : '0.0';
     const calculatedMoist = (14.5 - (biochar * 0.04)).toFixed(1);
 
     specCarbon.textContent = `${calculatedCarbon}%`;
@@ -1629,11 +1631,21 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       });
     }
+
+    // Synchronize dashboard numbers and charts immediately
+    if (typeof calculateDashboard === 'function') {
+      calculateDashboard();
+    }
   }
 
   // Attempt chart initialization immediately and on window load
   initCharts();
-  window.addEventListener('load', initCharts);
+  window.addEventListener('load', () => {
+    initCharts();
+    if (typeof calculateDashboard === 'function') {
+      calculateDashboard();
+    }
+  });
 
   /**
    * Recalculate financial model, life-cycle stats, and update Chart.js data
@@ -1801,9 +1813,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (!roiResultsContainer) return;
 
-    roiResultsContainer.classList.remove('roi-fade-in');
-    void roiResultsContainer.offsetWidth; // Force CSS animation restart
-    roiResultsContainer.classList.add('roi-fade-in');
+    // Only force CSS animation restart on explicit submit/click, not on live keystroke events
+    if (e) {
+      roiResultsContainer.classList.remove('roi-fade-in');
+      void roiResultsContainer.offsetWidth; // Force CSS animation restart
+      roiResultsContainer.classList.add('roi-fade-in');
+    } else if (!roiResultsContainer.classList.contains('roi-fade-in')) {
+      roiResultsContainer.classList.add('roi-fade-in');
+    }
 
     roiResultsContainer.innerHTML = `
       <div class="roi-results-card">
@@ -1898,9 +1915,22 @@ document.addEventListener('DOMContentLoaded', () => {
     calculateFarmerROI(e);
   });
 
-  // Live calculation updates on input change for fluid experience
-  roiFarmSizeInput?.addEventListener('input', () => calculateFarmerROI(null));
-  roiSyntheticSpendInput?.addEventListener('input', () => calculateFarmerROI(null));
+  // Debounce helper for live calculation on low-end mobile devices
+  function debounce(fn, delayMs) {
+    let timer;
+    return function (...args) {
+      clearTimeout(timer);
+      timer = setTimeout(() => fn.apply(this, args), delayMs);
+    };
+  }
+
+  const debouncedCalculateRoi = debounce(() => {
+    calculateFarmerROI(null);
+  }, 150);
+
+  // Live calculation updates on input change with debounce to prevent DOM thrashing
+  roiFarmSizeInput?.addEventListener('input', debouncedCalculateRoi);
+  roiSyntheticSpendInput?.addEventListener('input', debouncedCalculateRoi);
 
   // =========================================================================
   // 7. Module 04: Risk Management & Regulatory Compliance Matrix

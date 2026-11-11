@@ -16,24 +16,39 @@ const STATIC_ASSETS = [
   './manifest.json',
   './icon.svg',
   './icon-192.png',
-  './icon-512.png',
+  './icon-512.png'
+];
+
+const EXTERNAL_CDN_ASSETS = [
   'https://cdn.jsdelivr.net/npm/chart.js'
 ];
 
-// Install Event: Pre-cache all core static assets
+// Install Event: Pre-cache local static assets first, then attempt CDN assets gracefully
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then((cache) => {
-        console.log('[ServiceWorker] Pre-caching offline static assets');
-        return cache.addAll(STATIC_ASSETS);
+        console.log('[ServiceWorker] Pre-caching local static assets');
+        // Pre-cache mandatory local shell first
+        return cache.addAll(STATIC_ASSETS).then(() => {
+          // Attempt external CDN caching gracefully without failing install
+          return Promise.allSettled(
+            EXTERNAL_CDN_ASSETS.map((url) =>
+              fetch(url)
+                .then((res) => {
+                  if (res.ok) return cache.put(url, res);
+                })
+                .catch((err) => console.warn('[ServiceWorker] CDN pre-cache deferred:', err))
+            )
+          );
+        });
       })
       .then(() => {
         // Activate worker immediately without waiting for page reload
         return self.skipWaiting();
       })
       .catch((err) => {
-        console.warn('[ServiceWorker] Pre-cache warning:', err);
+        console.error('[ServiceWorker] Critical pre-cache failure:', err);
       })
   );
 });
@@ -61,8 +76,9 @@ self.addEventListener('activate', (event) => {
 
 // Fetch Event: Network-first strategy with offline cache fallback
 self.addEventListener('fetch', (event) => {
-  // Only intercept GET requests
+  // Only intercept GET requests and valid HTTP/HTTPS schemes
   if (event.request.method !== 'GET') return;
+  if (!event.request.url.startsWith('http')) return; // Filter out chrome-extension://, data:, etc.
 
   event.respondWith(
     // Attempt to fetch from network first
@@ -86,7 +102,7 @@ self.addEventListener('fetch', (event) => {
           }
 
           // If navigation request and offline, fallback to root index.html
-          if (event.request.mode === 'navigate') {
+          if (event.request.mode === 'navigate' || event.request.headers.get('accept')?.includes('text/html')) {
             return caches.match('./index.html');
           }
 
@@ -99,3 +115,4 @@ self.addEventListener('fetch', (event) => {
       })
   );
 });
+
