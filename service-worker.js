@@ -20,7 +20,10 @@ const STATIC_ASSETS = [
 ];
 
 const EXTERNAL_CDN_ASSETS = [
-  'https://cdn.jsdelivr.net/npm/chart.js'
+  'https://cdn.jsdelivr.net/npm/chart.js',
+  'https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js',
+  'https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js',
+  'https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js'
 ];
 
 // Install Event: Pre-cache local static assets first, then attempt CDN assets gracefully

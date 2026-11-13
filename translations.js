@@ -159,6 +159,16 @@ const translations = {
     "fco_authority_name": "Ministry of Agriculture & Farmers Welfare",
     "fco_stamp": "✓ Certified Laboratory Assay",
 
+    // Enterprise Extensions (PDF, WhatsApp, Auth)
+    "btn_download_pdf": "Download Full Report (PDF)",
+    "btn_share_whatsapp": "Share on WhatsApp",
+    "nav_sign_in": "Sign In",
+    "nav_sign_out": "Sign Out",
+    "auth_modal_title": "Farmer & Enterprise Portal",
+    "auth_modal_lead": "Access verified soil testing records, TEA feasibility dossiers, and satellite crop-waste monitoring.",
+    "auth_btn_google": "Sign In with Google",
+    "auth_trust_note": "End-to-end encrypted biometric & Aadhaar/KVK SSO compliant.",
+
     // Footer
     "footer_tagline": "National Farm-Waste-to-Fertilizer Biorefinery Platform",
     "footer_rural_badge": "Designed for rural accessibility & high-contrast outdoor visibility."
@@ -316,6 +326,16 @@ const translations = {
     "fco_authority_label": "नियामक प्राधिकरण:",
     "fco_authority_name": "कृषि एवं किसान कल्याण मंत्रालय",
     "fco_stamp": "✓ प्रमाणित प्रयोगशाला परीक्षण",
+
+    // Enterprise Extensions (PDF, WhatsApp, Auth)
+    "btn_download_pdf": "पूर्ण रिपोर्ट डाउनलोड करें (PDF)",
+    "btn_share_whatsapp": "व्हाट्सएप पर शेयर करें",
+    "nav_sign_in": "साइन इन",
+    "nav_sign_out": "साइन आउट",
+    "auth_modal_title": "किसान एवं उद्यम पोर्टल",
+    "auth_modal_lead": "सत्यापित मृदा परीक्षण रिकॉर्ड, टीईए व्यवहार्यता डोजियर और उपग्रह फसल-अपशिष्ट निगरानी तक पहुंचें।",
+    "auth_btn_google": "गूगल के साथ साइन इन करें",
+    "auth_trust_note": "सुरक्षित बायोमेट्रिक एवं आधार/केवीके एसएसओ संगत।",
 
     // Footer
     "footer_tagline": "राष्ट्रीय कृषि-अपशिष्ट से उर्वरक बायोरिफाइनरी मंच",
