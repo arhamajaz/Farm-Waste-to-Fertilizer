@@ -262,6 +262,15 @@ document.addEventListener('DOMContentLoaded', () => {
     if (roiMassiveSavings && typeof calculateFarmerROI === 'function') {
       calculateFarmerROI(null);
     }
+    if (typeof calculateFormulation === 'function') {
+      calculateFormulation();
+    }
+    if (typeof renderFMEATable === 'function') {
+      renderFMEATable();
+    }
+    if (typeof renderFCOChecklist === 'function') {
+      renderFCOChecklist();
+    }
 
     // Recompute the animated active indicator for spatial awareness since nav text width changes
     const activeDesktopNav = document.querySelector('.nav-link.active');
@@ -631,6 +640,8 @@ document.addEventListener('DOMContentLoaded', () => {
       category: "फसल अवशेष",
       optimalTechnology: "बायोचार पायरोलिसिस",
       technologySub: "कंटीन्यूअस ऑटोधर्मल रिटॉर्ट भट्ठा (450°C – 550°C)",
+      primaryOutput: "उच्च-छिद्रयुक्त मृदा बायोचार एवं ईंधन सिनगैस",
+      whySelected: "धान के पुआल और चावल की भूसी में अत्यधिक उच्च कार्बन-से-नाइट्रोजन अनुपात (85:1) के साथ 12% से अधिक क्रिस्टलीय सिलिका और लिग्निन होता है। अवायवीय पाचन या सामान्य खाद में नाइट्रोजन की कमी के कारण जैविक क्रिया रुक जाती है। थर्मोकेमिकल पायरोलिसिस इस बाधा को पार कर 100% लिग्नोसेल्यूलोज को भारतीय कृषि मिट्टी में 100+ वर्षों तक कार्बन को बांधने वाले छिद्रयुक्त बायोचार में बदल देता है।",
       pros: [
         "पंजाब, हरियाणा और पश्चिमी उत्तर प्रदेश में पराली जलाने की समस्या को सीधे समाप्त करता है।",
         "रेतीली दोमट मिट्टी की जल धारण क्षमता को 35% तक बढ़ाता है और पोषक तत्वों के रिसाव को रोकता है।",
@@ -639,13 +650,16 @@ document.addEventListener('DOMContentLoaded', () => {
       cons: [
         "कम घनत्व (40-60 kg/m³) के कारण यांत्रिक संग्रह और बेलिंग की आवश्यकता होती है।",
         "सरल खाद गड्ढों की तुलना में पायरोलिसिस रिटॉर्ट कक्षों के लिए उच्च अग्रिम पूंजीगत व्यय (CAPEX)।"
-      ]
+      ],
+      agronomicRecommendation: "सक्रिय सूक्ष्मजीवी कॉलोनियों को बायोचार में स्थापित करने के लिए मॉड्यूल 02 में गोबर घोल या पोल्ट्री खाद के साथ मिलाना सर्वोत्तम है।"
     },
     "sugarcane-bagasse": {
       name: "गन्ना खोई (बगास)",
       category: "कृषि-औद्योगिक अवशेष",
       optimalTechnology: "बायोचार पायरोलिसिस",
       technologySub: "फ्लूइडाइज्ड-बेड टॉरिफैक्शन रिएक्टर (500°C)",
+      primaryOutput: "पोटेशियम-समृद्ध बायोचार छर्रे एवं प्रक्रिया भाप",
+      whySelected: "110:1 से अधिक C:N अनुपात और सख्त रेशेदार संरचना के कारण इस कचरे में नाइट्रोजन की भारी कमी होती है। खुली खाद बनने में 8 महीने से अधिक समय लगता है। पायरोलिसिस कार्बन को उच्च-सतह क्षेत्र (>300 m²/g) वाले मैट्रिक्स में स्थिर करता है और गन्ने के अम्लीय खेतों को सुधारने के लिए प्राकृतिक पोटेशियम को सुरक्षित रखता है।",
       pros: [
         "भारतीय चीनी मिलों पर भारी मात्रा में पहले से केंद्रीकृत, अतिरिक्त बेलिंग की आवश्यकता नहीं।",
         "अत्यधिक झरझरा, क्षारीय बायोचार बनाता है जो अम्लीय गन्ने की मिट्टी को तेजी से सुधारता है।",
@@ -654,13 +668,16 @@ document.addEventListener('DOMContentLoaded', () => {
       cons: [
         "मिल से आने वाली खोई में लगभग 48% नमी होती है, जिसे भट्ठे में जाने से पहले सुखाना पड़ता है।",
         "मौसमी पेराई कैलेंडर (नवंबर से मार्च) के कारण साल भर संचालन के लिए सूखे भंडारण की आवश्यकता।"
-      ]
+      ],
+      agronomicRecommendation: "उच्च प्राकृतिक पोटेशियम इसे रॉक फॉस्फेट के साथ समृद्ध करने पर रासायनिक डीएपी का एक उत्कृष्ट जैविक विकल्प बनाता है।"
     },
     "cow-dung": {
       name: "गोबर घोल (गोबर स्लरी)",
       category: "डेयरी पशुधन उपोत्पाद",
       optimalTechnology: "अवायवीय पाचन (बायोगैस)",
       technologySub: "हाई-रेट कंटीन्यूअस स्टिरर्ड-टैंक रिएक्टर (CSTR)",
+      primaryOutput: "संपीड़ित बायो-गैस (CBG) एवं किण्वित जैविक खाद (FOM)",
+      whySelected: "गोबर में मीथेनोजेनिक सूक्ष्मजीवों के लिए आदर्श C:N अनुपात (20:1 से 25:1) और 80% से अधिक प्राकृतिक नमी होती है। कार्बन ऊर्जा देता है और नाइट्रोजन कोशिका निर्माण करता है, जिससे तीव्र गैस उत्पादन (55%-65% मीथेन) और एफसीओ अनुसूची IV मानकों के अनुरूप किण्वित जैविक खाद मिलती है।",
       pros: [
         "भारत सरकार की SATAT पहल के तहत वाणिज्यिक संपीड़ित बायो-गैस (CBG) का उत्पादन।",
         "उच्च जैविक कार्बन (>16%) और सक्रिय लाभकारी जीवाणुओं के साथ गंधहीन किण्वित जैविक खाद (FOM)।",
@@ -669,28 +686,34 @@ document.addEventListener('DOMContentLoaded', () => {
       cons: [
         "पर्याप्त जल पदचिह्न और तरल अपशिष्ट जिसके लिए समर्पित निस्यंद उपचार की आवश्यकता होती है।",
         "वातावरण में मीथेन उत्सर्जन रोकने के लिए पूर्ण वायुरोधी सीलिंग आवश्यक है।"
-      ]
+      ],
+      agronomicRecommendation: "ठोस डाइजेस्टेड केक फॉर्मूलेशन इंजन के लिए प्राथमिक माइक्रोबियल इनोकुलम और ह्यूमस आधार प्रदान करता है।"
     },
     "poultry-litter": {
       name: "पोल्ट्री खाद एवं विष्ठा",
       category: "वाणिज्यिक पोल्ट्री खाद",
       optimalTechnology: "अवायवीय पाचन (बायोगैस)",
       technologySub: "उच्च-कार्बन कृषि-पुआल के साथ सह-पाचन CSTR",
+      primaryOutput: "उच्च-नाइट्रोजन जैव-उर्वरक एवं त्वरित मीथेन",
+      whySelected: "पोल्ट्री विष्ठा में यूरिक एसिड और नाइट्रोजन की सघनता के कारण C:N अनुपात बेहद कम (10:1) होता है। इसे अकेले पचाने पर अमोनिया विषाक्तता होती है। लेकिन जब इसे पराली या खोई के साथ सह-पाचन में मिलाया जाता है, तो यह आदर्श 25:1 C:N अनुपात प्राप्त कर मीथेन उत्पादन को 40% बढ़ाता है और समृद्ध खाद बनाता है।",
       pros: [
         "सभी भारतीय जैविक अपशिष्टों में उच्चतम प्राकृतिक N-P-K सांद्रता (3.8% N, 2.5% P₂O₅, 2.0% K₂O)।",
         "थर्मोफिलिक तापमान 72 घंटों के भीतर हानिकारक रोगजनकों को नष्ट करता है।",
-        "कच्चे पोल्ट्री भंडारण से होने वाले भूजल संदूषण और अमोनिया उत्सर्जन को रोकता है।"
+        "कच्चे पोल्ट्री भंडारण से होने वाले भूजल संदूषण और अमोनिया उत्सर्जन को रोकता है।",
       ],
       cons: [
         "अकेले एकल-सब्सट्रेट के रूप में नहीं पचाया जा सकता; उच्च-कार्बन सह-सब्सट्रेट की आवश्यकता होती है।",
         "संक्षारक अमोनिया वाष्प के लिए स्टेनलेस स्टील फिटिंग और गैस बायो-स्क्रबर की आवश्यकता होती है।"
-      ]
+      ],
+      agronomicRecommendation: "मॉड्यूल 02 में रासायनिक यूरिया की जगह प्राकृतिक नाइट्रोजन बूस्टर के रूप में कार्य करता है।"
     },
     "cotton-stalks": {
       name: "कपास की लकड़ी व डंठल",
       category: "काष्ठीय फसल अवशेष",
       optimalTechnology: "बायोचार पायरोलिसिस",
       technologySub: "उच्च-तापमान फिक्स्ड-बेड कार्बोनाइजेशन भट्ठा (550°C)",
+      primaryOutput: "संरचित मैक्रो-पोरस बायोचार एवं लकड़ी का सिरका",
+      whySelected: "कपास के डंठल 72:1 C:N अनुपात वाली कठोर काष्ठीय लकड़ी होते हैं। खेतों में सड़ने में दो साल लग जाते हैं। उच्च-तापमान पायरोलिसिस इसे 30 मिनट में क्षारीय बायोचार में बदल देता है और डंठलों के अंदर सुप्त अवस्था में छिपे गुलाबी सुंडी (पिंक बोलवर्म) कीटों को पूरी तरह नष्ट कर देता है।",
       pros: [
         "बिना हानिकारक रासायनिक कीटनाशकों के गुलाबी सुंडी (पिंक बोलवर्म) कीटों के जीवन चक्र को समाप्त करता है।",
         "असाधारण धनायन-विनिमय क्षमता और दीर्घकालिक मिट्टी वातन के साथ स्थिर बायोचार बनाता है।",
@@ -699,13 +722,16 @@ document.addEventListener('DOMContentLoaded', () => {
       cons: [
         "भोजन कराने से पहले सख्त जड़ों और शाखाओं को काटने के लिए ट्रैक्टर चालित कटर की आवश्यकता।",
         "सख्त रेशों के कारण कटर ब्लेड पर उच्च घिसाव दर।"
-      ]
+      ],
+      agronomicRecommendation: "क्षारीय बायोचार (पीएच 8.8) कपास उत्पादक क्षेत्रों की अम्लीय मिट्टी को सुधारने का प्रमुख उपाय है।"
     },
     "mandi-greens": {
       name: "सब्जी मंडी हरी पत्तियां व अपशिष्ट",
       category: "बाजार अधिशेष एवं जैविक कचरा",
       optimalTechnology: "वर्मीकंपोस्टिंग (केंचुआ खाद)",
       technologySub: "टियरड कंटीन्यूअस फ्लो-थ्रू वर्मी-रिएक्टर",
+      primaryOutput: "एंजाइम-समृद्ध वर्मीकास्ट एवं तरल ह्यूमिक अर्क",
+      whySelected: "सब्जी मंडी के अवशेष मुलायम, उच्च नमी और 24:1 C:N अनुपात वाले होते हैं। यह खाद बनाने वाले केंचुओं (आइसिनिया फेटिडा) का प्राकृतिक भोजन है। केंचुए इसे बिना किसी जीवाश्म ईंधन या बाहरी बिजली के एंजाइम, ऑक्सिन और ह्यूमिक एसिड से भरपूर वर्मीकम्पोस्ट में बदल देते हैं।",
       pros: [
         "अत्यधिक कम पूंजीगत लागत (CAPEX) और शून्य विद्युत मांग; विकेंद्रीकृत ग्राम समूहों के लिए उपयुक्त।",
         "पौध विकास नियामकों (ऑक्सिन, साइटोकिनिन) और ह्यूमिक एसिड से भरपूर वर्मीकास्ट उत्पादन।",
@@ -714,7 +740,8 @@ document.addEventListener('DOMContentLoaded', () => {
       cons: [
         "उत्तर भारतीय गर्मियों (>38°C) के दौरान अत्यधिक गर्मी के प्रति संवेदनशील, छायादार छप्पर की आवश्यकता।",
         "औद्योगिक पायरोलिसिस भट्ठों की तुलना में प्रति वर्ग मीटर धीमी प्रसंस्करण दर।"
-      ]
+      ],
+      agronomicRecommendation: "बागवानी फसलों, पौधों की नर्सरी और अंकुरण के लिए आदर्श उच्च-मूल्य वाला बायो-उर्वरक है।"
     }
   };
 
@@ -731,6 +758,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const techSub = isHi && hiData.technologySub ? hiData.technologySub : item.technologySub;
     const prosList = isHi && hiData.pros ? hiData.pros : item.pros;
     const consList = isHi && hiData.cons ? hiData.cons : item.cons;
+    const whySelected = isHi && hiData.whySelected ? hiData.whySelected : item.whySelected;
+    const agronomicRecommendation = isHi && hiData.agronomicRecommendation ? hiData.agronomicRecommendation : item.agronomicRecommendation;
+    const primaryOutput = isHi && hiData.primaryOutput ? hiData.primaryOutput : item.primaryOutput;
 
     // Visual highlight on clicked card: subtle Saffron/Orange border & scale transform
     wasteCardButtons.forEach(card => {
@@ -807,9 +837,9 @@ document.addEventListener('DOMContentLoaded', () => {
             <span class="ap-spec-sub">${parseInt(item.moistureContent) > 50 ? (isHi ? 'तरल / गीला घोल' : 'Liquid / Wet Slurry') : (isHi ? 'ठोस सूखा बायोमास' : 'Dry Solid Biomass')}</span>
           </div>
           <div class="ap-spec-card">
-            <span class="ap-spec-label">Primary Bio-Product</span>
-            <span class="ap-spec-value text-green" style="font-size: 0.95rem;">${item.primaryOutput.split('&')[0]}</span>
-            <span class="ap-spec-sub">Commercial value off-take</span>
+            <span class="ap-spec-label" data-i18n="ap_primary_bioproduct">Primary Bio-Product</span>
+            <span class="ap-spec-value text-green" style="font-size: 0.95rem;">${primaryOutput.split('&')[0]}</span>
+            <span class="ap-spec-sub" data-i18n="ap_commercial_offtake">Commercial value off-take</span>
           </div>
         </div>
 
@@ -823,7 +853,7 @@ document.addEventListener('DOMContentLoaded', () => {
             </svg>
             <span data-i18n="ap_selection_rationale">Biochemical Selection Rationale</span> (${optTech})
           </div>
-          <p class="ap-rationale-text">${item.whySelected}</p>
+          <p class="ap-rationale-text">${whySelected}</p>
         </div>
 
         <!-- Fundamental Pros and Cons Pathway Grid -->
@@ -850,7 +880,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <!-- Action Footer -->
         <div class="ap-footer-action">
           <div class="ap-agronomic-note">
-            <strong data-i18n="ap_agronomic_rec">Agronomic Integration Recommendation:</strong> ${item.agronomicRecommendation}
+            <strong data-i18n="ap_agronomic_rec">Agronomic Integration Recommendation:</strong> ${agronomicRecommendation}
           </div>
           <a href="#formulation" class="btn btn-sm btn-saffron btn-action-forward" id="btn-forward-formulation" style="flex-shrink: 0;">
             <span data-i18n="ap_btn_proceed">Proceed to Formulation Engine</span>
@@ -1544,12 +1574,13 @@ document.addEventListener('DOMContentLoaded', () => {
     specCn.textContent = `${calculatedCn} : 1`;
     specMoist.textContent = `${calculatedMoist}%`;
 
+    const isHi = (currentLang === 'hi');
     if (calculatedCarbon >= 14.0 && calculatedNpk >= 6.0) {
       fcoComplianceStatus.className = 'status-pill status-ready';
-      fcoComplianceStatus.textContent = '✓ FCO 1985 Grade Passed';
+      fcoComplianceStatus.textContent = isHi ? '✓ एफसीओ 1985 मानक उत्तीर्ण' : '✓ FCO 1985 Grade Passed';
     } else {
       fcoComplianceStatus.className = 'status-pill status-active';
-      fcoComplianceStatus.textContent = '⚠ Non-Standard Formulation';
+      fcoComplianceStatus.textContent = isHi ? '⚠ गैर-मानक फॉर्मूलेशन' : '⚠ Non-Standard Formulation';
     }
   }
 
@@ -2232,109 +2263,148 @@ document.addEventListener('DOMContentLoaded', () => {
   const fmeaMockData = [
     {
       potentialFailure: "Post-Kharif Biomass Supply Crunch (Crop Burning Window)",
+      potentialFailure_hi: "खरीफ बाद बायोमास आपूर्ति संकट (पराली जलाने की अवधि)",
       severity: 8,
       occurrence: 5,
       detection: 4,
-      mitigationStrategy: "Decentralized GPS-tracked village baling hubs; 4-month covered buffer briquette depot storage; flexible multi-feedstock processing."
+      mitigationStrategy: "Decentralized GPS-tracked village baling hubs; 4-month covered buffer briquette depot storage; flexible multi-feedstock processing.",
+      mitigationStrategy_hi: "विकेंद्रीकृत जीपीएस-ट्रैक्ड ग्राम बेलिंग हब; 4 महीने का कवर्ड बफर ब्रिकेट भंडारण; लचीला बहु-बायोमास प्रसंस्करण।"
     },
     {
       potentialFailure: "Pyrolysis Retort Thermal Runaway / Incomplete Gas Cracking",
+      potentialFailure_hi: "पायरोलिसिस रिटॉर्ट थर्मल रनवे / अधूरा गैस क्रैकिंग",
       severity: 9,
       occurrence: 2,
       detection: 3,
-      mitigationStrategy: "Automated nitrogen purge systems, dual redundant IR pyrometers, emergency thermal oxidizer flare with acoustic pressure release."
+      mitigationStrategy: "Automated nitrogen purge systems, dual redundant IR pyrometers, emergency thermal oxidizer flare with acoustic pressure release.",
+      mitigationStrategy_hi: "स्वचालित नाइट्रोजन पर्ज सिस्टम, दोहरे आईआर पायरोमीटर, ध्वनिक दबाव रिलीज के साथ आपातकालीन थर्मल फ्लेयर।"
     },
     {
       potentialFailure: "Microbial Consortia Contamination by Soil Pathogens",
+      potentialFailure_hi: "मृदा रोगजनकों द्वारा माइक्रोबियल मिश्रण का संदूषण",
       severity: 7,
       occurrence: 3,
       detection: 2,
-      mitigationStrategy: "Steam-autoclaved biochar carrier sterilization (121°C, 30 min); cleanroom liquid broth inoculation; qPCR batch purity verification."
+      mitigationStrategy: "Steam-autoclaved biochar carrier sterilization (121°C, 30 min); cleanroom liquid broth inoculation; qPCR batch purity verification.",
+      mitigationStrategy_hi: "भाप-ऑटोक्लेव्ड बायोचार वाहक नसबंदी (121°C, 30 मिनट); क्लीनरूम तरल इनोकुलेशन; क्यूपीसीआर बैच शुद्धता सत्यापन।"
     },
     {
       potentialFailure: "Moisture Shock in Feedstock Balings during Monsoon",
+      potentialFailure_hi: "मानसून के दौरान बायोमास गांठों में नमी का झटका",
       severity: 6,
       occurrence: 4,
       detection: 2,
-      mitigationStrategy: "Waste-heat flue gas rotary cascade drying drum; automated moisture gate sensor interlocks rejecting feedstock >25% moisture."
+      mitigationStrategy: "Waste-heat flue gas rotary cascade drying drum; automated moisture gate sensor interlocks rejecting feedstock >25% moisture.",
+      mitigationStrategy_hi: "अपशिष्ट-ताप ग्रिप गैस रोटरी ड्रायर ड्रम; >25% नमी वाले कच्चे माल को अस्वीकार करने वाले स्वचालित सेंसर इंटरलॉक।"
     },
     {
       potentialFailure: "Heavy Metal Accumulation Exceeding Statutory Tolerances",
+      potentialFailure_hi: "भारी धातुओं का वैधानिक सीमा से अधिक संचय",
       severity: 9,
       occurrence: 2,
       detection: 2,
-      mitigationStrategy: "Upstream Atomic Absorption Spectrometry (AAS) screening of rock phosphate batches; certified vendor provenance for mineral inputs."
+      mitigationStrategy: "Upstream Atomic Absorption Spectrometry (AAS) screening of rock phosphate batches; certified vendor provenance for mineral inputs.",
+      mitigationStrategy_hi: "रॉक फॉस्फेट बैचों की एएएस स्पेक्ट्रोमेट्री जांच; खनिज आदानों के लिए प्रमाणित विक्रेता सत्यापन।"
     },
     {
       potentialFailure: "Granule Attrition & Biochar Dusting in Rural Transit",
+      potentialFailure_hi: "ग्रामीण परिवहन में दानों का टूटना एवं बायोचार धूल बनना",
       severity: 5,
       occurrence: 4,
       detection: 3,
-      mitigationStrategy: "Chitosan-starch cross-linked nanocomposite binder coating ensuring >25 N/granule crushing strength; sealed HDPE moisture-proof bags."
+      mitigationStrategy: "Chitosan-starch cross-linked nanocomposite binder coating ensuring >25 N/granule crushing strength; sealed HDPE moisture-proof bags.",
+      mitigationStrategy_hi: "काइटोसन-स्टार्च नैनोकम्पोजिट बाइंडर कोटिंग (>25 N प्रति दाना पेराई ताकत); सीलबंद नमी-रोधी एचडीपीई बैग।"
     }
   ];
 
   const fcoComplianceMetrics = [
     {
       name: "Viable Microbial Colony Count",
+      name_hi: "जीवित सूक्ष्मजीवी कॉलोनी संख्या",
       standard: "Minimum 5 × 10⁷ CFU/g (Azotobacter, Rhizobium, PSB)",
+      standard_hi: "न्यूनतम 5 × 10⁷ CFU/g (एजोटोबैक्टर, राइजोबियम, पीएसबी)",
       actual: "1.8 × 10⁸ CFU/g (Assayed at 30°C)",
+      actual_hi: "1.8 × 10⁸ CFU/g (30°C पर परीक्षित)",
       status: true,
       category: "Microbiological Specification"
     },
     {
       name: "pH Buffer Range (1:5 dilution)",
+      name_hi: "पीएच बफर सीमा (1:5 तनुकरण)",
       standard: "6.5 – 7.5 (Neutral to mildly alkaline)",
+      standard_hi: "6.5 – 7.5 (तटस्थ से हल्का क्षारीय)",
       actual: "7.1 ± 0.2 (Optimal for Indian soils)",
+      actual_hi: "7.1 ± 0.2 (भारतीय मिट्टी के लिए इष्टतम)",
       status: true,
       category: "Chemical Balance"
     },
     {
       name: "Total Organic Carbon Content",
+      name_hi: "कुल जैविक कार्बन मात्रा",
       standard: "Minimum 14.0% by weight (Schedule IV)",
+      standard_hi: "वजन के अनुसार न्यूनतम 14.0% (अनुसूची IV)",
       actual: "22.4% (Enriched recalcitrant biochar)",
+      actual_hi: "22.4% (समृद्ध बायोचार कार्बन)",
       status: true,
       category: "Soil Health Index"
     },
     {
       name: "Moisture Content (Free Water)",
+      name_hi: "नमी की मात्रा (मुक्त जल)",
       standard: "Maximum 15.0% by weight for solid granules",
+      standard_hi: "ठोस दानों के लिए वजन के अनुसार अधिकतम 15.0%",
       actual: "12.8% (Free-flowing granules)",
+      actual_hi: "12.8% (मुक्त-प्रवाह दानेदार)",
       status: true,
       category: "Physical Quality"
     },
     {
       name: "Heavy Metals: Lead (Pb)",
+      name_hi: "भारी धातु: सीसा (लेड - Pb)",
       standard: "Max. 100.0 mg/kg limit",
+      standard_hi: "अधिकतम 100.0 mg/kg सीमा",
       actual: "0.08 mg/kg (99.9% below threshold)",
+      actual_hi: "0.08 mg/kg (सीमा से 99.9% कम)",
       status: true,
       category: "Toxicological Safety"
     },
     {
       name: "Heavy Metals: Cadmium (Cd)",
+      name_hi: "भारी धातु: कैडमियम (Cd)",
       standard: "Max. 5.0 mg/kg limit",
+      standard_hi: "अधिकतम 5.0 mg/kg सीमा",
       actual: "0.02 mg/kg (Zero toxic hazard)",
+      actual_hi: "0.02 mg/kg (शून्य विषाक्त खतरा)",
       status: true,
       category: "Toxicological Safety"
     },
     {
       name: "Heavy Metals: Arsenic (As)",
+      name_hi: "भारी धातु: आर्सेनिक (As)",
       standard: "Max. 10.0 mg/kg limit",
+      standard_hi: "अधिकतम 10.0 mg/kg सीमा",
       actual: "0.12 mg/kg (Passed safety threshold)",
+      actual_hi: "0.12 mg/kg (सुरक्षा मानक उत्तीर्ण)",
       status: true,
       category: "Toxicological Safety"
     },
     {
       name: "Biological Pathogen Screening (Salmonella & E. coli)",
+      name_hi: "जैविक रोगजनक जांच (साल्मोनेला एवं ई. कोलाई)",
       standard: "Nil / Absent in 20g sample",
+      standard_hi: "20 ग्राम नमूने में शून्य / अनुपस्थित",
       actual: "Zero Detect (Thermal sterilization pass)",
+      actual_hi: "शून्य संसूचन (थर्मल नसबंदी पास)",
       status: true,
       category: "Biological Safety"
     },
     {
       name: "Particle Size Granulometry (2.0 – 4.0 mm)",
+      name_hi: "कण आकार ग्रैन्युलोमेट्री (2.0 – 4.0 मिमी)",
       standard: "Min. 90% material passing through 4mm sieve",
+      standard_hi: "4 मिमी छलनी से न्यूनतम 90% सामग्री उत्तीर्ण",
       actual: "87.4% (Batch sieving calibration in progress)",
+      actual_hi: "87.4% (बैच छानने का अंशांकन प्रगति पर)",
       status: false, // Testing false/fail conditional rendering -> renders prominent Saffron/Orange 'Warning' badge
       category: "Mechanical Specification"
     }
@@ -2348,6 +2418,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!tbody) return;
 
     tbody.innerHTML = '';
+    const isHi = (currentLang === 'hi');
 
     fmeaMockData.forEach(item => {
       const tr = document.createElement('tr');
@@ -2358,12 +2429,15 @@ document.addEventListener('DOMContentLoaded', () => {
         return 'low';
       };
 
+      const failure = isHi && item.potentialFailure_hi ? item.potentialFailure_hi : item.potentialFailure;
+      const strategy = isHi && item.mitigationStrategy_hi ? item.mitigationStrategy_hi : item.mitigationStrategy;
+
       tr.innerHTML = `
-        <td class="td-failure">${item.potentialFailure}</td>
+        <td class="td-failure">${failure}</td>
         <td class="th-num"><span class="fmea-num-badge ${getBadgeClass(item.severity)}">${item.severity}</span></td>
         <td class="th-num"><span class="fmea-num-badge ${getBadgeClass(item.occurrence)}">${item.occurrence}</span></td>
         <td class="th-num"><span class="fmea-num-badge ${getBadgeClass(item.detection)}">${item.detection}</span></td>
-        <td class="td-strategy">${item.mitigationStrategy}</td>
+        <td class="td-strategy">${strategy}</td>
       `;
 
       tbody.appendChild(tr);
@@ -2378,23 +2452,31 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!listEl) return;
 
     listEl.innerHTML = '';
+    const isHi = (currentLang === 'hi');
 
     fcoComplianceMetrics.forEach(metric => {
       const li = document.createElement('li');
       li.className = 'fco-item';
 
-      // Conditional rendering:
-      // status === true: bold Green 'Pass' badge
-      // status === false: prominent Saffron/Orange 'Warning' badge
+      const badgeText = isHi
+        ? (metric.status ? '✓ उत्तीर्ण' : '⚠ चेतावनी')
+        : (metric.status ? '✓ Pass' : '⚠ Warning');
+
       const badgeHtml = metric.status
-        ? `<span class="badge-status badge-pass" role="status" aria-label="Passed: ${metric.name}">✓ Pass</span>`
-        : `<span class="badge-status badge-warning" role="status" aria-label="Warning: ${metric.name}">⚠ Warning</span>`;
+        ? `<span class="badge-status badge-pass" role="status" aria-label="${badgeText}: ${metric.name}">${badgeText}</span>`
+        : `<span class="badge-status badge-warning" role="status" aria-label="${badgeText}: ${metric.name}">${badgeText}</span>`;
+
+      const name = isHi && metric.name_hi ? metric.name_hi : metric.name;
+      const std = isHi && metric.standard_hi ? metric.standard_hi : metric.standard;
+      const act = isHi && metric.actual_hi ? metric.actual_hi : metric.actual;
+      const stdLabel = isHi ? 'मानक:' : 'Standard:';
+      const actLabel = isHi ? 'परख परिणाम:' : 'Assay Result:';
 
       li.innerHTML = `
         <div class="fco-metric-info">
-          <span class="fco-metric-name">${metric.name}</span>
-          <span class="fco-metric-standard"><strong>Standard:</strong> ${metric.standard}</span>
-          <span class="fco-metric-actual"><strong>Assay Result:</strong> ${metric.actual}</span>
+          <span class="fco-metric-name">${name}</span>
+          <span class="fco-metric-standard"><strong>${stdLabel}</strong> ${std}</span>
+          <span class="fco-metric-actual"><strong>${actLabel}</strong> ${act}</span>
         </div>
         ${badgeHtml}
       `;
