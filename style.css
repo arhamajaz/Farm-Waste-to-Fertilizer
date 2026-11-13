@@ -4437,6 +4437,252 @@ button {
   font-size: 0.95rem;
 }
 
+/* ==========================================================================
+   FIELD OPERATIONS & INTEGRATED APIS (WEATHER & SOIL LABS)
+   Neobrutalist Minimalist Aesthetic (Greenish-White, Charcoal, Saffron, Green)
+   ========================================================================== */
+
+.field-operations-container {
+  margin-top: 48px;
+  width: 100%;
+}
+
+.field-operations-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 28px;
+  width: 100%;
+}
+
+.weather-widget-card,
+.soil-lab-card {
+  background: var(--bg-surface);
+  border: 1.5px solid var(--border-card);
+  border-radius: 16px;
+  padding: 28px;
+  box-shadow: var(--shadow-md);
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.weather-widget-card:hover,
+.soil-lab-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+.wwc-header,
+.slc-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.wwc-tag,
+.slc-tag {
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+}
+
+.wwc-title,
+.slc-title {
+  font-family: var(--font-family-title);
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 4px 0 0 0;
+}
+
+.wwc-desc,
+.slc-desc {
+  font-size: 0.92rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  margin-bottom: 20px;
+}
+
+.wwc-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.wwc-metrics-strip {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+.wwc-metric-box {
+  background: var(--bg-primary);
+  border: 1px solid var(--border-subtle);
+  border-radius: 12px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+}
+
+.wwc-metric-label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+
+.wwc-metric-val-wrap {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.wwc-metric-val {
+  font-family: var(--font-family-title);
+  font-size: 1.6rem;
+  font-weight: 800;
+  line-height: 1.1;
+}
+
+.wwc-metric-icon {
+  font-size: 1.25rem;
+}
+
+.wwc-metric-sub {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+
+.wwc-recommendation-box {
+  background: var(--bg-surface-tint);
+  border: 1.5px solid var(--green-border);
+  border-radius: 12px;
+  padding: 16px;
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  margin-top: auto;
+}
+
+.wrb-icon {
+  font-size: 1.6rem;
+  line-height: 1;
+}
+
+.wrb-label {
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--green-primary);
+  margin-bottom: 4px;
+}
+
+.wrb-text {
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  line-height: 1.45;
+  margin: 0;
+}
+
+/* Soil Testing Lab Map Container */
+.soil-lab-map-container {
+  width: 100%;
+  height: 290px;
+  border-radius: 12px;
+  border: 1.5px solid var(--border-subtle);
+  background: var(--bg-primary);
+  overflow: hidden;
+  position: relative;
+  margin-top: auto;
+}
+
+/* Fallback & Lab Cards inside soil-lab-map */
+.soil-lab-fallback {
+  padding: 16px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+.slf-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.slf-title {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.slf-badge {
+  font-size: 0.72rem;
+  padding: 3px 8px;
+  border-radius: 6px;
+  background: var(--green-light);
+  color: var(--green-primary);
+  font-weight: 600;
+}
+
+.slf-labs-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.slf-lab-item {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-card);
+  border-left: 4px solid var(--green-primary);
+  border-radius: 8px;
+  padding: 8px 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+
+.slf-lab-info h5 {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0 0 2px 0;
+}
+
+.slf-lab-info p {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+.slf-lab-dist {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--saffron-primary);
+  white-space: nowrap;
+}
+
+@media (max-width: 992px) {
+  .field-operations-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 @media (max-width: 480px) {
   .roi-neobrutalist-card {
     padding: 24px 18px;

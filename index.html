@@ -23,6 +23,9 @@
   <!-- Chart.js CDN (v4.4.2) for Financial, LCA & Circularity Data Visualizations -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
+  <!-- Google Maps JavaScript API for Geospatial Soil Testing Lab Locator -->
+  <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_GOOGLE_MAPS_API_KEY_HERE&callback=initMap" async defer></script>
+
   <!-- Localization (i18n) Data Dictionary -->
   <script src="translations.js"></script>
 
@@ -1419,6 +1422,98 @@
             <!-- Dynamic Calculation Results Container -->
             <div class="roi-results-container" id="roi-results" aria-live="polite">
               <!-- Dynamically injected via JavaScript -->
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Submodule: Integrated Field Operations (Weather & Soil Labs) -->
+        <div class="field-operations-container" id="field-operations">
+          <div class="field-operations-grid">
+            
+            <!-- Widget 1: OpenWeatherMap 'Local Application Conditions' Neobrutalist Widget -->
+            <div class="weather-widget-card" id="weather-conditions-card">
+              <div class="wwc-header">
+                <div>
+                  <span class="badge-dot saffron" aria-hidden="true"></span>
+                  <span class="wwc-tag" data-i18n="weather_tag">Agro-Meteorology &amp; Field Advisory</span>
+                  <h3 class="wwc-title" data-i18n="weather_title">Local Application Conditions</h3>
+                </div>
+                <div class="wwc-header-actions">
+                  <span class="status-pill status-ready" id="weather-status-pill">
+                    <span class="pulse-dot"></span> <span id="weather-status-text">Live Weather Ready</span>
+                  </span>
+                  <button type="button" class="btn btn-sm btn-outline" id="btn-refresh-weather" aria-label="Refresh Local Weather" title="Refresh weather data">
+                    <span aria-hidden="true">🔄</span> <span data-i18n="weather_btn_refresh">Refresh</span>
+                  </button>
+                </div>
+              </div>
+
+              <p class="wwc-desc" data-i18n="weather_desc">
+                Real-time agro-meteorological advisory to optimize bio-fertilizer absorption and prevent microbial desiccation.
+              </p>
+
+              <!-- Weather Metrics Strip -->
+              <div class="wwc-metrics-strip">
+                <div class="wwc-metric-box">
+                  <span class="wwc-metric-label" data-i18n="weather_temp">Ambient Temperature</span>
+                  <div class="wwc-metric-val-wrap">
+                    <span class="wwc-metric-val text-charcoal" id="weather-temp">--°C</span>
+                    <span class="wwc-metric-icon" aria-hidden="true">🌡️</span>
+                  </div>
+                  <span class="wwc-metric-sub" id="weather-location">Detecting GPS location...</span>
+                </div>
+
+                <div class="wwc-metric-box">
+                  <span class="wwc-metric-label" data-i18n="weather_humidity">Relative Humidity</span>
+                  <div class="wwc-metric-val-wrap">
+                    <span class="wwc-metric-val text-green" id="weather-humidity">--%</span>
+                    <span class="wwc-metric-icon" aria-hidden="true">💧</span>
+                  </div>
+                  <span class="wwc-metric-sub" id="weather-moisture-status">Soil boundary layer</span>
+                </div>
+
+                <div class="wwc-metric-box">
+                  <span class="wwc-metric-label" data-i18n="weather_wind">Wind Speed</span>
+                  <div class="wwc-metric-val-wrap">
+                    <span class="wwc-metric-val text-saffron" id="weather-wind">-- km/h</span>
+                    <span class="wwc-metric-icon" aria-hidden="true">💨</span>
+                  </div>
+                  <span class="wwc-metric-sub" id="weather-condition-text">Atmospheric pressure</span>
+                </div>
+              </div>
+
+              <!-- Recommendation Callout Box -->
+              <div class="wwc-recommendation-box" id="weather-recommendation-box">
+                <div class="wrb-icon" aria-hidden="true">🌱</div>
+                <div class="wrb-content">
+                  <div class="wrb-label" data-i18n="weather_advisory">Agronomic Application Advisory</div>
+                  <p class="wrb-text" id="weather-recommendation" data-i18n="weather_ideal">
+                    Ideal conditions for bio-fertilizer application (optimal microbial spore germination &amp; soil moisture absorption).
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Widget 2: Google Maps 'Nearest Soil Testing Labs & Bio-Hubs' -->
+            <div class="soil-lab-card" id="soil-lab-card">
+              <div class="slc-header">
+                <div>
+                  <span class="badge-dot green" aria-hidden="true"></span>
+                  <span class="slc-tag" data-i18n="lab_map_tag">Geospatial Agronomy &amp; Lab Connectivity</span>
+                  <h3 class="slc-title" data-i18n="lab_map_title">Nearest Soil Testing Labs &amp; Bio-Hubs</h3>
+                </div>
+                <button type="button" class="btn btn-sm btn-outline" id="btn-detect-location">
+                  <span aria-hidden="true">📍</span> <span data-i18n="lab_map_locate">Detect My Location</span>
+                </button>
+              </div>
+
+              <p class="slc-desc" data-i18n="lab_map_desc">
+                Geolocated ICAR, KVK, and accredited soil testing centers for pre-application NPK &amp; pH soil analysis.
+              </p>
+
+              <!-- The Required Google Maps Container -->
+              <div id="soil-lab-map" class="soil-lab-map-container" aria-label="Interactive map of nearest soil testing laboratories" role="region"></div>
             </div>
 
           </div>

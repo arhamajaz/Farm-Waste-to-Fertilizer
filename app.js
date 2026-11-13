@@ -5,6 +5,20 @@
  * accessible mobile navigation drawer, and interactive simulation models.
  */
 
+// =========================================================================
+// EXTERNAL API CREDENTIALS & SCAFFOLDING
+// =========================================================================
+const OPENWEATHER_API_KEY = 'YOUR_API_KEY_HERE';
+
+// Global callback bridge for asynchronous Google Maps API loading
+window.initMap = function() {
+  if (typeof window.triggerInitMap === 'function') {
+    window.triggerInitMap();
+  } else {
+    window.mapsApiLoaded = true;
+  }
+};
+
 document.addEventListener('DOMContentLoaded', () => {
   'use strict';
 
@@ -161,6 +175,27 @@ document.addEventListener('DOMContentLoaded', () => {
   const mobileLangLabel = document.getElementById('mobile-lang-label');
 
   let currentLang = 'en';
+  let activeRegionalProfile = null;
+  let activeWasteId = null;
+  let activeFeedstockType = 'paddy';
+
+  /**
+   * Translates all child elements in a dynamically injected container
+   * @param {HTMLElement} container 
+   */
+  function translateDynamicContainer(container) {
+    if (!container) return;
+    const dict = (typeof translations !== 'undefined') ? translations : (window.translations || null);
+    if (!dict || !dict[currentLang]) return;
+
+    const elements = container.querySelectorAll('[data-i18n]');
+    elements.forEach(el => {
+      const key = el.getAttribute('data-i18n');
+      if (key && dict[currentLang][key]) {
+        el.textContent = dict[currentLang][key];
+      }
+    });
+  }
 
   /**
    * Set application language and translate all DOM elements with data-i18n attribute
@@ -205,6 +240,27 @@ document.addEventListener('DOMContentLoaded', () => {
       localStorage.setItem('krishiurja_lang', lang);
     } catch (err) {
       // Storage might be restricted
+    }
+
+    // Update active dynamic panels so they reflect new language instantly
+    if (typeof updateChartsLanguage === 'function') {
+      updateChartsLanguage(lang);
+    }
+    if (activeRegionalProfile && typeof renderRegionalProfile === 'function') {
+      renderRegionalProfile(activeRegionalProfile);
+    }
+    if (activeWasteId && typeof renderWasteAnalysis === 'function') {
+      renderWasteAnalysis(activeWasteId);
+    }
+    if (typeof updateHeroFeedstockLanguage === 'function') {
+      updateHeroFeedstockLanguage();
+    }
+    if (typeof updateWeatherAdvisoryLanguage === 'function') {
+      updateWeatherAdvisoryLanguage();
+    }
+    const roiMassiveSavings = document.getElementById('roi-massive-savings');
+    if (roiMassiveSavings && typeof calculateFarmerROI === 'function') {
+      calculateFarmerROI(null);
     }
 
     // Recompute the animated active indicator for spatial awareness since nav text width changes
@@ -295,44 +351,68 @@ document.addEventListener('DOMContentLoaded', () => {
   const feedstockData = {
     paddy: {
       stage1Name: "Briquetting & Densification",
+      stage1Name_hi: "ब्रिकेटिंग एवं घनीकरण",
       stage1Val: "Moisture: 12% | Bulk: 620 kg/m³",
+      stage1Val_hi: "नमी: 12% | घनत्व: 620 किग्रा/घन मीटर",
       stage2Name: "Catalytic Torrefaction",
+      stage2Name_hi: "उत्प्रेरक टॉरिफैक्शन",
       stage2Val: "450°C Oxygen-Starved Reactor",
+      stage2Val_hi: "450°C ऑक्सीजन-रहित रिएक्टर",
       stage3Name: "Bio-Fortified Granulation",
+      stage3Name_hi: "जैव-संवर्धित दानेदारण",
       stage3Val: "N-P-K Inoculation + Humic Acid",
+      stage3Val_hi: "एन-पी-के टीका + ह्यूमिक एसिड",
       yieldFertilizer: "540 kg / MT",
       yieldEnergy: "145 m³ / MT",
       yieldCarbon: "> 45 Years"
     },
     bagasse: {
       stage1Name: "Rotary Drum De-watering",
+      stage1Name_hi: "रोटरी ड्रम डी-वाटरिंग",
       stage1Val: "Moisture: 10% | Bulk: 540 kg/m³",
+      stage1Val_hi: "नमी: 10% | घनत्व: 540 किग्रा/घन मीटर",
       stage2Name: "Slow Fast-Pyrolysis Kiln",
+      stage2Name_hi: "पायरोलिसिस भट्ठा",
       stage2Val: "520°C Thermal Decomposition",
+      stage2Val_hi: "520°C थर्मल अपघटन",
       stage3Name: "Potassium Enrich Pelleting",
+      stage3Name_hi: "पोटेशियम संवर्धित पेलेटिंग",
       stage3Val: "Microbial Consortium + Biochar",
+      stage3Val_hi: "माइक्रोबियल कंसोर्टियम + बायोचार",
       yieldFertilizer: "590 kg / MT",
       yieldEnergy: "180 m³ / MT",
       yieldCarbon: "> 60 Years"
     },
     cotton: {
       stage1Name: "Hammer-Mill Shredding",
+      stage1Name_hi: "हैमर-मिल कतरन",
       stage1Val: "Particle Size: < 6mm | Moisture: 11%",
+      stage1Val_hi: "कण आकार: < 6मिमी | नमी: 11%",
       stage2Name: "Carbonization Retort",
+      stage2Name_hi: "कार्बोनाइजेशन रिटॉर्ट",
       stage2Val: "480°C High-Lignin Fixation",
+      stage2Val_hi: "480°C उच्च-लिग्निन स्थिरीकरण",
       stage3Name: "Liquid Mineral Impregnation",
+      stage3Name_hi: "तरल खनिज गर्भाधान",
       stage3Val: "Phosphorus + Mycorrhizae",
+      stage3Val_hi: "फॉस्फोरस + माइकोराइजा",
       yieldFertilizer: "480 kg / MT",
       yieldEnergy: "160 m³ / MT",
       yieldCarbon: "> 55 Years"
     },
     mustard: {
       stage1Name: "Pneumatic Sieving & Milling",
+      stage1Name_hi: "वायवीय छनाई एवं मिलिंग",
       stage1Val: "Moisture: 9% | Bulk: 580 kg/m³",
+      stage1Val_hi: "नमी: 9% | घनत्व: 580 किग्रा/घन मीटर",
       stage2Name: "Autothermal Pyrolysis",
+      stage2Name_hi: "ऑटोधर्मल पायरोलिसिस",
       stage2Val: "440°C Low-Emission Kiln",
+      stage2Val_hi: "440°C कम उत्सर्जन भट्ठा",
       stage3Name: "Sulfur-Organic Blending",
+      stage3Name_hi: "सल्फर-जैविक सम्मिश्रण",
       stage3Val: "High Sulfur Natural Humus",
+      stage3Val_hi: "उच्च सल्फर प्राकृतिक ह्यूमस",
       yieldFertilizer: "520 kg / MT",
       yieldEnergy: "130 m³ / MT",
       yieldCarbon: "> 40 Years"
@@ -350,6 +430,21 @@ document.addEventListener('DOMContentLoaded', () => {
   const yieldEnergyEl = document.getElementById('yield-energy');
   const yieldCarbonEl = document.getElementById('yield-carbon');
 
+  function updateHeroFeedstockLanguage() {
+    const data = feedstockData[activeFeedstockType];
+    if (!data) return;
+    const isHi = (currentLang === 'hi');
+    if (stage1NameEl) stage1NameEl.textContent = isHi ? data.stage1Name_hi : data.stage1Name;
+    if (stage1ValEl) stage1ValEl.textContent = isHi ? data.stage1Val_hi : data.stage1Val;
+    if (stage2NameEl) stage2NameEl.textContent = isHi ? data.stage2Name_hi : data.stage2Name;
+    if (stage2ValEl) stage2ValEl.textContent = isHi ? data.stage2Val_hi : data.stage2Val;
+    if (stage3NameEl) stage3NameEl.textContent = isHi ? data.stage3Name_hi : data.stage3Name;
+    if (stage3ValEl) stage3ValEl.textContent = isHi ? data.stage3Val_hi : data.stage3Val;
+    if (yieldFertilizerEl) yieldFertilizerEl.textContent = data.yieldFertilizer;
+    if (yieldEnergyEl) yieldEnergyEl.textContent = data.yieldEnergy;
+    if (yieldCarbonEl) yieldCarbonEl.textContent = isHi ? (data.yieldCarbon.replace('Years', 'वर्ष')) : data.yieldCarbon;
+  }
+
   feedstockChips.forEach(chip => {
     chip.addEventListener('click', () => {
       feedstockChips.forEach(c => {
@@ -360,22 +455,11 @@ document.addEventListener('DOMContentLoaded', () => {
       chip.setAttribute('aria-selected', 'true');
 
       const type = chip.getAttribute('data-feedstock');
-      const data = feedstockData[type];
+      activeFeedstockType = type;
+      updateHeroFeedstockLanguage();
 
-      if (data) {
-        stage1NameEl.textContent = data.stage1Name;
-        stage1ValEl.textContent = data.stage1Val;
-        stage2NameEl.textContent = data.stage2Name;
-        stage2ValEl.textContent = data.stage2Val;
-        stage3NameEl.textContent = data.stage3Name;
-        stage3ValEl.textContent = data.stage3Val;
-
-        yieldFertilizerEl.textContent = data.yieldFertilizer;
-        yieldEnergyEl.textContent = data.yieldEnergy;
-        yieldCarbonEl.textContent = data.yieldCarbon;
-
-        showToast(`Loaded process parameters for ${chip.querySelector('.chip-label').textContent}`);
-      }
+      const chipLabel = chip.querySelector('.chip-label')?.textContent || '';
+      showToast(currentLang === 'hi' ? `${chipLabel} के प्रक्रिया पैरामीटर लोड किए गए` : `Loaded process parameters for ${chipLabel}`);
     });
   });
 
@@ -541,9 +625,112 @@ document.addEventListener('DOMContentLoaded', () => {
   const analysisEmptyState = document.getElementById('analysis-empty-state');
   const analysisDynamicContent = document.getElementById('analysis-dynamic-content');
 
+  const wasteHindiMap = {
+    "rice-husk": {
+      name: "चावल की भूसी एवं धान पराली",
+      category: "फसल अवशेष",
+      optimalTechnology: "बायोचार पायरोलिसिस",
+      technologySub: "कंटीन्यूअस ऑटोधर्मल रिटॉर्ट भट्ठा (450°C – 550°C)",
+      pros: [
+        "पंजाब, हरियाणा और पश्चिमी उत्तर प्रदेश में पराली जलाने की समस्या को सीधे समाप्त करता है।",
+        "रेतीली दोमट मिट्टी की जल धारण क्षमता को 35% तक बढ़ाता है और पोषक तत्वों के रिसाव को रोकता है।",
+        "दहनशील सिनगैस (145 m³/MT) का सह-उत्पादन करता है जो संयंत्र को आत्मनिर्भर बनाता है।"
+      ],
+      cons: [
+        "कम घनत्व (40-60 kg/m³) के कारण यांत्रिक संग्रह और बेलिंग की आवश्यकता होती है।",
+        "सरल खाद गड्ढों की तुलना में पायरोलिसिस रिटॉर्ट कक्षों के लिए उच्च अग्रिम पूंजीगत व्यय (CAPEX)।"
+      ]
+    },
+    "sugarcane-bagasse": {
+      name: "गन्ना खोई (बगास)",
+      category: "कृषि-औद्योगिक अवशेष",
+      optimalTechnology: "बायोचार पायरोलिसिस",
+      technologySub: "फ्लूइडाइज्ड-बेड टॉरिफैक्शन रिएक्टर (500°C)",
+      pros: [
+        "भारतीय चीनी मिलों पर भारी मात्रा में पहले से केंद्रीकृत, अतिरिक्त बेलिंग की आवश्यकता नहीं।",
+        "अत्यधिक झरझरा, क्षारीय बायोचार बनाता है जो अम्लीय गन्ने की मिट्टी को तेजी से सुधारता है।",
+        "गीली खोई को सुखाने के लिए आंतरिक फ्लू गैसों का उपयोग करके थर्मल ऊर्जा में आत्मनिर्भरता।"
+      ],
+      cons: [
+        "मिल से आने वाली खोई में लगभग 48% नमी होती है, जिसे भट्ठे में जाने से पहले सुखाना पड़ता है।",
+        "मौसमी पेराई कैलेंडर (नवंबर से मार्च) के कारण साल भर संचालन के लिए सूखे भंडारण की आवश्यकता।"
+      ]
+    },
+    "cow-dung": {
+      name: "गोबर घोल (गोबर स्लरी)",
+      category: "डेयरी पशुधन उपोत्पाद",
+      optimalTechnology: "अवायवीय पाचन (बायोगैस)",
+      technologySub: "हाई-रेट कंटीन्यूअस स्टिरर्ड-टैंक रिएक्टर (CSTR)",
+      pros: [
+        "भारत सरकार की SATAT पहल के तहत वाणिज्यिक संपीड़ित बायो-गैस (CBG) का उत्पादन।",
+        "उच्च जैविक कार्बन (>16%) और सक्रिय लाभकारी जीवाणुओं के साथ गंधहीन किण्वित जैविक खाद (FOM)।",
+        "ग्रामीण डेयरी किसानों और गौशालाओं से दैनिक निरंतर उत्पादन, स्थिर दैनिक आय का सृजन।"
+      ],
+      cons: [
+        "पर्याप्त जल पदचिह्न और तरल अपशिष्ट जिसके लिए समर्पित निस्यंद उपचार की आवश्यकता होती है।",
+        "वातावरण में मीथेन उत्सर्जन रोकने के लिए पूर्ण वायुरोधी सीलिंग आवश्यक है।"
+      ]
+    },
+    "poultry-litter": {
+      name: "पोल्ट्री खाद एवं विष्ठा",
+      category: "वाणिज्यिक पोल्ट्री खाद",
+      optimalTechnology: "अवायवीय पाचन (बायोगैस)",
+      technologySub: "उच्च-कार्बन कृषि-पुआल के साथ सह-पाचन CSTR",
+      pros: [
+        "सभी भारतीय जैविक अपशिष्टों में उच्चतम प्राकृतिक N-P-K सांद्रता (3.8% N, 2.5% P₂O₅, 2.0% K₂O)।",
+        "थर्मोफिलिक तापमान 72 घंटों के भीतर हानिकारक रोगजनकों को नष्ट करता है।",
+        "कच्चे पोल्ट्री भंडारण से होने वाले भूजल संदूषण और अमोनिया उत्सर्जन को रोकता है।"
+      ],
+      cons: [
+        "अकेले एकल-सब्सट्रेट के रूप में नहीं पचाया जा सकता; उच्च-कार्बन सह-सब्सट्रेट की आवश्यकता होती है।",
+        "संक्षारक अमोनिया वाष्प के लिए स्टेनलेस स्टील फिटिंग और गैस बायो-स्क्रबर की आवश्यकता होती है।"
+      ]
+    },
+    "cotton-stalks": {
+      name: "कपास की लकड़ी व डंठल",
+      category: "काष्ठीय फसल अवशेष",
+      optimalTechnology: "बायोचार पायरोलिसिस",
+      technologySub: "उच्च-तापमान फिक्स्ड-बेड कार्बोनाइजेशन भट्ठा (550°C)",
+      pros: [
+        "बिना हानिकारक रासायनिक कीटनाशकों के गुलाबी सुंडी (पिंक बोलवर्म) कीटों के जीवन चक्र को समाप्त करता है।",
+        "असाधारण धनायन-विनिमय क्षमता और दीर्घकालिक मिट्टी वातन के साथ स्थिर बायोचार बनाता है।",
+        "लकड़ी के सिरके (पायरोलिग्नियस एसिड) का सह-उत्पादन करता है, जो एक प्राकृतिक जैविक कीटनाशक है।"
+      ],
+      cons: [
+        "भोजन कराने से पहले सख्त जड़ों और शाखाओं को काटने के लिए ट्रैक्टर चालित कटर की आवश्यकता।",
+        "सख्त रेशों के कारण कटर ब्लेड पर उच्च घिसाव दर।"
+      ]
+    },
+    "mandi-greens": {
+      name: "सब्जी मंडी हरी पत्तियां व अपशिष्ट",
+      category: "बाजार अधिशेष एवं जैविक कचरा",
+      optimalTechnology: "वर्मीकंपोस्टिंग (केंचुआ खाद)",
+      technologySub: "टियरड कंटीन्यूअस फ्लो-थ्रू वर्मी-रिएक्टर",
+      pros: [
+        "अत्यधिक कम पूंजीगत लागत (CAPEX) और शून्य विद्युत मांग; विकेंद्रीकृत ग्राम समूहों के लिए उपयुक्त।",
+        "पौध विकास नियामकों (ऑक्सिन, साइटोकिनिन) और ह्यूमिक एसिड से भरपूर वर्मीकास्ट उत्पादन।",
+        "सब्जी मंडियों से जैविक कचरे को तुरंत निपटाकर बदबू और लीचेट को रोकता है।"
+      ],
+      cons: [
+        "उत्तर भारतीय गर्मियों (>38°C) के दौरान अत्यधिक गर्मी के प्रति संवेदनशील, छायादार छप्पर की आवश्यकता।",
+        "औद्योगिक पायरोलिसिस भट्ठों की तुलना में प्रति वर्ग मीटर धीमी प्रसंस्करण दर।"
+      ]
+    }
+  };
+
   function renderWasteAnalysis(wasteId) {
     const item = farmWasteData.find(w => w.id === wasteId);
     if (!item) return;
+    activeWasteId = wasteId;
+
+    const isHi = (currentLang === 'hi');
+    const hiData = wasteHindiMap[wasteId] || {};
+    const itemName = isHi && hiData.name ? hiData.name : item.name;
+    const itemCat = isHi && hiData.category ? hiData.category : item.category;
+    const optTech = isHi && hiData.optimalTechnology ? hiData.optimalTechnology : item.optimalTechnology;
+    const techSub = isHi && hiData.technologySub ? hiData.technologySub : item.technologySub;
+    const prosList = isHi && hiData.pros ? hiData.pros : item.pros;
+    const consList = isHi && hiData.cons ? hiData.cons : item.cons;
 
     // Visual highlight on clicked card: subtle Saffron/Orange border & scale transform
     wasteCardButtons.forEach(card => {
@@ -563,14 +750,14 @@ document.addEventListener('DOMContentLoaded', () => {
     if (techAnalysisPanel) techAnalysisPanel.classList.add('has-selection');
 
     // Build Pros and Cons Lists
-    const prosHtml = item.pros.map(pro => `
+    const prosHtml = prosList.map(pro => `
       <li class="ap-list-item">
         <span class="ap-bullet-check" aria-hidden="true">✔</span>
         <span>${pro}</span>
       </li>
     `).join('');
 
-    const consHtml = item.cons.map(con => `
+    const consHtml = consList.map(con => `
       <li class="ap-list-item">
         <span class="ap-bullet-warn" aria-hidden="true">⚠</span>
         <span>${con}</span>
@@ -585,22 +772,22 @@ document.addEventListener('DOMContentLoaded', () => {
           <div>
             <div class="ap-feedstock-eyebrow">
               <span class="badge-dot saffron" aria-hidden="true"></span>
-              <span>${item.category}</span>
+              <span>${itemCat}</span>
               <span>&bull;</span>
-              <span class="text-green">Stoichiometric Match Verified</span>
+              <span class="text-green" data-i18n="ap_match_verified">Stoichiometric Match Verified</span>
             </div>
-            <h3 class="ap-feedstock-title">${item.icon} ${item.name}</h3>
+            <h3 class="ap-feedstock-title">${item.icon} ${itemName}</h3>
             <span class="wc-local-name">${item.localName}</span>
           </div>
-          <span class="status-pill status-ready">Optimal Path</span>
+          <span class="status-pill status-ready" data-i18n="ap_optimal_path">Optimal Path</span>
         </div>
 
         <!-- Matching Conversion Technology Hero (Prominent Green Accent Color) -->
         <div class="ap-tech-hero">
           <div class="ap-tech-meta">
-            <span class="ap-tech-label">OPTIMAL CONVERSION TECHNOLOGY</span>
-            <div class="ap-tech-name text-green">${item.optimalTechnology}</div>
-            <span class="ap-tech-sub">${item.technologySub}</span>
+            <span class="ap-tech-label" data-i18n="ap_optimal_tech_label">OPTIMAL CONVERSION TECHNOLOGY</span>
+            <div class="ap-tech-name text-green">${optTech}</div>
+            <span class="ap-tech-sub">${techSub}</span>
           </div>
           <div class="ap-tech-icon" aria-hidden="true">
             ${item.optimalTechnology === 'Biochar Pyrolysis' ? '🔥' : (item.optimalTechnology === 'Anaerobic Digestion' ? '🔄' : '🌿')}
@@ -610,14 +797,14 @@ document.addEventListener('DOMContentLoaded', () => {
         <!-- Stoichiometric Quick Specs -->
         <div class="ap-specs-strip">
           <div class="ap-spec-card">
-            <span class="ap-spec-label">Average C:N Ratio</span>
+            <span class="ap-spec-label" data-i18n="ap_avg_cn">Average C:N Ratio</span>
             <span class="ap-spec-value text-saffron">${item.cnRatio}</span>
-            <span class="ap-spec-sub">Spread: ${item.cnRange}</span>
+            <span class="ap-spec-sub"><span data-i18n="ap_spread">Spread:</span> ${item.cnRange}</span>
           </div>
           <div class="ap-spec-card">
-            <span class="ap-spec-label">Moisture Content</span>
+            <span class="ap-spec-label" data-i18n="ap_moisture">Moisture Content</span>
             <span class="ap-spec-value text-charcoal">${item.moistureContent}</span>
-            <span class="ap-spec-sub">${parseInt(item.moistureContent) > 50 ? 'Liquid / Wet Slurry' : 'Dry Solid Biomass'}</span>
+            <span class="ap-spec-sub">${parseInt(item.moistureContent) > 50 ? (isHi ? 'तरल / गीला घोल' : 'Liquid / Wet Slurry') : (isHi ? 'ठोस सूखा बायोमास' : 'Dry Solid Biomass')}</span>
           </div>
           <div class="ap-spec-card">
             <span class="ap-spec-label">Primary Bio-Product</span>
@@ -634,7 +821,7 @@ document.addEventListener('DOMContentLoaded', () => {
               <line x1="12" y1="16" x2="12" y2="12"></line>
               <line x1="12" y1="8" x2="12.01" y2="8"></line>
             </svg>
-            Why ${item.optimalTechnology} Fits This C:N Ratio
+            <span data-i18n="ap_selection_rationale">Biochemical Selection Rationale</span> (${optTech})
           </div>
           <p class="ap-rationale-text">${item.whySelected}</p>
         </div>
@@ -643,7 +830,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="ap-pros-cons">
           <div class="ap-pro-col">
             <div class="ap-col-title green">
-              <span>✔</span> Pathway Advantages
+              <span>✔</span> <span data-i18n="ap_advantages">Core Technical Advantages &amp; Yield Benefits</span>
             </div>
             <ul class="ap-list">
               ${prosHtml}
@@ -652,7 +839,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
           <div class="ap-con-col">
             <div class="ap-col-title amber">
-              <span>⚠</span> Operational Constraints
+              <span>⚠</span> <span data-i18n="ap_challenges">Operational Challenges &amp; Pre-Treatment Requirements</span>
             </div>
             <ul class="ap-list">
               ${consHtml}
@@ -663,10 +850,10 @@ document.addEventListener('DOMContentLoaded', () => {
         <!-- Action Footer -->
         <div class="ap-footer-action">
           <div class="ap-agronomic-note">
-            <strong>Agronomic Fit:</strong> ${item.agronomicRecommendation}
+            <strong data-i18n="ap_agronomic_rec">Agronomic Integration Recommendation:</strong> ${item.agronomicRecommendation}
           </div>
           <a href="#formulation" class="btn btn-sm btn-saffron btn-action-forward" id="btn-forward-formulation" style="flex-shrink: 0;">
-            <span>Configure Formulation</span>
+            <span data-i18n="ap_btn_proceed">Proceed to Formulation Engine</span>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
               <path d="M5 12h14M12 5l7 7-7 7"/>
             </svg>
@@ -674,6 +861,9 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
       </div>
     `;
+
+    // Ensure all dynamic elements with data-i18n are immediately localized
+    translateDynamicContainer(analysisDynamicContent);
 
     // Interactivity: Smooth scroll to Formulation module when action button clicked
     const forwardBtn = document.getElementById('btn-forward-formulation');
@@ -1010,12 +1200,49 @@ document.addEventListener('DOMContentLoaded', () => {
   const mapPillState = document.getElementById('map-pill-state');
   const regionChips = document.querySelectorAll('.chip-filter');
 
+  const stateHindiMap = {
+    "UP": { name: "उत्तर प्रदेश", dominantWaste: "गन्ना खोई (बगास)", tech: "बायोचार पायरोलिसिस एवं सह-दानेदारण", feedstockType: "कृषि-औद्योगिक अवशेष", reason: "पश्चिमी और मध्य यूपी के विशाल चीनी मिल क्षेत्र बगास के कार्बन मैट्रिक्स को प्रेसमुड ऑर्गेनिक फास्फोरस के साथ जोड़ते हैं।" },
+    "MH": { name: "महाराष्ट्र", dominantWaste: "गन्ना खोई (बगास)", tech: "बायोचार पायरोलिसिस एवं सह-पाचन", feedstockType: "चीनी मिल अवशेष", reason: "पश्चिमी महाराष्ट्र की चीनी मिलें भाप और बायोचार एनपीके बनाने के लिए प्रचुर मात्रा में खोई की आपूर्ति करती हैं।" },
+    "PB": { name: "पंजाब", dominantWaste: "चावल की भूसी एवं पराली", tech: "बायोचार पायरोलिसिस", feedstockType: "फसल अवशेष (पराली)", reason: "उच्च C:N अनुपात (85:1) और सिलिका सामग्री के कारण पराली जलाने के बजाय कैटेलिटिक पायरोलिसिस के लिए इष्टतम है।" },
+    "WB": { name: "पश्चिम बंगाल", dominantWaste: "चावल की भूसी", tech: "बायोचार पायरोलिसिस एवं कंपोस्टिंग", feedstockType: "धान मिलिंग उपोत्पाद", reason: "भारत का सबसे बड़ा धान क्षेत्र उच्च-सिलिका भूसी उत्पन्न करता है, जिसे बायोचार बनाकर मिट्टी में मिलाया जाता है।" },
+    "HR": { name: "हरियाणा", dominantWaste: "धान की पराली", tech: "बायोचार पायरोलिसिस एवं बायोगैस", feedstockType: "फसल अवशेष (पराली)", reason: "करनाल और कैथल के पराली क्लस्टर विकेंद्रीकृत टॉरिफैक्शन हब के माध्यम से कार्बन-नेगेटिव बायो-ग्रेन्यूल्स बनाते हैं।" },
+    "GJ": { name: "गुजरात", dominantWaste: "कपास के डंठल", tech: "बायोचार पायरोलिसिस एवं ह्यूमिक संवर्धन", feedstockType: "काष्ठीय फसल अवशेष", reason: "कपास के सख्त डंठल उच्च-तापमान पायरोलिसिस द्वारा गुलाबी सुंडी कीट को समाप्त कर क्षारीय बायोचार बनाते हैं।" },
+    "MP": { name: "मध्य प्रदेश", dominantWaste: "सोयाबीन एवं गेहूं का भूसा", tech: "बायोचार पायरोलिसिस एवं वर्मीकंपोस्टिंग", feedstockType: "दलहन व तिलहन अवशेष", reason: "मालवा और नर्मदा घाटी के विशाल सोयाबीन-गेहूं अवशेष मिट्टी के ह्यूमस पुनर्जनन के लिए उपयुक्त हैं।" },
+    "AP": { name: "आंध्र प्रदेश", dominantWaste: "धान भूसी एवं जलीय खरपतवार", tech: "बायोचार एवं अवायवीय पाचन", feedstockType: "तटीय कृषि-अवशेष", reason: "कृष्णा-गोदावरी डेल्टा के धान अवशेष तटीय लवणता को ठीक करने वाले बायोचार के उत्पादन के लिए आदर्श हैं।" },
+    "KA": { name: "कर्नाटक", dominantWaste: "गन्ने की खोई एवं कॉफी पल्प", tech: "बायोचार पायरोलिसिस एवं वर्मीकंपोस्टिंग", feedstockType: "रोपण एवं मिलिंग अवशेष", reason: "दक्कन पठार की लाल मिट्टी की अम्लता को संतुलित करने के लिए समृद्ध बायोचार का उत्पादन।" },
+    "TN": { name: "तमिलनाडु", dominantWaste: "नारियल की जटा एवं खोई", tech: "बायोचार एवं वर्मीकंपोस्टिंग", feedstockType: "नारियल व बागवानी अवशेष", reason: "कावेरी डेल्टा में नारियल अवशेष जल-प्रतिधारण और पोटेशियम युक्त जैविक खाद प्रदान करते हैं।" },
+    "RJ": { name: "राजस्थान", dominantWaste: "सरसों के डंठल एवं बाजरा भूसा", tech: "बायोचार पायरोलिसिस", feedstockType: "शुष्क फसल अवशेष", reason: "रेतीली शुष्क मिट्टी में नमी रोकने और सल्फर की पूर्ति के लिए सरसों के डंठल का बायोचार सर्वोत्तम है।" },
+    "BR": { name: "बिहार", dominantWaste: "मक्के के भुट्टे एवं धान भूसा", tech: "बायोचार पायरोलिसिस एवं बायोगैस", feedstockType: "अनाज व मक्का अवशेष", reason: "सीमांचल और उत्तर बिहार के विशाल मक्का अवशेष उच्च-छिद्रयुक्त मृदा कंडीशनर का उत्पादन करते हैं।" },
+    "OD": { name: "ओडिशा", dominantWaste: "धान की भूसी", tech: "बायोचार पायरोलिसिस", feedstockType: "चावल मिलिंग अवशेष", reason: "अम्लीय लाल मिट्टी के पीएच को सामान्य करने के लिए सिलिका युक्त बायोचार का उत्पादन।" },
+    "TG": { name: "तेलंगाना", dominantWaste: "कपास के डंठल एवं धान भूसा", tech: "बायोचार पायरोलिसिस", feedstockType: "काष्ठीय फसल अवशेष", reason: "तेलंगाना के शुष्क क्षेत्रों में सूक्ष्मजीव गतिविधि और कार्बन सामग्री को पुनर्जीवित करता है।" },
+    "AS": { name: "असम", dominantWaste: "चाय अपशिष्ट एवं धान भूसा", tech: "वर्मीकंपोस्टिंग एवं बायोचार", feedstockType: "चाय बागान अपशिष्ट", reason: "चाय बागानों की अम्लीय मिट्टी को समृद्ध करने के लिए नाइट्रोजन-युक्त बायो-खाद।" },
+    "KL": { name: "केरल", dominantWaste: "नारियल अपशिष्ट एवं रबड़ की लकड़ी", tech: "बायोचार पायरोलिसिस", feedstockType: "बागान लकड़ी अवशेष", reason: "उच्च वर्षा वाले क्षेत्रों में पोषक तत्वों के रिसाव को रोकने के लिए उच्च-पोरस बायोचार।" },
+    "CH": { name: "छत्तीसगढ़", dominantWaste: "धान की भूसी (राइस हस्क)", tech: "बायोचार पायरोलिसिस", feedstockType: "धान का कटोरा अवशेष", reason: "धान मिलों से निकलने वाली भूसी से ऊर्जा और पोषक तत्व संपन्न सिलिका-बायोचार का निर्माण।" },
+    "JH": { name: "झारखंड", dominantWaste: "वन बायोमास एवं धान भूसा", tech: "बायोचार एवं वर्मीकंपोस्टिंग", feedstockType: "वन एवं कृषि अवशेष", reason: "पठारी क्षेत्रों की बंजर मिट्टी को उपजाऊ बनाने के लिए बायो-ह्यूमस खाद।" },
+    "UK": { name: "उत्तराखंड", dominantWaste: "गन्ने की खोई एवं चीड़ की पत्तियां", tech: "बायोचार पायरोलिसिस", feedstockType: "पर्वतीय व तराई अवशेष", reason: "तराई के गन्ने और पहाड़ी चीड़ के पत्तों को जंगल की आग रोकने वाले बायोचार में बदलना।" },
+    "HP": { name: "हिमाचल प्रदेश", dominantWaste: "सेब की छंटाई व पाइन नीडल्स", tech: "बायोचार पायरोलिसिस", feedstockType: "बागवानी लकड़ी अवशेष", reason: "सेब के बागों की मिट्टी में फंगल रोगों को रोकने और कार्बन बढ़ाने के लिए पाइन बायोचार।" },
+    "JK": { name: "जम्मू और कश्मीर", dominantWaste: "अखरोट व सेब बागवानी अपशिष्ट", tech: "बायोचार पायरोलिसिस", feedstockType: "शीतोष्ण बागवानी अवशेष", reason: "घाटी के सेब और अखरोट बागों के लिए धीमी गति से पोषक तत्व छोड़ने वाला बायोचार।" },
+    "GA": { name: "गोवा", dominantWaste: "नारियल व काजू छिलके", tech: "बायोचार पायरोलिसिस", feedstockType: "तटीय बागवानी अवशेष", reason: "तटीय रेतीली मिट्टी में पोषक तत्वों को बनाए रखने के लिए कार्बन-समृद्ध बायोचार।" },
+    "TR": { name: "त्रिपुरा", dominantWaste: "बांस एवं बागवानी अपशिष्ट", tech: "बायोचार पायरोलिसिस", feedstockType: "बांस व वन अवशेष", reason: "बांस के अवशेषों से उच्च-ऊर्जा बायोचार और सिरका का उत्पादन।" },
+    "DL": { name: "दिल्ली एनसीआर", dominantWaste: "सब्जी मंडी अपशिष्ट", tech: "अवायवीय जैव-पाचन", feedstockType: "मंडी थोक अवशेष", reason: "आजादपुर मंडी के गीले जैविक कचरे से ग्रीन एनर्जी और जैविक स्लरी खाद का निर्माण।" }
+  };
+
   /**
    * Dynamically renders the 'Regional Profile' HTML panel
    * @param {Object} profile - State profile object
    */
   function renderRegionalProfile(profile) {
     if (!regionalProfilePanel || !profile) return;
+    activeRegionalProfile = profile;
+
+    const isHi = (currentLang === 'hi');
+    const hiData = stateHindiMap[profile.id] || {};
+    const stateName = isHi && hiData.name ? hiData.name : profile.name;
+    const dominantWaste = isHi && hiData.dominantWaste ? hiData.dominantWaste : profile.dominantWaste;
+    const techName = isHi && hiData.tech ? hiData.tech : profile.tech;
+    const feedstockType = isHi && hiData.feedstockType ? hiData.feedstockType : profile.feedstockType;
+    const reasonText = isHi && hiData.reason ? hiData.reason : profile.reason;
+    const btnText = isHi ? `${dominantWaste} के लिए फॉर्मूलेशन कॉन्फ़िगर करें` : `Configure Formulation for ${profile.dominantWaste}`;
 
     regionalProfilePanel.classList.remove('fade-in');
     void regionalProfilePanel.offsetWidth; // Force CSS animation restart
@@ -1024,52 +1251,52 @@ document.addEventListener('DOMContentLoaded', () => {
     regionalProfilePanel.innerHTML = `
       <div class="rp-header">
         <div>
-          <span class="rp-state-badge">State Code: ${profile.id} &bull; ${profile.feedstockType}</span>
-          <h3 class="rp-state-title" id="profile-state-name">${profile.name}</h3>
+          <span class="rp-state-badge"><span data-i18n="rp_state_code">State Code</span>: ${profile.id} &bull; ${feedstockType}</span>
+          <h3 class="rp-state-title" id="profile-state-name">${stateName}</h3>
         </div>
         <span class="status-pill status-ready">
-          <span class="pulse-dot"></span> Active Profile
+          <span class="pulse-dot"></span> <span data-i18n="rp_active_profile">Active Profile</span>
         </span>
       </div>
 
       <!-- Dominant Waste Callout Card -->
       <div class="rp-waste-card">
-        <span class="rp-waste-label">Dominant Farm Waste Type</span>
+        <span class="rp-waste-label" data-i18n="rp_dominant_waste">Dominant Farm Waste Type</span>
         <h4 class="rp-waste-value">
           <span aria-hidden="true">🌾</span>
-          <span id="profile-waste-type">${profile.dominantWaste}</span>
+          <span id="profile-waste-type">${dominantWaste}</span>
         </h4>
         <p class="rp-waste-meta">
-          <strong>Average C:N Ratio:</strong> ${profile.cn} &bull; <strong>Annual Surplus:</strong> ${profile.density}
+          <strong><span data-i18n="rp_avg_cn">Average C:N Ratio</span>:</strong> ${profile.cn} &bull; <strong><span data-i18n="rp_annual_surplus">Annual Surplus</span>:</strong> ${profile.density}
         </p>
       </div>
 
       <!-- Recommended Conversion Technology Card (Green Accent) -->
       <div class="rp-tech-card">
-        <span class="rp-tech-label">Recommended Conversion Technology</span>
+        <span class="rp-tech-label" data-i18n="rp_rec_tech">Recommended Conversion Technology</span>
         <h4 class="rp-tech-value">
           <span aria-hidden="true">⚡</span>
-          <span id="profile-tech-name">${profile.tech}</span>
+          <span id="profile-tech-name">${techName}</span>
         </h4>
-        <p class="rp-waste-meta">
+        <p class="rp-waste-meta" data-i18n="rp_tech_sub">
           Targeted biochemical valorization matching substrate moisture and stoichiometric kinetics.
         </p>
       </div>
 
       <!-- Technical Rationale Breakdown -->
       <div class="rp-rationale-box">
-        <strong>Biochemical Selection Rationale:</strong>
-        <p style="margin: 6px 0 0 0;">${profile.reason}</p>
+        <strong data-i18n="rp_rationale">Biochemical Selection Rationale:</strong>
+        <p style="margin: 6px 0 0 0;">${reasonText}</p>
       </div>
 
       <!-- Regional Impact Metrics Grid -->
       <div class="rp-metrics-grid">
         <div class="rp-metric-box">
-          <span class="rpm-label">Annual Biomass Volume</span>
+          <span class="rpm-label" data-i18n="rp_biomass_volume">Annual Biomass Volume</span>
           <span class="rpm-val text-charcoal">${profile.density}</span>
         </div>
         <div class="rp-metric-box">
-          <span class="rpm-label">Bio-Fertilizer Potential</span>
+          <span class="rpm-label" data-i18n="rp_fertilizer_potential">Bio-Fertilizer Potential</span>
           <span class="rpm-val text-green">${profile.output}</span>
         </div>
       </div>
@@ -1077,7 +1304,7 @@ document.addEventListener('DOMContentLoaded', () => {
       <!-- Action Footer -->
       <div class="rp-action-wrap">
         <a href="#formulation" class="btn btn-saffron btn-full" id="btn-profile-formulate">
-          <span>Configure Formulation for ${profile.dominantWaste}</span>
+          <span>${btnText}</span>
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
             <path d="M5 12h14M12 5l7 7-7 7"/>
           </svg>
@@ -1085,8 +1312,11 @@ document.addEventListener('DOMContentLoaded', () => {
       </div>
     `;
 
+    // Immediately translate any static data-i18n elements inside the panel
+    translateDynamicContainer(regionalProfilePanel);
+
     if (mapPillState) {
-      mapPillState.textContent = `${profile.name} Active`;
+      mapPillState.textContent = isHi ? `${stateName} सक्रिय` : `${profile.name} Active`;
     }
   }
 
@@ -1632,9 +1862,65 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     }
 
+    // Synchronize chart language labels immediately
+    updateChartsLanguage(currentLang);
+
     // Synchronize dashboard numbers and charts immediately
     if (typeof calculateDashboard === 'function') {
       calculateDashboard();
+    }
+  }
+
+  /**
+   * Dynamically update Chart.js labels, dataset legends, and tooltips between English and Hindi
+   * @param {string} lang - 'en' or 'hi'
+   */
+  function updateChartsLanguage(lang) {
+    const isHi = (lang === 'hi');
+    const yearLabels = isHi
+      ? ['वर्ष 1', 'वर्ष 2', 'वर्ष 3', 'वर्ष 4', 'वर्ष 5']
+      : ['Year 1', 'Year 2', 'Year 3', 'Year 4', 'Year 5'];
+
+    if (teaChartInstance) {
+      teaChartInstance.data.labels = yearLabels;
+      teaChartInstance.data.datasets[0].label = isHi ? 'कैपेक्स (पूंजीगत मशीनरी व सेटअप)' : 'CAPEX (Setup & Machinery)';
+      teaChartInstance.data.datasets[1].label = isHi ? 'ओपेक्स (बायोमास खरीद व श्रम)' : 'OPEX (Biomass Procurement & Labor)';
+      teaChartInstance.data.datasets[2].label = isHi ? 'अनुमानित शुद्ध वर्तमान मूल्य (NPV)' : 'Projected Net Present Value (NPV)';
+      teaChartInstance.options.plugins.tooltip.callbacks.label = function(context) {
+        const val = context.parsed.y;
+        const cr = (val / 100).toFixed(2);
+        return isHi
+          ? ` ${context.dataset.label}: ₹ ${val} लाख (₹ ${cr} करोड़)`
+          : ` ${context.dataset.label}: ₹ ${val} Lakhs (₹ ${cr} Cr)`;
+      };
+      teaChartInstance.update('none');
+    }
+
+    if (lcaChartInstance) {
+      lcaChartInstance.data.labels = yearLabels;
+      lcaChartInstance.data.datasets[0].label = isHi ? 'रासायनिक उर्वरक बेसलाइन (यूरिया व डीएपी)' : 'Synthetic Fertilizer Baseline (Urea & DAP)';
+      lcaChartInstance.data.datasets[1].label = isHi ? 'कृषिऊर्जा जैव-उर्वरक (नेट नेगेटिव मार्ग)' : 'KrishiUrja Bio-Fertilizer (Net Negative Pathway)';
+      lcaChartInstance.options.plugins.tooltip.callbacks.label = function(context) {
+        const val = context.parsed.y;
+        return isHi
+          ? ` ${context.dataset.label}: ${val > 0 ? '+' : ''}${val} किग्रा CO₂e / मीट्रिक टन`
+          : ` ${context.dataset.label}: ${val > 0 ? '+' : ''}${val} kg CO₂e / MT`;
+      };
+      lcaChartInstance.update('none');
+    }
+
+    if (circularityChartInstance) {
+      circularityChartInstance.data.labels = isHi
+        ? ['संसाधन इनपुट', 'अपशिष्ट न्यूनतमकरण', 'ऊर्जा पुनर्प्राप्ति']
+        : ['Resource Inflows', 'Outflows / Waste', 'Energy Recovery'];
+      circularityChartInstance.data.datasets[0].label = isHi ? 'संयंत्र प्रदर्शन (ISO 59020)' : 'Facility Performance (ISO 59020)';
+      circularityChartInstance.data.datasets[1].label = isHi ? 'पारंपरिक रैखिक बेसलाइन' : 'Conventional Linear Baseline';
+      circularityChartInstance.options.plugins.tooltip.callbacks.label = function(context) {
+        return isHi
+          ? ` ${context.dataset.label}: ${context.parsed.r}% प्रदर्शन`
+          : ` ${context.dataset.label}: ${context.parsed.r}% Performance`;
+      };
+      circularityChartInstance.update('none');
     }
   }
 
@@ -1822,15 +2108,20 @@ document.addEventListener('DOMContentLoaded', () => {
       roiResultsContainer.classList.add('roi-fade-in');
     }
 
+    const isHi = (currentLang === 'hi');
+    const subtext = isHi
+      ? `अपने <strong>${farmSize} हेक्टेयर</strong> खेत को स्थानीय कृषि-अपशिष्ट बायोरिफाइनरी जैविक-खनिज उर्वरक मॉडल में बदलकर, आप रासायनिक यूरिया और डीएपी की तुलना में हर साल <strong>${formatINR(annualSavings)}</strong> की सीधी बचत करते हैं।`
+      : `By switching your <strong>${farmSize} hectare</strong> farm to a localized farm-waste biorefinery organo-mineral fertilizer model, you save <strong>${formatINR(annualSavings)}</strong> every single year compared to synthetic Urea &amp; DAP.`;
+
     roiResultsContainer.innerHTML = `
       <div class="roi-results-card">
         
         <!-- Hero Result: 3-Year Projected Savings in Massive Bold Font (Green Accent) -->
         <div class="roi-hero-result">
           <div class="rhr-header-row">
-            <span class="rhr-badge">Projected Farmer Profitability</span>
+            <span class="rhr-badge" data-i18n="roi_farmer_profitability">Projected Farmer Profitability</span>
             <span class="rhr-guarantee-pill">
-              <span class="pulse-dot"></span> 40% Cost Advantage
+              <span class="pulse-dot"></span> <span data-i18n="roi_cost_advantage">40% Cost Advantage</span>
             </span>
           </div>
 
@@ -1839,65 +2130,68 @@ document.addEventListener('DOMContentLoaded', () => {
             ${formatINR(threeYearSavings)}
           </div>
           
-          <p class="rhr-subtext">
-            By switching your <strong>${farmSize} hectare</strong> farm to a localized farm-waste biorefinery organo-mineral fertilizer model, you save <strong>${formatINR(annualSavings)}</strong> every single year compared to synthetic Urea &amp; DAP.
+          <p class="rhr-subtext" id="roi-subtext">
+            ${subtext}
           </p>
         </div>
 
         <!-- Metric Statistics Grid -->
         <div class="roi-metrics-grid">
           <div class="roi-stat-box">
-            <span class="rsb-label">Annual Cost Savings</span>
+            <span class="rsb-label" data-i18n="roi_annual_savings">Annual Cost Savings</span>
             <strong class="rsb-value text-green">${formatINR(annualSavings)} / yr</strong>
-            <span class="rsb-sub">40% direct input spend reduction</span>
+            <span class="rsb-sub" data-i18n="roi_annual_savings_sub">40% direct input spend reduction</span>
           </div>
 
           <div class="roi-stat-box">
-            <span class="rsb-label">Savings Per Hectare</span>
+            <span class="rsb-label" data-i18n="roi_savings_per_ha">Savings Per Hectare</span>
             <strong class="rsb-value text-charcoal">${formatINR(savingsPerHaAnnual)} / ha / yr</strong>
-            <span class="rsb-sub">${formatINR(savingsPerHaThreeYear)} total over 3 years</span>
+            <span class="rsb-sub">${formatINR(savingsPerHaThreeYear)} ${isHi ? '3 वर्षों में कुल' : 'total over 3 years'}</span>
           </div>
 
           <div class="roi-stat-box">
-            <span class="rsb-label">New Annual Bio-Fertilizer Spend</span>
+            <span class="rsb-label" data-i18n="roi_new_spend">New Annual Bio-Fertilizer Spend</span>
             <strong class="rsb-value text-charcoal">${formatINR(newAnnualSpend)} / yr</strong>
-            <span class="rsb-sub">Down from ${formatINR(syntheticSpend)} on synthetics</span>
+            <span class="rsb-sub">${isHi ? 'रासायनिक उर्वरकों के' : 'Down from'} ${formatINR(syntheticSpend)} ${isHi ? 'से घटकर' : 'on synthetics'}</span>
           </div>
 
           <div class="roi-stat-box">
-            <span class="rsb-label">3-Yr Carbon Abatement</span>
+            <span class="rsb-label" data-i18n="roi_carbon_abatement">3-Yr Carbon Abatement</span>
             <strong class="rsb-value text-saffron">${carbonAvoided} tCO₂e</strong>
-            <span class="rsb-sub">Avoided stubble burning &amp; soil carbon sequestration</span>
+            <span class="rsb-sub" data-i18n="roi_carbon_abatement_sub">Avoided stubble burning &amp; soil carbon sequestration</span>
           </div>
         </div>
 
         <!-- 3-Year Cumulative Savings Trajectory Timeline -->
         <div class="roi-trajectory-container">
           <div class="rtc-header">
-            <span class="rtc-title">3-Year Cumulative Savings Trajectory</span>
-            <span class="rtc-tag">Zero Capital Expenditure &bull; FPO Farmgate Delivery</span>
+            <span class="rtc-title" data-i18n="roi_trajectory_title">3-Year Cumulative Savings Trajectory</span>
+            <span class="rtc-tag" data-i18n="roi_trajectory_tag">Zero Capital Expenditure &bull; FPO Farmgate Delivery</span>
           </div>
           <div class="rtc-steps-grid">
             <div class="rtc-step">
-              <span class="rtc-step-badge">Year 1</span>
+              <span class="rtc-step-badge" data-i18n="roi_year1">Year 1</span>
               <div class="rtc-step-amount text-charcoal">${formatINR(annualSavings)}</div>
-              <div class="rtc-step-note">Immediate 40% input cut</div>
+              <div class="rtc-step-note" data-i18n="roi_year1_note">Immediate 40% input cut</div>
             </div>
             <div class="rtc-step">
-              <span class="rtc-step-badge">Year 2</span>
+              <span class="rtc-step-badge" data-i18n="roi_year2">Year 2</span>
               <div class="rtc-step-amount text-charcoal">${formatINR(annualSavings * 2)}</div>
-              <div class="rtc-step-note">Soil carbon &amp; moisture retention gains</div>
+              <div class="rtc-step-note" data-i18n="roi_year2_note">Soil carbon &amp; moisture retention gains</div>
             </div>
             <div class="rtc-step rtc-step-highlight">
-              <span class="rtc-step-badge bg-green text-white">Year 3 Total</span>
+              <span class="rtc-step-badge bg-green text-white" data-i18n="roi_year3">Year 3 Total</span>
               <div class="rtc-step-amount text-green">${formatINR(threeYearSavings)}</div>
-              <div class="rtc-step-note">Cumulative net profit &amp; improved yield</div>
+              <div class="rtc-step-note" data-i18n="roi_year3_note">Cumulative net profit &amp; improved yield</div>
             </div>
           </div>
         </div>
 
       </div>
     `;
+
+    // Immediately translate newly injected dynamic ROI elements to active language
+    translateDynamicContainer(roiResultsContainer);
 
     if (e && typeof showToast === 'function') {
       showToast(`Projected 3-Year Savings calculated: ${formatINR(threeYearSavings)}`);
@@ -2143,12 +2437,331 @@ document.addEventListener('DOMContentLoaded', () => {
     showToast('Opening Techno-Economic & Life Cycle Simulation Dashboard');
   });
 
+  // =========================================================================
+  // 8. Integrated Field Operations: OpenWeatherMap & Google Maps Soil Lab Connectivity
+  // =========================================================================
+  let currentLat = 28.6139; // Default: Central Indo-Gangetic Plains (New Delhi / Ludhiana)
+  let currentLon = 77.2090;
+
+  const weatherTempEl = document.getElementById('weather-temp');
+  const weatherHumidityEl = document.getElementById('weather-humidity');
+  const weatherWindEl = document.getElementById('weather-wind');
+  const weatherLocationEl = document.getElementById('weather-location');
+  const weatherRecommendationEl = document.getElementById('weather-recommendation');
+  const weatherStatusTextEl = document.getElementById('weather-status-text');
+  const weatherMoistureStatusEl = document.getElementById('weather-moisture-status');
+  const weatherConditionTextEl = document.getElementById('weather-condition-text');
+  const btnRefreshWeather = document.getElementById('btn-refresh-weather');
+  const btnDetectLocation = document.getElementById('btn-detect-location');
+
+  let latestWeatherKey = "weather_ideal";
+
+  function updateWeatherAdvisoryLanguage() {
+    if (!weatherRecommendationEl) return;
+    const dict = (typeof translations !== 'undefined') ? translations : (window.translations || null);
+    if (dict && dict[currentLang] && dict[currentLang][latestWeatherKey]) {
+      weatherRecommendationEl.textContent = dict[currentLang][latestWeatherKey];
+    }
+  }
+
+  /**
+   * Asynchronously fetch real-time agricultural weather conditions from OpenWeatherMap API
+   * @param {number} lat - Latitude
+   * @param {number} lon - Longitude
+   */
+  async function fetchLocalWeather(lat, lon) {
+    currentLat = lat || currentLat;
+    currentLon = lon || currentLon;
+
+    if (weatherStatusTextEl) {
+      weatherStatusTextEl.textContent = currentLang === 'hi' ? 'मौसम लोड हो रहा है...' : 'Updating Weather...';
+    }
+
+    try {
+      let data;
+      // If live API key is not yet configured, gracefully fall back to localized agricultural simulation
+      if (!OPENWEATHER_API_KEY || OPENWEATHER_API_KEY === 'YOUR_API_KEY_HERE') {
+        await new Promise(res => setTimeout(res, 350)); // Realistic network latency simulation
+        data = {
+          name: (lat && Math.abs(lat - 30.9) < 2) ? "Ludhiana (Punjab Agri-Hub)" : "Indo-Gangetic Plains",
+          main: {
+            temp: 24.6,
+            humidity: 58,
+            pressure: 1012
+          },
+          wind: {
+            speed: 3.4 // m/s = 12.2 km/h
+          },
+          weather: [
+            { main: "Clear", description: currentLang === 'hi' ? "शांत धूप एवं अनुकूल हवा" : "Mild sunny, clear skies" }
+          ],
+          isDemo: true
+        };
+      } else {
+        const url = `https://api.openweathermap.org/data/2.5/weather?lat=${currentLat}&lon=${currentLon}&units=metric&appid=${OPENWEATHER_API_KEY}`;
+        const response = await fetch(url);
+        if (!response.ok) {
+          throw new Error(`OpenWeather API HTTP ${response.status}`);
+        }
+        data = await response.json();
+      }
+
+      const temp = Math.round(data.main.temp * 10) / 10;
+      const humidity = data.main.humidity;
+      const windSpeedKmH = Math.round((data.wind?.speed || 0) * 3.6);
+      const locName = data.name || (currentLang === 'hi' ? "स्थानीय कृषि क्षेत्र" : "Local Agricultural Zone");
+
+      if (weatherTempEl) weatherTempEl.textContent = `${temp}°C`;
+      if (weatherHumidityEl) weatherHumidityEl.textContent = `${humidity}%`;
+      if (weatherWindEl) weatherWindEl.textContent = `${windSpeedKmH} km/h`;
+      if (weatherLocationEl) weatherLocationEl.textContent = `${locName} • GPS Sync`;
+      if (weatherMoistureStatusEl) {
+        weatherMoistureStatusEl.textContent = humidity >= 50 
+          ? (currentLang === 'hi' ? 'बीजाणु अवशोषण अनुकूल' : 'Optimal Spore Absorption')
+          : (currentLang === 'hi' ? 'कम नमी चेतावनी' : 'Low Moisture Advisory');
+      }
+      if (weatherConditionTextEl) {
+        weatherConditionTextEl.textContent = data.weather?.[0]?.description || (currentLang === 'hi' ? 'स्थिर वायुमंडलीय दबाव' : 'Stable Barometric Pressure');
+      }
+
+      // Dynamic Agronomic Bio-Fertilizer Recommendation
+      if (temp >= 20 && temp <= 30) {
+        latestWeatherKey = "weather_ideal";
+      } else if (temp > 30) {
+        latestWeatherKey = "weather_warm";
+      } else {
+        latestWeatherKey = "weather_cool";
+      }
+
+      updateWeatherAdvisoryLanguage();
+
+      if (weatherStatusTextEl) {
+        weatherStatusTextEl.textContent = data.isDemo 
+          ? (currentLang === 'hi' ? 'सिम्युलेटेड मौसम' : 'Simulated Agro-Weather')
+          : (currentLang === 'hi' ? 'लाइव मौसम सक्रिय' : 'Live GPS Weather');
+      }
+
+    } catch (err) {
+      console.warn('[OpenWeatherMap] Fetch failed or offline, applying resilient offline parameters:', err);
+      if (weatherTempEl) weatherTempEl.textContent = '24.0°C';
+      if (weatherHumidityEl) weatherHumidityEl.textContent = '55%';
+      if (weatherWindEl) weatherWindEl.textContent = '10 km/h';
+      if (weatherLocationEl) weatherLocationEl.textContent = currentLang === 'hi' ? 'ऑफलाइन डिफ़ॉल्ट ज़ोन' : 'Offline Default Zone';
+      latestWeatherKey = 'weather_ideal';
+      updateWeatherAdvisoryLanguage();
+      if (weatherStatusTextEl) {
+        weatherStatusTextEl.textContent = currentLang === 'hi' ? 'ऑफलाइन सलाह' : 'Offline Advisory';
+      }
+    }
+  }
+
+  btnRefreshWeather?.addEventListener('click', () => {
+    fetchLocalWeather(currentLat, currentLon);
+    showToast(currentLang === 'hi' ? 'स्थानीय मौसम की जानकारी ताज़ा की गई' : 'Refreshed local agricultural weather');
+  });
+
+  btnDetectLocation?.addEventListener('click', () => {
+    if (navigator.geolocation) {
+      showToast(currentLang === 'hi' ? 'जीपीएस स्थान का पता लगाया जा रहा है...' : 'Detecting GPS location...');
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          currentLat = pos.coords.latitude;
+          currentLon = pos.coords.longitude;
+          fetchLocalWeather(currentLat, currentLon);
+          if (window.googleMapInstance) {
+            window.googleMapInstance.setCenter({ lat: currentLat, lng: currentLon });
+          }
+          showToast(currentLang === 'hi' ? 'जीपीएस स्थान सफलतापूर्वक सिंक्रनाइज़ किया गया' : 'GPS location synchronized successfully');
+        },
+        () => {
+          fetchLocalWeather(currentLat, currentLon);
+          showToast(currentLang === 'hi' ? 'जीपीएस अनुपलब्ध: डिफ़ॉल्ट कृषि हब का उपयोग कर रहे हैं' : 'GPS unavailable: Using regional agricultural hub');
+        },
+        { timeout: 7000 }
+      );
+    } else {
+      fetchLocalWeather(currentLat, currentLon);
+    }
+  });
+
+  // Verified ICAR & State Agricultural University Soil Testing Labs
+  const verifiedSoilLabs = [
+    {
+      name: "ICAR - Indian Agricultural Research Institute (IARI) Soil Testing Lab",
+      name_hi: "आईसीएआर - भारतीय कृषि अनुसंधान संस्थान (पूसा) मृदा परीक्षण प्रयोगशाला",
+      authority: "Division of Soil Science & Agricultural Chemistry",
+      authority_hi: "मृदा विज्ञान एवं कृषि रसायन संभाग",
+      lat: 28.6387,
+      lng: 77.1588,
+      address: "Pusa Campus, New Delhi 110012",
+      tat: "48 Hours / 48 घंटे"
+    },
+    {
+      name: "Punjab Agricultural University (PAU) Central Soil Lab",
+      name_hi: "पंजाब कृषि विश्वविद्यालय (पीएयू) केंद्रीय मृदा परीक्षण प्रयोगशाला",
+      authority: "Department of Soil Science, PAU",
+      authority_hi: "मृदा विज्ञान विभाग, पीएयू",
+      lat: 30.9010,
+      lng: 75.8073,
+      address: "Ferozepur Road, Ludhiana, Punjab 141004",
+      tat: "24-48 Hours / 24-48 घंटे"
+    },
+    {
+      name: "ICAR - Indian Institute of Soil Science (IISS)",
+      name_hi: "आईसीएआर - भारतीय मृदा विज्ञान संस्थान (आईआईएसएस)",
+      authority: "National Soil Health & Bio-Fertilizer Division",
+      authority_hi: "राष्ट्रीय मृदा स्वास्थ्य एवं जैव-उर्वरक प्रभाग",
+      lat: 23.3104,
+      lng: 77.4042,
+      address: "Berasia Road, Nabibagh, Bhopal, MP 462038",
+      tat: "48 Hours / 48 घंटे"
+    },
+    {
+      name: "Chaudhary Charan Singh Haryana Agricultural University (CCSHAU)",
+      name_hi: "चौधरी चरण सिंह हरियाणा कृषि विश्वविद्यालय (एचएयू) मृदा लैब",
+      authority: "Regional Soil & Water Testing Center",
+      authority_hi: "क्षेत्रीय मृदा एवं जल परीक्षण केंद्र",
+      lat: 29.1492,
+      lng: 75.7058,
+      address: "Hisar, Haryana 125004",
+      tat: "48 Hours / 48 घंटे"
+    },
+    {
+      name: "UAS Bangalore Agricultural Soil Testing Center",
+      name_hi: "कृषि विज्ञान विश्वविद्यालय (यूएएस) मृदा परीक्षण केंद्र",
+      authority: "University of Agricultural Sciences",
+      authority_hi: "कृषि विज्ञान विश्वविद्यालय, बेंगलुरु",
+      lat: 13.0784,
+      lng: 77.5818,
+      address: "GKVK Campus, Bengaluru, Karnataka 560065",
+      tat: "48 Hours / 48 घंटे"
+    }
+  ];
+
+  function renderSoilLabMapFallback(container, labs) {
+    if (!container) return;
+    const isHi = (currentLang === 'hi');
+    const labsList = labs || verifiedSoilLabs;
+    container.innerHTML = `
+      <div class="soil-lab-fallback">
+        <div class="slf-header">
+          <span class="slf-title">${isHi ? 'मान्यता प्राप्त मृदा परीक्षण केंद्र (निकटतम)' : 'Accredited Soil Testing Centers (Nearest)'}</span>
+          <span class="slf-badge">${isHi ? '✓ आईसीएआर / केवीके नेटवर्क' : '✓ ICAR / KVK Network'}</span>
+        </div>
+        <div class="slf-labs-list">
+          ${labsList.slice(0, 3).map(lab => `
+            <div class="slf-lab-item">
+              <div class="slf-lab-info">
+                <h5>${isHi ? lab.name_hi : lab.name}</h5>
+                <p>${isHi ? lab.authority_hi : lab.authority} &bull; ${lab.address}</p>
+              </div>
+              <div class="slf-lab-dist">${lab.tat}</div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `;
+  }
+
+  /**
+   * Initializes Google Map and plots nearest soil testing laboratories
+   */
+  function initMap() {
+    const mapContainer = document.getElementById('soil-lab-map');
+    if (!mapContainer) return;
+
+    const defaultCenter = { lat: currentLat, lng: currentLon };
+
+    if (typeof google !== 'undefined' && google.maps && google.maps.Map) {
+      try {
+        const map = new google.maps.Map(mapContainer, {
+          center: defaultCenter,
+          zoom: 7,
+          mapTypeControl: false,
+          streetViewControl: false,
+          styles: [
+            { featureType: "poi", stylers: [{ visibility: "off" }] },
+            { featureType: "transit", stylers: [{ visibility: "off" }] }
+          ]
+        });
+        window.googleMapInstance = map;
+
+        // Try geolocation
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition((pos) => {
+            const userLoc = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+            map.setCenter(userLoc);
+            new google.maps.Marker({
+              position: userLoc,
+              map: map,
+              title: currentLang === 'hi' ? 'आपका खेत' : 'Your Farm Location',
+              icon: {
+                path: google.maps.SymbolPath.CIRCLE,
+                scale: 9,
+                fillColor: '#EA580C',
+                fillOpacity: 1,
+                strokeColor: '#FFFFFF',
+                strokeWeight: 2.5
+              }
+            });
+          }, () => {
+            // Keep default center
+          });
+        }
+
+        // Plot soil lab markers
+        verifiedSoilLabs.forEach(lab => {
+          const marker = new google.maps.Marker({
+            position: { lat: lab.lat, lng: lab.lng },
+            map: map,
+            title: lab.name,
+            icon: {
+              path: google.maps.SymbolPath.BACKWARD_CLOSED_ARROW,
+              scale: 5,
+              fillColor: '#15803D',
+              fillOpacity: 1,
+              strokeColor: '#FFFFFF',
+              strokeWeight: 1.5
+            }
+          });
+
+          const infoWindow = new google.maps.InfoWindow({
+            content: `
+              <div style="font-family: Inter, sans-serif; padding: 6px; max-width: 240px;">
+                <strong style="color: #1F2937; font-size: 13px; display: block; margin-bottom: 3px;">${currentLang === 'hi' ? lab.name_hi : lab.name}</strong>
+                <p style="margin: 0 0 4px 0; color: #4B5563; font-size: 11px;">${lab.address}</p>
+                <span style="color: #15803D; font-weight: 700; font-size: 11px;">Turnaround: ${lab.tat}</span>
+              </div>
+            `
+          });
+
+          marker.addListener('click', () => {
+            infoWindow.open(map, marker);
+          });
+        });
+
+        return;
+      } catch (err) {
+        console.warn('[GoogleMaps] Live map initialization failed:', err);
+      }
+    }
+
+    // Neobrutalist Fallback UI when API key is placeholder or offline
+    renderSoilLabMapFallback(mapContainer, verifiedSoilLabs);
+  }
+
+  // Assign to global bridges
+  window.triggerInitMap = initMap;
+  window.initMap = initMap;
+
   // Initial calculation and data rendering runs
   calculateFormulation();
   calculateDashboard();
   calculateFarmerROI();
   renderFMEATable();
   renderFCOChecklist();
+  fetchLocalWeather(currentLat, currentLon);
+  initMap();
 
   // =========================================================================
   // 9. Progressive Web App (PWA) Service Worker Registration & Offline Resilience
