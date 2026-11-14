@@ -154,7 +154,7 @@ button {
   top: 0;
   left: 0;
   right: 0;
-  height: var(--header-height);
+  min-height: var(--header-height);
   background: var(--bg-glass);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
@@ -170,12 +170,14 @@ button {
 
 .nav-container {
   max-width: 1240px;
-  height: 100%;
+  min-height: var(--header-height);
   margin: 0 auto;
-  padding: 0 24px;
+  padding: 4px 20px;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px 14px;
   position: relative;
 }
 
@@ -342,23 +344,27 @@ button {
 .nav-actions {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  flex-shrink: 0;
+  max-width: 100%;
 }
 
 /* Language Toggle Button (i18n Localization Engine) */
 .lang-toggle-btn {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  height: 44px;
-  min-height: 44px;
-  padding: 0 16px;
+  gap: 6px;
+  height: 38px;
+  min-height: 38px;
+  padding: 0 12px;
   background: var(--bg-surface);
   color: var(--text-primary);
   border: 1.5px solid var(--border-medium);
   border-radius: var(--radius-full);
   font-family: var(--font-family-base);
-  font-size: 0.88rem;
+  font-size: 0.82rem;
   font-weight: 600;
   cursor: pointer;
   box-shadow: var(--shadow-xs);
@@ -3922,6 +3928,28 @@ button {
   }
 }
 
+@media (max-width: 1150px) {
+  #btn-quick-audit {
+    display: none;
+  }
+  .main-nav .nav-link {
+    padding: 0 10px;
+    font-size: 0.84rem;
+  }
+}
+
+@media (max-width: 992px) {
+  .main-nav {
+    display: none;
+  }
+  .mobile-toggle {
+    display: flex;
+  }
+  .mobile-nav {
+    display: flex;
+  }
+}
+
 @media (max-width: 860px) {
   .fp-mechanism-grid {
     grid-template-columns: 1fr;
@@ -3933,18 +3961,6 @@ button {
 
   .ft-content-panel {
     padding: 24px 20px;
-  }
-
-  .main-nav {
-    display: none;
-  }
-
-  .mobile-toggle {
-    display: flex;
-  }
-
-  .mobile-nav {
-    display: flex;
   }
 
   .hero-stats-strip {
@@ -4858,22 +4874,26 @@ button {
 .nav-auth-wrap {
   display: flex;
   align-items: center;
+  flex-shrink: 0;
 }
 
 .btn-nav-auth {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 5px;
   background-color: #FFFFFF;
   color: #1F2937;
   border: 2px solid #1F2937;
-  padding: 6px 14px;
+  padding: 0 12px;
+  height: 38px;
+  min-height: 38px;
   font-family: 'Inter', sans-serif;
-  font-size: 0.85rem;
+  font-size: 0.82rem;
   font-weight: 700;
   border-radius: 6px;
   box-shadow: 2px 2px 0px #1F2937;
   cursor: pointer;
+  white-space: nowrap;
   transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
@@ -4890,45 +4910,407 @@ button {
 .user-profile-badge {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   background-color: #F0FDF4;
   border: 2px solid #15803D;
-  padding: 4px 10px;
+  padding: 2px 8px;
+  height: 38px;
   border-radius: 6px;
   box-shadow: 2px 2px 0px #1F2937;
+  box-sizing: border-box;
+  white-space: nowrap;
+  max-width: 100%;
 }
 
 .user-avatar {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 24px;
-  height: 24px;
+  width: 22px;
+  height: 22px;
   background-color: #15803D;
   color: #FFFFFF;
-  font-size: 0.75rem;
+  font-size: 0.72rem;
   font-weight: 800;
   border-radius: 50%;
   border: 1px solid #1F2937;
+  flex-shrink: 0;
 }
 
 .user-first-name {
-  font-size: 0.85rem;
+  font-size: 0.82rem;
   font-weight: 700;
   color: #1F2937;
+  max-width: 80px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .btn-sign-out {
   background: transparent;
   border: none;
   color: #DC2626;
-  font-size: 0.75rem;
+  font-size: 0.72rem;
   font-weight: 700;
   cursor: pointer;
   padding: 2px 4px;
   border-radius: 4px;
   text-decoration: underline;
   text-underline-offset: 2px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.btn-sign-out:hover {
+  color: #991B1B;
+}
+
+/* Modal Overlay & Card */
+.auth-modal-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(31, 41, 55, 0.65);
+  backdrop-filter: blur(4px);
+  z-index: 9999;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+.auth-modal-overlay.active {
+  display: flex;
+}
+
+.auth-modal-card {
+  position: relative;
+  background-color: #F8FAF9;
+  border: 2.5px solid #1F2937;
+  border-radius: 12px;
+  box-shadow: 8px 8px 0px #1F2937;
+  width: 100%;
+  max-width: 440px;
+  padding: 32px 28px;
+  animation: authModalPop 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes authModalPop {
+  0% {
+    opacity: 0;
+    transform: scale(0.92) translateY(12px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.auth-modal-close {
+  position: absolute;
+  top: 14px;
+  right: 16px;
+  background: transparent;
+  border: none;
+  font-size: 1.6rem;
+  line-height: 1;
+  color: #4B5563;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+.auth-modal-close:hover {
+  color: #1F2937;
+  background-color: #E5E7EB;
+}
+
+.auth-brand-badge {
+  display: inline-block;
+  background-color: #FEF3C7;
+  color: #92400E;
+  border: 1.5px solid #D97706;
+  font-size: 0.75rem;
+  font-weight: 800;
+  padding: 3px 8px;
+  border-radius: 4px;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.auth-modal-title {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: #1F2937;
+  margin: 0 0 8px 0;
+}
+
+.auth-modal-lead {
+  font-size: 0.88rem;
+  color: #4B5563;
+  line-height: 1.5;
+  margin: 0 0 24px 0;
+}
+
+.btn-google-signin {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  width: 100%;
+  background-color: #FFFFFF;
+  color: #1F2937;
+  border: 2px solid #1F2937;
+  border-radius: 8px;
+  padding: 12px 16px;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 700;
+  box-shadow: 3px 3px 0px #1F2937;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
+}
+
+.btn-google-signin:hover {
+  background-color: #F9FAFB;
+  transform: translate(-2px, -2px);
+  box-shadow: 5px 5px 0px #1F2937;
+}
+
+.btn-google-signin:active {
+  transform: translate(1px, 1px);
+  box-shadow: 1px 1px 0px #1F2937;
+}
+
+.auth-trust-note {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px dashed #D1D5DB;
+  font-size: 0.78rem;
+  color: #6B7280;
+  line-height: 1.4;
+}
+
+/* =========================================================================
+   Task 4: Premium Scroll Animations (.reveal-hidden / .reveal-visible)
+   ========================================================================= */
+.reveal-hidden {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+
+.reveal-visible {
+  opacity: 1 !important;
+  transform: translateY(0) !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal-hidden {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+}
+
+/* =========================================================================
+   Task 1: Enterprise PDF Export Header & Button Styling
+   ========================================================================= */
+.d-flex-between {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.shb-content {
+  flex: 1;
+  min-width: 280px;
+}
+
+.shb-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.btn-pdf-export {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background-color: #EA580C;
+  color: #FFFFFF;
+  border: 2px solid #1F2937;
+  padding: 10px 18px;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.92rem;
+  font-weight: 700;
+  border-radius: 8px;
+  box-shadow: 3px 3px 0px #1F2937;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
+  text-decoration: none;
+}
+
+.btn-pdf-export:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 5px 5px 0px #1F2937;
+  background-color: #C2410C;
+}
+
+.btn-pdf-export:active {
+  transform: translate(1px, 1px);
+  box-shadow: 1px 1px 0px #1F2937;
+}
+
+.btn-pdf-export:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: 2px 2px 0px #1F2937;
+}
+
+/* =========================================================================
+   Task 2: WhatsApp Native Sharing Button Styling
+   ========================================================================= */
+.rhr-actions-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.btn-share-whatsapp {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background-color: #25D366;
+  color: #FFFFFF;
+  border: 2px solid #1F2937;
+  padding: 6px 14px;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 700;
+  border-radius: 6px;
+  box-shadow: 2px 2px 0px #1F2937;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
+}
+
+.btn-share-whatsapp:hover {
+  background-color: #1EBE5D;
+  transform: translate(-1px, -1px);
+  box-shadow: 4px 4px 0px #1F2937;
+}
+
+.btn-share-whatsapp:active {
+  transform: translate(1px, 1px);
+  box-shadow: 1px 1px 0px #1F2937;
+}
+
+/* =========================================================================
+   Task 3: Firebase Authentication Scaffolding & Modal Styling
+   ========================================================================= */
+.nav-auth-wrap {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.btn-nav-auth {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background-color: #FFFFFF;
+  color: #1F2937;
+  border: 2px solid #1F2937;
+  padding: 0 12px;
+  height: 38px;
+  min-height: 38px;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 700;
+  border-radius: 6px;
+  box-shadow: 2px 2px 0px #1F2937;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.btn-nav-auth:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 3px 3px 0px #1F2937;
+}
+
+.btn-nav-auth:active {
+  transform: translate(1px, 1px);
+  box-shadow: 1px 1px 0px #1F2937;
+}
+
+.user-profile-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background-color: #F0FDF4;
+  border: 2px solid #15803D;
+  padding: 2px 8px;
+  height: 38px;
+  border-radius: 6px;
+  box-shadow: 2px 2px 0px #1F2937;
+  box-sizing: border-box;
+  white-space: nowrap;
+  max-width: 100%;
+}
+
+.user-avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  background-color: #15803D;
+  color: #FFFFFF;
+  font-size: 0.72rem;
+  font-weight: 800;
+  border-radius: 50%;
+  border: 1px solid #1F2937;
+  flex-shrink: 0;
+}
+
+.user-first-name {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #1F2937;
+  max-width: 80px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.btn-sign-out {
+  background: transparent;
+  border: none;
+  color: #DC2626;
+  font-size: 0.72rem;
+  font-weight: 700;
+  cursor: pointer;
+  padding: 2px 4px;
+  border-radius: 4px;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .btn-sign-out:hover {

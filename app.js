@@ -32,6 +32,10 @@ window.initMap = function() {
 document.addEventListener('DOMContentLoaded', () => {
   'use strict';
 
+  // Initialization lifecycle flag to avoid Temporal Dead Zone (TDZ) ReferenceErrors
+  // during initial page-load localization before downstream components are defined
+  let isAppInitialized = false;
+
   // =========================================================================
   // 1. Persistent Navigation & Animated Bottom Border (Active Indicator)
   // =========================================================================
@@ -252,34 +256,81 @@ document.addEventListener('DOMContentLoaded', () => {
       // Storage might be restricted
     }
 
-    // Update active dynamic panels so they reflect new language instantly
-    if (typeof updateChartsLanguage === 'function') {
-      updateChartsLanguage(lang);
-    }
-    if (activeRegionalProfile && typeof renderRegionalProfile === 'function') {
-      renderRegionalProfile(activeRegionalProfile);
-    }
-    if (activeWasteId && typeof renderWasteAnalysis === 'function') {
-      renderWasteAnalysis(activeWasteId);
-    }
-    if (typeof updateHeroFeedstockLanguage === 'function') {
-      updateHeroFeedstockLanguage();
-    }
-    if (typeof updateWeatherAdvisoryLanguage === 'function') {
-      updateWeatherAdvisoryLanguage();
-    }
-    const roiMassiveSavings = document.getElementById('roi-massive-savings');
-    if (roiMassiveSavings && typeof calculateFarmerROI === 'function') {
-      calculateFarmerROI(null);
-    }
-    if (typeof calculateFormulation === 'function') {
-      calculateFormulation();
-    }
-    if (typeof renderFMEATable === 'function') {
-      renderFMEATable();
-    }
-    if (typeof renderFCOChecklist === 'function') {
-      renderFCOChecklist();
+    // Update active dynamic panels so they reflect new language instantly.
+    // Guarded by isAppInitialized to prevent Temporal Dead Zone (TDZ) ReferenceErrors on page load.
+    if (isAppInitialized) {
+      try {
+        if (typeof updateChartsLanguage === 'function') {
+          updateChartsLanguage(lang);
+        }
+      } catch (e) {
+        console.warn('[i18n] Error updating charts language:', e);
+      }
+
+      try {
+        if (activeRegionalProfile && typeof renderRegionalProfile === 'function') {
+          renderRegionalProfile(activeRegionalProfile);
+        }
+      } catch (e) {
+        console.warn('[i18n] Error updating regional profile:', e);
+      }
+
+      try {
+        if (activeWasteId && typeof renderWasteAnalysis === 'function') {
+          renderWasteAnalysis(activeWasteId, false);
+        }
+      } catch (e) {
+        console.warn('[i18n] Error updating waste analysis:', e);
+      }
+
+      try {
+        if (typeof updateHeroFeedstockLanguage === 'function') {
+          updateHeroFeedstockLanguage();
+        }
+      } catch (e) {
+        console.warn('[i18n] Error updating hero feedstock language:', e);
+      }
+
+      try {
+        if (typeof updateWeatherAdvisoryLanguage === 'function') {
+          updateWeatherAdvisoryLanguage();
+        }
+      } catch (e) {
+        console.warn('[i18n] Error updating weather advisory language:', e);
+      }
+
+      try {
+        const roiMassiveSavings = document.getElementById('roi-massive-savings');
+        if (roiMassiveSavings && typeof calculateFarmerROI === 'function') {
+          calculateFarmerROI(null);
+        }
+      } catch (e) {
+        console.warn('[i18n] Error updating ROI calculation:', e);
+      }
+
+      try {
+        if (typeof calculateFormulation === 'function') {
+          calculateFormulation();
+        }
+      } catch (e) {
+        console.warn('[i18n] Error updating formulation:', e);
+      }
+
+      try {
+        if (typeof renderFMEATable === 'function') {
+          renderFMEATable();
+        }
+      } catch (e) {
+        console.warn('[i18n] Error updating FMEA table:', e);
+      }
+
+      try {
+        if (typeof renderFCOChecklist === 'function') {
+          renderFCOChecklist();
+        }
+      } catch (e) {
+        console.warn('[i18n] Error updating FCO checklist:', e);
+      }
     }
 
     // Recompute the animated active indicator for spatial awareness since nav text width changes
@@ -755,7 +806,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
 
-  function renderWasteAnalysis(wasteId) {
+  function renderWasteAnalysis(wasteId, triggerToast = true) {
     const item = farmWasteData.find(w => w.id === wasteId);
     if (!item) return;
     activeWasteId = wasteId;
@@ -920,24 +971,29 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
 
-    showToast(`Evaluated ${item.name}: Optimal Pathway is ${item.optimalTechnology}`);
+    if (triggerToast && typeof showToast === 'function') {
+      showToast(`Evaluated ${item.name}: Optimal Pathway is ${item.optimalTechnology}`);
+    }
   }
 
   // Attach accessible click and keyboard listeners
   wasteCardButtons.forEach(card => {
     card.addEventListener('click', () => {
       const wasteId = card.getAttribute('data-waste-id');
-      renderWasteAnalysis(wasteId);
+      renderWasteAnalysis(wasteId, true);
     });
 
     card.addEventListener('keydown', (e) => {
       if (e.key === 'Enter' || e.key === ' ') {
         e.preventDefault();
         const wasteId = card.getAttribute('data-waste-id');
-        renderWasteAnalysis(wasteId);
+        renderWasteAnalysis(wasteId, true);
       }
     });
   });
+
+  // Initialize Default Feedstock Analysis: Rice Husk (without alert toast on load)
+  renderWasteAnalysis('rice-husk', false);
 
   // =========================================================================
   // 5. Module 01: Interactive Crop/Waste Regional Map of India Engine
@@ -2269,29 +2325,38 @@ document.addEventListener('DOMContentLoaded', () => {
       : `I can save ${formatted} over 3 years on fertilizer using localized farm waste! Calculate your farm savings:`;
     const shareUrl = window.location.href.split('#')[0] + '#roi-calculator';
 
-    if (navigator.share) {
-      navigator.share({
-        title: shareTitle,
-        text: shareText,
-        url: shareUrl
-      }).then(() => {
-        showToast(isHi ? 'सफलतापूर्वक साझा किया गया!' : 'Shared successfully!');
-      }).catch((err) => {
-        if (err.name !== 'AbortError') {
-          openWhatsAppDirect(shareText, shareUrl);
-        }
-      });
-    } else {
+    try {
+      if (navigator.share && typeof navigator.share === 'function') {
+        navigator.share({
+          title: shareTitle,
+          text: shareText,
+          url: shareUrl
+        }).then(() => {
+          showToast(isHi ? 'सफलतापूर्वक साझा किया गया!' : 'Shared successfully!');
+        }).catch((err) => {
+          if (err && err.name !== 'AbortError') {
+            openWhatsAppDirect(shareText, shareUrl);
+          }
+        });
+      } else {
+        openWhatsAppDirect(shareText, shareUrl);
+      }
+    } catch (shareErr) {
+      console.warn('[WebShare] Native share failed or unsupported, using direct link fallback:', shareErr);
       openWhatsAppDirect(shareText, shareUrl);
     }
   }
 
   function openWhatsAppDirect(text, url) {
-    const isHi = (currentLang === 'hi');
-    showToast(isHi ? 'व्हाट्सएप खोला जा रहा है...' : 'Opening WhatsApp...');
-    const message = encodeURIComponent(`${text} ${url}`);
-    const whatsappUrl = `https://api.whatsapp.com/send?text=${message}`;
-    window.open(whatsappUrl, '_blank', 'noopener,noreferrer');
+    try {
+      const isHi = (currentLang === 'hi');
+      showToast(isHi ? 'व्हाट्सएप खोला जा रहा है...' : 'Opening WhatsApp...');
+      const message = encodeURIComponent(`${text} ${url}`);
+      const whatsappUrl = `https://api.whatsapp.com/send?text=${message}`;
+      window.open(whatsappUrl, '_blank', 'noopener,noreferrer');
+    } catch (directErr) {
+      console.warn('[WhatsApp] Direct window open failed:', directErr);
+    }
   }
 
   // Prevent default form submission and trigger calculation
@@ -2901,270 +2966,293 @@ document.addEventListener('DOMContentLoaded', () => {
   window.triggerInitMap = initMap;
   window.initMap = initMap;
 
-  // Initial calculation and data rendering runs
-  calculateFormulation();
-  calculateDashboard();
-  calculateFarmerROI();
-  renderFMEATable();
-  renderFCOChecklist();
-  fetchLocalWeather(currentLat, currentLon);
-  initMap();
+  // Initial calculation and data rendering runs (wrapped defensively)
+  try { calculateFormulation(); } catch (e) { console.warn('[Init] Formulation calculation error:', e); }
+  try { calculateDashboard(); } catch (e) { console.warn('[Init] Dashboard calculation error:', e); }
+  try { calculateFarmerROI(); } catch (e) { console.warn('[Init] ROI calculation error:', e); }
+  try { renderFMEATable(); } catch (e) { console.warn('[Init] FMEA rendering error:', e); }
+  try { renderFCOChecklist(); } catch (e) { console.warn('[Init] FCO rendering error:', e); }
+  try { fetchLocalWeather(currentLat, currentLon); } catch (e) { console.warn('[Init] Weather fetch error:', e); }
+  try { initMap(); } catch (e) { console.warn('[Init] Map initialization error:', e); }
+  try { selectRegionalState('PB', false); } catch (e) { console.warn('[Init] Regional state selection error:', e); }
+  try { renderWasteAnalysis('rice-husk', false); } catch (e) { console.warn('[Init] Feedstock analysis rendering error:', e); }
+
+  // Mark app as fully initialized so subsequent language toggles update all dynamic components
+  isAppInitialized = true;
 
   // =========================================================================
   // 10. Task 1: Enterprise PDF Export (html2pdf.js)
   // =========================================================================
-  const btnExportPdf = document.getElementById('btn-export-pdf');
-  const dashboardContainer = document.getElementById('dashboard-container');
+  try {
+    const btnExportPdf = document.getElementById('btn-export-pdf');
+    const dashboardContainer = document.getElementById('dashboard-container');
 
-  btnExportPdf?.addEventListener('click', async () => {
-    const isHi = (currentLang === 'hi');
-    if (!dashboardContainer) return;
+    if (btnExportPdf && dashboardContainer) {
+      btnExportPdf.addEventListener('click', async () => {
+        const isHi = (currentLang === 'hi');
+        if (typeof html2pdf === 'undefined') {
+          showToast(isHi ? 'पीडीएफ इंजन लोड हो रहा है या ऑफलाइन है... सिस्टम प्रिंट खोल रहे हैं' : 'PDF engine loading or offline... Opening system print');
+          window.print();
+          return;
+        }
 
-    if (typeof html2pdf === 'undefined') {
-      showToast(isHi ? 'पीडीएफ इंजन लोड हो रहा है या ऑफलाइन है... सिस्टम प्रिंट खोल रहे हैं' : 'PDF engine loading or offline... Opening system print');
-      window.print();
-      return;
+        const originalHtml = btnExportPdf.innerHTML;
+        btnExportPdf.disabled = true;
+        btnExportPdf.innerHTML = `
+          <span style="display: inline-block; width: 14px; height: 14px; border: 2px solid #FFFFFF; border-top-color: transparent; border-radius: 50%; animation: spin 0.8s linear infinite; margin-right: 6px;"></span>
+          <span>${isHi ? 'पीडीएफ तैयार हो रहा है...' : 'Generating PDF...'}</span>
+        `;
+
+        showToast(isHi ? 'उच्च गुणवत्ता वाली पीडीएफ रिपोर्ट तैयार की जा रही है...' : 'Generating enterprise high-fidelity PDF report...');
+
+        const opt = {
+          margin: 10,
+          filename: 'KrishiUrja_BioRefinery_Report.pdf',
+          image: { type: 'jpeg', quality: 0.98 },
+          html2canvas: {
+            scale: 2,
+            useCORS: true,
+            logging: false,
+            backgroundColor: '#F8FAF9'
+          },
+          jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' }
+        };
+
+        try {
+          await html2pdf().set(opt).from(dashboardContainer).save();
+          showToast(isHi ? 'रिपोर्ट सफलतापूर्वक डाउनलोड हो गई!' : 'KrishiUrja Report downloaded successfully!');
+        } catch (err) {
+          console.warn('[PDF Export] html2pdf error, using browser print fallback:', err);
+          showToast(isHi ? 'पीडीएफ डाउनलोड विफल, सिस्टम प्रिंट खोला जा रहा है...' : 'PDF generation fallback: Opening print dialog...');
+          window.print();
+        } finally {
+          btnExportPdf.disabled = false;
+          btnExportPdf.innerHTML = originalHtml;
+        }
+      });
     }
-
-    const originalHtml = btnExportPdf.innerHTML;
-    btnExportPdf.disabled = true;
-    btnExportPdf.innerHTML = `
-      <span style="display: inline-block; width: 14px; height: 14px; border: 2px solid #FFFFFF; border-top-color: transparent; border-radius: 50%; animation: spin 0.8s linear infinite; margin-right: 6px;"></span>
-      <span>${isHi ? 'पीडीएफ तैयार हो रहा है...' : 'Generating PDF...'}</span>
-    `;
-
-    showToast(isHi ? 'उच्च गुणवत्ता वाली पीडीएफ रिपोर्ट तैयार की जा रही है...' : 'Generating enterprise high-fidelity PDF report...');
-
-    const opt = {
-      margin: 10,
-      filename: 'KrishiUrja_BioRefinery_Report.pdf',
-      image: { type: 'jpeg', quality: 0.98 },
-      html2canvas: {
-        scale: 2,
-        useCORS: true,
-        logging: false,
-        backgroundColor: '#F8FAF9'
-      },
-      jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' }
-    };
-
-    try {
-      await html2pdf().set(opt).from(dashboardContainer).save();
-      showToast(isHi ? 'रिपोर्ट सफलतापूर्वक डाउनलोड हो गई!' : 'KrishiUrja Report downloaded successfully!');
-    } catch (err) {
-      console.warn('[PDF Export] html2pdf error, using browser print fallback:', err);
-      showToast(isHi ? 'पीडीएफ डाउनलोड विफल, सिस्टम प्रिंट खोला जा रहा है...' : 'PDF generation fallback: Opening print dialog...');
-      window.print();
-    } finally {
-      btnExportPdf.disabled = false;
-      btnExportPdf.innerHTML = originalHtml;
-    }
-  });
+  } catch (pdfModuleErr) {
+    console.warn('[PDF Export] Module listener binding deferred or failed:', pdfModuleErr);
+  }
 
   // =========================================================================
   // 11. Task 3: Firebase Authentication Scaffolding & Modal
   // =========================================================================
-  let firebaseAuth = null;
-  let googleAuthProvider = null;
-
   try {
-    if (typeof firebase !== 'undefined' && firebase.initializeApp) {
-      if (!firebase.apps || !firebase.apps.length) {
-        firebase.initializeApp(firebaseConfig);
-      }
-      if (firebase.auth) {
-        firebaseAuth = firebase.auth();
-        googleAuthProvider = new firebase.auth.GoogleAuthProvider();
-      }
-    }
-  } catch (err) {
-    console.warn('[Firebase] Initialization deferred or placeholder config:', err);
-  }
+    let firebaseAuth = null;
+    let googleAuthProvider = null;
 
-  const authModal = document.getElementById('auth-modal');
-  const btnNavLogin = document.getElementById('btn-nav-login');
-  const mobileBtnLogin = document.getElementById('mobile-btn-login');
-  const btnCloseAuthModal = document.getElementById('btn-close-auth-modal');
-  const btnGoogleSignin = document.getElementById('btn-google-signin');
-  const navUserBadge = document.getElementById('nav-user-badge');
-  const navUserName = document.getElementById('nav-user-name');
-  const navUserAvatar = document.getElementById('nav-user-avatar');
-  const btnNavLogout = document.getElementById('btn-nav-logout');
-  const mobileUserBadge = document.getElementById('mobile-user-badge');
-  const mobileUserName = document.getElementById('mobile-user-name');
-  const mobileUserAvatar = document.getElementById('mobile-user-avatar');
-  const mobileBtnLogout = document.getElementById('mobile-btn-logout');
-
-  function openAuthModal() {
-    if (!authModal) return;
-    authModal.classList.add('active');
-    authModal.setAttribute('aria-hidden', 'false');
-  }
-
-  function closeAuthModal() {
-    if (!authModal) return;
-    authModal.classList.remove('active');
-    authModal.setAttribute('aria-hidden', 'true');
-  }
-
-  btnNavLogin?.addEventListener('click', openAuthModal);
-  mobileBtnLogin?.addEventListener('click', openAuthModal);
-  btnCloseAuthModal?.addEventListener('click', closeAuthModal);
-
-  authModal?.addEventListener('click', (e) => {
-    if (e.target === authModal) {
-      closeAuthModal();
-    }
-  });
-
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && authModal?.classList.contains('active')) {
-      closeAuthModal();
-    }
-  });
-
-  function updateAuthUI(user) {
-    if (user) {
-      const fullName = user.displayName || user.name || 'Farmer Partner';
-      const firstName = user.firstName || fullName.split(' ')[0];
-      const initial = firstName.charAt(0).toUpperCase();
-
-      if (btnNavLogin) btnNavLogin.classList.add('d-none');
-      if (navUserBadge) navUserBadge.classList.remove('d-none');
-      if (navUserName) navUserName.textContent = firstName;
-      if (navUserAvatar) navUserAvatar.textContent = initial;
-
-      if (mobileBtnLogin) mobileBtnLogin.classList.add('d-none');
-      if (mobileUserBadge) mobileUserBadge.classList.remove('d-none');
-      if (mobileUserName) mobileUserName.textContent = firstName;
-      if (mobileUserAvatar) mobileUserAvatar.textContent = initial;
-
-      try {
-        sessionStorage.setItem('krishiurja_user', JSON.stringify({ displayName: fullName, firstName: firstName }));
-      } catch (e) {}
-    } else {
-      if (btnNavLogin) btnNavLogin.classList.remove('d-none');
-      if (navUserBadge) navUserBadge.classList.add('d-none');
-      if (mobileBtnLogin) mobileBtnLogin.classList.remove('d-none');
-      if (mobileUserBadge) mobileUserBadge.classList.add('d-none');
-
-      try {
-        sessionStorage.removeItem('krishiurja_user');
-      } catch (e) {}
-    }
-  }
-
-  async function handleGoogleSignIn() {
-    const isHi = (currentLang === 'hi');
     try {
-      if (firebaseAuth && googleAuthProvider && firebaseConfig.apiKey !== 'YOUR_FIREBASE_KEY') {
-        // Live Firebase signInWithPopup execution
-        const result = await firebaseAuth.signInWithPopup(googleAuthProvider);
-        const user = result.user;
-        updateAuthUI(user);
-        closeAuthModal();
-        showToast(isHi ? `नमस्ते, ${user.displayName || 'किसान मित्र'}! गूगल लॉगिन सफल।` : `Welcome, ${user.displayName || 'Farmer Partner'}! Signed in with Google.`);
-      } else {
-        // Seamless simulated OAuth flow for local demonstration with placeholder configuration
-        await new Promise(res => setTimeout(res, 350));
-        const mockUser = {
-          displayName: "Ramesh Kumar (Demo Farmer)",
-          firstName: "Ramesh",
-          email: "ramesh.farmer@kvk.in"
-        };
-        updateAuthUI(mockUser);
-        closeAuthModal();
-        showToast(isHi ? 'डेमो गूगल प्रमाणीकरण: रमेश कुमार के रूप में साइन इन हुआ।' : 'Demo Google Auth: Signed in as Ramesh. (Replace YOUR_FIREBASE_KEY for live auth)');
+      if (typeof firebase !== 'undefined' && firebase.initializeApp) {
+        if (!firebase.apps || !firebase.apps.length) {
+          firebase.initializeApp(firebaseConfig);
+        }
+        if (firebase.auth) {
+          firebaseAuth = firebase.auth();
+          googleAuthProvider = new firebase.auth.GoogleAuthProvider();
+        }
       }
     } catch (err) {
-      console.error('[Firebase] Sign-in error:', err);
-      showToast(isHi ? 'प्रमाणीकरण त्रुटि या पॉपअप बंद कर दिया गया।' : 'Sign-in cancelled or popup closed.');
+      console.warn('[Firebase] Initialization deferred or placeholder config:', err);
     }
-  }
 
-  function handleSignOut() {
-    const isHi = (currentLang === 'hi');
-    if (firebaseAuth && firebaseConfig.apiKey !== 'YOUR_FIREBASE_KEY') {
-      firebaseAuth.signOut().catch(err => console.warn('[Firebase] Sign-out error:', err));
+    const authModal = document.getElementById('auth-modal');
+    const btnNavLogin = document.getElementById('btn-nav-login');
+    const mobileBtnLogin = document.getElementById('mobile-btn-login');
+    const btnCloseAuthModal = document.getElementById('btn-close-auth-modal');
+    const btnGoogleSignin = document.getElementById('btn-google-signin');
+    const navUserBadge = document.getElementById('nav-user-badge');
+    const navUserName = document.getElementById('nav-user-name');
+    const navUserAvatar = document.getElementById('nav-user-avatar');
+    const btnNavLogout = document.getElementById('btn-nav-logout');
+    const mobileUserBadge = document.getElementById('mobile-user-badge');
+    const mobileUserName = document.getElementById('mobile-user-name');
+    const mobileUserAvatar = document.getElementById('mobile-user-avatar');
+    const mobileBtnLogout = document.getElementById('mobile-btn-logout');
+
+    function openAuthModal() {
+      if (!authModal) return;
+      authModal.classList.add('active');
+      authModal.setAttribute('aria-hidden', 'false');
     }
-    updateAuthUI(null);
-    showToast(isHi ? 'सफलतापूर्वक साइन आउट किया गया।' : 'Signed out successfully.');
-  }
 
-  btnGoogleSignin?.addEventListener('click', handleGoogleSignIn);
-  btnNavLogout?.addEventListener('click', handleSignOut);
-  mobileBtnLogout?.addEventListener('click', handleSignOut);
-
-  // Check persisted user session
-  try {
-    const savedUser = sessionStorage.getItem('krishiurja_user');
-    if (savedUser) {
-      updateAuthUI(JSON.parse(savedUser));
+    function closeAuthModal() {
+      if (!authModal) return;
+      authModal.classList.remove('active');
+      authModal.setAttribute('aria-hidden', 'true');
     }
-  } catch (e) {}
 
-  if (firebaseAuth && firebaseConfig.apiKey !== 'YOUR_FIREBASE_KEY') {
-    firebaseAuth.onAuthStateChanged((user) => {
-      if (user) updateAuthUI(user);
+    btnNavLogin?.addEventListener('click', openAuthModal);
+    mobileBtnLogin?.addEventListener('click', openAuthModal);
+    btnCloseAuthModal?.addEventListener('click', closeAuthModal);
+
+    authModal?.addEventListener('click', (e) => {
+      if (e.target === authModal) {
+        closeAuthModal();
+      }
     });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && authModal?.classList.contains('active')) {
+        closeAuthModal();
+      }
+    });
+
+    function updateAuthUI(user) {
+      if (user) {
+        const fullName = user.displayName || user.name || 'Farmer Partner';
+        const firstName = user.firstName || fullName.split(' ')[0];
+        const initial = firstName.charAt(0).toUpperCase();
+
+        if (btnNavLogin) btnNavLogin.classList.add('d-none');
+        if (navUserBadge) navUserBadge.classList.remove('d-none');
+        if (navUserName) navUserName.textContent = firstName;
+        if (navUserAvatar) navUserAvatar.textContent = initial;
+
+        if (mobileBtnLogin) mobileBtnLogin.classList.add('d-none');
+        if (mobileUserBadge) mobileUserBadge.classList.remove('d-none');
+        if (mobileUserName) mobileUserName.textContent = firstName;
+        if (mobileUserAvatar) mobileUserAvatar.textContent = initial;
+
+        try {
+          sessionStorage.setItem('krishiurja_user', JSON.stringify({ displayName: fullName, firstName: firstName }));
+        } catch (e) {}
+      } else {
+        if (btnNavLogin) btnNavLogin.classList.remove('d-none');
+        if (navUserBadge) navUserBadge.classList.add('d-none');
+        if (mobileBtnLogin) mobileBtnLogin.classList.remove('d-none');
+        if (mobileUserBadge) mobileUserBadge.classList.add('d-none');
+
+        try {
+          sessionStorage.removeItem('krishiurja_user');
+        } catch (e) {}
+      }
+    }
+
+    async function handleGoogleSignIn() {
+      const isHi = (currentLang === 'hi');
+      try {
+        if (firebaseAuth && googleAuthProvider && firebaseConfig.apiKey !== 'YOUR_FIREBASE_KEY') {
+          // Live Firebase signInWithPopup execution
+          const result = await firebaseAuth.signInWithPopup(googleAuthProvider);
+          const user = result.user;
+          updateAuthUI(user);
+          closeAuthModal();
+          showToast(isHi ? `नमस्ते, ${user.displayName || 'किसान मित्र'}! गूगल लॉगिन सफल।` : `Welcome, ${user.displayName || 'Farmer Partner'}! Signed in with Google.`);
+        } else {
+          // Seamless simulated OAuth flow for local demonstration with placeholder configuration
+          await new Promise(res => setTimeout(res, 350));
+          const mockUser = {
+            displayName: "Ramesh Kumar (Demo Farmer)",
+            firstName: "Ramesh",
+            email: "ramesh.farmer@kvk.in"
+          };
+          updateAuthUI(mockUser);
+          closeAuthModal();
+          showToast(isHi ? 'डेमो गूगल प्रमाणीकरण: रमेश कुमार के रूप में साइन इन हुआ।' : 'Demo Google Auth: Signed in as Ramesh. (Replace YOUR_FIREBASE_KEY for live auth)');
+        }
+      } catch (err) {
+        console.error('[Firebase] Sign-in error:', err);
+        showToast(isHi ? 'प्रमाणीकरण त्रुटि या पॉपअप बंद कर दिया गया।' : 'Sign-in cancelled or popup closed.');
+      }
+    }
+
+    function handleSignOut() {
+      const isHi = (currentLang === 'hi');
+      try {
+        if (firebaseAuth && firebaseConfig.apiKey !== 'YOUR_FIREBASE_KEY') {
+          firebaseAuth.signOut().catch(err => console.warn('[Firebase] Sign-out error:', err));
+        }
+      } catch (e) {}
+      updateAuthUI(null);
+      showToast(isHi ? 'सफलतापूर्वक साइन आउट किया गया।' : 'Signed out successfully.');
+    }
+
+    btnGoogleSignin?.addEventListener('click', handleGoogleSignIn);
+    btnNavLogout?.addEventListener('click', handleSignOut);
+    mobileBtnLogout?.addEventListener('click', handleSignOut);
+
+    // Check persisted user session
+    try {
+      const savedUser = sessionStorage.getItem('krishiurja_user');
+      if (savedUser) {
+        updateAuthUI(JSON.parse(savedUser));
+      }
+    } catch (e) {}
+
+    if (firebaseAuth && firebaseConfig.apiKey !== 'YOUR_FIREBASE_KEY') {
+      firebaseAuth.onAuthStateChanged((user) => {
+        if (user) updateAuthUI(user);
+      });
+    }
+  } catch (authModuleErr) {
+    console.warn('[Firebase] Auth module error:', authModuleErr);
   }
 
   // =========================================================================
   // 12. Task 4: Premium Scroll Animations (.reveal-hidden / .reveal-visible)
   // =========================================================================
-  const animContainers = document.querySelectorAll(
-    '#baseline-mapping .section-container, #formulation .section-container, #tealca-dashboard .section-container, #compliance .section-container'
-  );
+  try {
+    const animContainers = document.querySelectorAll(
+      '#baseline-mapping .section-container, #formulation .section-container, #tealca-dashboard .section-container, #compliance .section-container'
+    );
 
-  animContainers.forEach(container => {
-    container.classList.add('reveal-hidden');
-  });
+    animContainers.forEach(container => {
+      container.classList.add('reveal-hidden');
+    });
 
-  if ('IntersectionObserver' in window) {
-    const revealObserver = new IntersectionObserver((entries, observer) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('reveal-visible');
-          observer.unobserve(entry.target);
-        }
+    if ('IntersectionObserver' in window) {
+      const revealObserver = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('reveal-visible');
+            observer.unobserve(entry.target);
+          }
+        });
+      }, {
+        root: null,
+        threshold: 0.1,
+        rootMargin: '0px 0px -40px 0px'
       });
-    }, {
-      root: null,
-      threshold: 0.1,
-      rootMargin: '0px 0px -40px 0px'
-    });
 
-    animContainers.forEach(container => {
-      revealObserver.observe(container);
-    });
-  } else {
-    animContainers.forEach(container => {
-      container.classList.add('reveal-visible');
-    });
+      animContainers.forEach(container => {
+        revealObserver.observe(container);
+      });
+    } else {
+      animContainers.forEach(container => {
+        container.classList.add('reveal-visible');
+      });
+    }
+  } catch (animErr) {
+    console.warn('[ScrollAnimations] Observer initialization failed:', animErr);
   }
 
   // =========================================================================
   // 9. Progressive Web App (PWA) Service Worker Registration & Offline Resilience
   // =========================================================================
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('./service-worker.js')
-        .then((registration) => {
-          console.log('[PWA] ServiceWorker registered with scope:', registration.scope);
-        })
-        .catch((error) => {
-          console.warn('[PWA] ServiceWorker registration failed:', error);
-        });
+  try {
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./service-worker.js')
+          .then((registration) => {
+            console.log('[PWA] ServiceWorker registered with scope:', registration.scope);
+          })
+          .catch((error) => {
+            console.warn('[PWA] ServiceWorker registration failed:', error);
+          });
+      });
+    }
+
+    // Network state listeners for rural connectivity awareness
+    window.addEventListener('online', () => {
+      showToast('📶 Connectivity restored. All online services active.');
     });
+
+    window.addEventListener('offline', () => {
+      showToast('📡 Offline mode active: Biorefinery maps, calculators & compliance tables available offline.');
+    });
+  } catch (pwaErr) {
+    console.warn('[PWA] Service worker setup failed:', pwaErr);
   }
-
-  // Network state listeners for rural connectivity awareness
-  window.addEventListener('online', () => {
-    showToast('📶 Connectivity restored. All online services active.');
-  });
-
-  window.addEventListener('offline', () => {
-    showToast('📡 Offline mode active: Biorefinery maps, calculators & compliance tables available offline.');
-  });
 });
 
