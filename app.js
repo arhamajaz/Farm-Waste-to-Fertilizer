@@ -6,12 +6,10 @@
  */
 
 // =========================================================================
-// EXTERNAL API CREDENTIALS & SCAFFOLDING
+// EXTERNAL API CONFIGURATION (Isolated via config.js)
 // =========================================================================
-const OPENWEATHER_API_KEY = 'YOUR_API_KEY_HERE';
-
-// Firebase Authentication Scaffolding & Configuration
-const firebaseConfig = {
+const OPENWEATHER_API_KEY = window.KrishiConfig?.API_KEYS?.OPENWEATHER || 'YOUR_API_KEY_HERE';
+const firebaseConfig = window.KrishiConfig?.API_KEYS?.FIREBASE || {
   apiKey: "YOUR_FIREBASE_KEY",
   authDomain: "krishiurja-biorefinery.firebaseapp.com",
   projectId: "krishiurja-biorefinery",
@@ -956,9 +954,15 @@ document.addEventListener('DOMContentLoaded', () => {
     // Ensure all dynamic elements with data-i18n are immediately localized
     translateDynamicContainer(analysisDynamicContent);
 
-    // Interactivity: Smooth scroll to Formulation module when action button clicked
-    const forwardBtn = document.getElementById('btn-forward-formulation');
-    forwardBtn?.addEventListener('click', (e) => {
+    if (triggerToast && typeof showToast === 'function') {
+      showToast(`Evaluated ${item.name}: Optimal Pathway is ${item.optimalTechnology}`);
+    }
+  }
+
+  // Event Delegation for Formulation Forwarding on persistent analysisDynamicContent container
+  analysisDynamicContent?.addEventListener('click', (e) => {
+    const forwardBtn = e.target.closest('#btn-forward-formulation');
+    if (forwardBtn) {
       e.preventDefault();
       const formulationEl = document.getElementById('formulation');
       if (formulationEl) {
@@ -967,14 +971,11 @@ document.addEventListener('DOMContentLoaded', () => {
           top: formulationEl.getBoundingClientRect().top + window.pageYOffset - offset,
           behavior: 'smooth'
         });
-        showToast(`Forwarded ${item.name} to Formulation Engine`);
+        const currentItem = farmWasteData.find(w => w.id === activeWasteId);
+        showToast(`Forwarded ${currentItem ? currentItem.name : 'feedstock'} to Formulation Engine`);
       }
-    });
-
-    if (triggerToast && typeof showToast === 'function') {
-      showToast(`Evaluated ${item.name}: Optimal Pathway is ${item.optimalTechnology}`);
     }
-  }
+  });
 
   // Attach accessible click and keyboard listeners
   wasteCardButtons.forEach(card => {
@@ -2157,6 +2158,17 @@ document.addEventListener('DOMContentLoaded', () => {
   const roiSyntheticSpendInput = document.getElementById('roi-synthetic-spend');
   const roiResultsContainer = document.getElementById('roi-results');
 
+  let lastCalculatedSavings = 0;
+  let lastCalculatedFarmSize = 5;
+
+  // Event Delegation for WhatsApp Share button on persistent roiResultsContainer
+  roiResultsContainer?.addEventListener('click', (e) => {
+    const shareBtn = e.target.closest('#btn-share-whatsapp');
+    if (shareBtn) {
+      handleWhatsAppShare(lastCalculatedSavings, lastCalculatedFarmSize);
+    }
+  });
+
   /**
    * Calculates estimated savings over a 3-year timeline
    * Mock baseline: localized farm-waste bio-fertilizer production costs 40% less than synthetics
@@ -2299,14 +2311,12 @@ document.addEventListener('DOMContentLoaded', () => {
       </div>
     `;
 
+    // Cache latest calculation for delegated event handlers
+    lastCalculatedSavings = threeYearSavings;
+    lastCalculatedFarmSize = farmSize;
+
     // Immediately translate newly injected dynamic ROI elements to active language
     translateDynamicContainer(roiResultsContainer);
-
-    // Bind WhatsApp Share button
-    const btnShareWhatsapp = document.getElementById('btn-share-whatsapp');
-    btnShareWhatsapp?.addEventListener('click', () => {
-      handleWhatsAppShare(threeYearSavings, farmSize);
-    });
 
     if (e && typeof showToast === 'function') {
       showToast(`Projected 3-Year Savings calculated: ${formatINR(threeYearSavings)}`);
