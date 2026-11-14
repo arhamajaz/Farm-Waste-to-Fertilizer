@@ -25,6 +25,7 @@ const KrishiConfig = Object.freeze({
   },
 
   ENDPOINTS: {
+    API_BASE_URL: 'http://localhost:5000/api',
     WEATHER_BASE_URL: 'https://api.openweathermap.org/data/2.5/weather',
     WHATSAPP_API: 'https://api.whatsapp.com/send'
   },

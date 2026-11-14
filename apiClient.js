@@ -102,7 +102,7 @@ class ApiClientClass {
 
 // Instantiate default singleton instance pointing to backend
 const ApiClient = new ApiClientClass(
-  window.KrishiConfig?.API_BASE_URL || 'http://localhost:5000/api'
+  window.KrishiConfig?.ENDPOINTS?.API_BASE_URL || window.KrishiConfig?.API_BASE_URL || 'http://localhost:5000/api'
 );
 
 // Expose globally to window

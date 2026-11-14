@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const mongoose = require('mongoose');
 const admin = require('firebase-admin');
 const { getAuth } = require('firebase-admin/auth');
 const User = require('../models/User');
@@ -72,6 +73,19 @@ router.post('/verify-token', async (req, res) => {
         console.error('❌ [Firebase Admin] Token verification failed:', verifyError.message);
         return res.status(401).json({ error: 'Invalid or expired Firebase token', details: verifyError.message });
       }
+    }
+
+    // Guard against buffering timeouts if MongoDB is in offline/placeholder dev mode
+    if (mongoose.connection.readyState !== 1) {
+      console.warn('⚠️ [MongoDB] Database is not connected (readyState=' + mongoose.connection.readyState + '). Returning dev user record.');
+      return res.status(200).json({
+        _id: 'mock-user-id-' + decoded.uid,
+        firebaseUid: decoded.uid,
+        fullName: decoded.name || decoded.displayName || 'Farmer Partner',
+        email: decoded.email || `${decoded.uid}@krishiurja.org`,
+        role: 'farmer',
+        isDevMock: true
+      });
     }
 
     // Find or create the user in MongoDB User collection
