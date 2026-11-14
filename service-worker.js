@@ -12,6 +12,7 @@ const STATIC_ASSETS = [
   './index.html',
   './style.css',
   './config.js',
+  './apiClient.js',
   './translations.js',
   './app.js',
   './manifest.json',

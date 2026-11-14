@@ -3110,7 +3110,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function updateAuthUI(user) {
       if (user) {
-        const fullName = user.displayName || user.name || 'Farmer Partner';
+        const fullName = user.fullName || user.displayName || user.name || 'Farmer Partner';
         const firstName = user.firstName || fullName.split(' ')[0];
         const initial = firstName.charAt(0).toUpperCase();
 
@@ -3125,9 +3125,14 @@ document.addEventListener('DOMContentLoaded', () => {
         if (mobileUserAvatar) mobileUserAvatar.textContent = initial;
 
         try {
-          sessionStorage.setItem('krishiurja_user', JSON.stringify({ displayName: fullName, firstName: firstName }));
+          sessionStorage.setItem('krishiurja_user', JSON.stringify({ displayName: fullName, firstName: firstName, fullName: fullName, role: user.role }));
         } catch (e) {}
       } else {
+        window.currentUser = null;
+        if (window.ApiClient && typeof window.ApiClient.setToken === 'function') {
+          window.ApiClient.setToken(null);
+        }
+
         if (btnNavLogin) btnNavLogin.classList.remove('d-none');
         if (navUserBadge) navUserBadge.classList.add('d-none');
         if (mobileBtnLogin) mobileBtnLogin.classList.remove('d-none');
@@ -3146,18 +3151,51 @@ document.addEventListener('DOMContentLoaded', () => {
           // Live Firebase signInWithPopup execution
           const result = await firebaseAuth.signInWithPopup(googleAuthProvider);
           const user = result.user;
-          updateAuthUI(user);
+
+          // Extract Firebase ID token and verify with backend ApiClient
+          try {
+            const token = await user.getIdToken();
+            if (window.ApiClient && typeof window.ApiClient.verifyUser === 'function') {
+              const mongoUser = await window.ApiClient.verifyUser(token);
+              window.currentUser = mongoUser;
+              updateAuthUI(mongoUser);
+            } else {
+              window.currentUser = user;
+              updateAuthUI(user);
+            }
+          } catch (apiErr) {
+            console.warn('[ApiClient] Backend verifyUser error, falling back to Firebase user:', apiErr);
+            window.currentUser = user;
+            updateAuthUI(user);
+          }
+
           closeAuthModal();
-          showToast(isHi ? `नमस्ते, ${user.displayName || 'किसान मित्र'}! गूगल लॉगिन सफल।` : `Welcome, ${user.displayName || 'Farmer Partner'}! Signed in with Google.`);
+          showToast(isHi ? `नमस्ते, ${window.currentUser?.fullName || user.displayName || 'किसान मित्र'}! गूगल लॉगिन सफल।` : `Welcome, ${window.currentUser?.fullName || user.displayName || 'Farmer Partner'}! Signed in with Google.`);
         } else {
           // Seamless simulated OAuth flow for local demonstration with placeholder configuration
           await new Promise(res => setTimeout(res, 350));
           const mockUser = {
             displayName: "Ramesh Kumar (Demo Farmer)",
+            fullName: "Ramesh Kumar",
             firstName: "Ramesh",
-            email: "ramesh.farmer@kvk.in"
+            email: "ramesh.farmer@kvk.in",
+            firebaseUid: "demo-farmer-uid-123"
           };
-          updateAuthUI(mockUser);
+
+          try {
+            if (window.ApiClient && typeof window.ApiClient.verifyUser === 'function') {
+              const mongoUser = await window.ApiClient.verifyUser('mock-dev-token-ramesh-123');
+              window.currentUser = mongoUser;
+              updateAuthUI(mongoUser);
+            } else {
+              window.currentUser = mockUser;
+              updateAuthUI(mockUser);
+            }
+          } catch (e) {
+            window.currentUser = mockUser;
+            updateAuthUI(mockUser);
+          }
+
           closeAuthModal();
           showToast(isHi ? 'डेमो गूगल प्रमाणीकरण: रमेश कुमार के रूप में साइन इन हुआ।' : 'Demo Google Auth: Signed in as Ramesh. (Replace YOUR_FIREBASE_KEY for live auth)');
         }
@@ -3174,6 +3212,10 @@ document.addEventListener('DOMContentLoaded', () => {
           firebaseAuth.signOut().catch(err => console.warn('[Firebase] Sign-out error:', err));
         }
       } catch (e) {}
+      window.currentUser = null;
+      if (window.ApiClient && typeof window.ApiClient.setToken === 'function') {
+        window.ApiClient.setToken(null);
+      }
       updateAuthUI(null);
       showToast(isHi ? 'सफलतापूर्वक साइन आउट किया गया।' : 'Signed out successfully.');
     }
@@ -3186,13 +3228,30 @@ document.addEventListener('DOMContentLoaded', () => {
     try {
       const savedUser = sessionStorage.getItem('krishiurja_user');
       if (savedUser) {
-        updateAuthUI(JSON.parse(savedUser));
+        const parsed = JSON.parse(savedUser);
+        window.currentUser = parsed;
+        updateAuthUI(parsed);
       }
     } catch (e) {}
 
     if (firebaseAuth && firebaseConfig.apiKey !== 'YOUR_FIREBASE_KEY') {
-      firebaseAuth.onAuthStateChanged((user) => {
-        if (user) updateAuthUI(user);
+      firebaseAuth.onAuthStateChanged(async (user) => {
+        if (user) {
+          try {
+            const token = await user.getIdToken();
+            if (window.ApiClient && typeof window.ApiClient.verifyUser === 'function') {
+              const mongoUser = await window.ApiClient.verifyUser(token);
+              window.currentUser = mongoUser;
+              updateAuthUI(mongoUser);
+            } else {
+              window.currentUser = user;
+              updateAuthUI(user);
+            }
+          } catch (e) {
+            window.currentUser = user;
+            updateAuthUI(user);
+          }
+        }
       });
     }
   } catch (authModuleErr) {

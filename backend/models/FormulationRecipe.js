@@ -32,7 +32,7 @@ const FormulationRecipeSchema = new mongoose.Schema(
     author: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
-      required: [true, 'Recipe author is required'],
+      required: false,
       index: true
     },
     title: {
