@@ -18,15 +18,6 @@ const firebaseConfig = window.KrishiConfig?.API_KEYS?.FIREBASE || {
   appId: "1:123456789012:web:abcdef1234567890"
 };
 
-// Global callback bridge for asynchronous Google Maps API loading
-window.initMap = function() {
-  if (typeof window.triggerInitMap === 'function') {
-    window.triggerInitMap();
-  } else {
-    window.mapsApiLoaded = true;
-  }
-};
-
 document.addEventListener('DOMContentLoaded', () => {
   'use strict';
 
@@ -2790,8 +2781,8 @@ document.addEventListener('DOMContentLoaded', () => {
           currentLat = pos.coords.latitude;
           currentLon = pos.coords.longitude;
           fetchLocalWeather(currentLat, currentLon);
-          if (window.googleMapInstance) {
-            window.googleMapInstance.setCenter({ lat: currentLat, lng: currentLon });
+          if (window.leafletMapInstance) {
+            window.leafletMapInstance.setView([currentLat, currentLon], 8);
           }
           showToast(currentLang === 'hi' ? 'जीपीएस स्थान सफलतापूर्वक सिंक्रनाइज़ किया गया' : 'GPS location synchronized successfully');
         },
@@ -2886,95 +2877,97 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /**
-   * Initializes Google Map and plots nearest soil testing laboratories
+   * Initializes Open-Source Leaflet Map with OpenStreetMap (OSM) Tiles
+   * Plots accredited ICAR / State Agricultural University soil testing laboratories
    */
-  function initMap() {
+  function initLeafletMap() {
     const mapContainer = document.getElementById('soil-lab-map');
     if (!mapContainer) return;
 
-    const defaultCenter = { lat: currentLat, lng: currentLon };
-
-    if (typeof google !== 'undefined' && google.maps && google.maps.Map) {
-      try {
-        const map = new google.maps.Map(mapContainer, {
-          center: defaultCenter,
-          zoom: 7,
-          mapTypeControl: false,
-          streetViewControl: false,
-          styles: [
-            { featureType: "poi", stylers: [{ visibility: "off" }] },
-            { featureType: "transit", stylers: [{ visibility: "off" }] }
-          ]
-        });
-        window.googleMapInstance = map;
-
-        // Try geolocation
-        if (navigator.geolocation) {
-          navigator.geolocation.getCurrentPosition((pos) => {
-            const userLoc = { lat: pos.coords.latitude, lng: pos.coords.longitude };
-            map.setCenter(userLoc);
-            new google.maps.Marker({
-              position: userLoc,
-              map: map,
-              title: currentLang === 'hi' ? 'आपका खेत' : 'Your Farm Location',
-              icon: {
-                path: google.maps.SymbolPath.CIRCLE,
-                scale: 9,
-                fillColor: '#EA580C',
-                fillOpacity: 1,
-                strokeColor: '#FFFFFF',
-                strokeWeight: 2.5
-              }
-            });
-          }, () => {
-            // Keep default center
-          });
-        }
-
-        // Plot soil lab markers
-        verifiedSoilLabs.forEach(lab => {
-          const marker = new google.maps.Marker({
-            position: { lat: lab.lat, lng: lab.lng },
-            map: map,
-            title: lab.name,
-            icon: {
-              path: google.maps.SymbolPath.BACKWARD_CLOSED_ARROW,
-              scale: 5,
-              fillColor: '#15803D',
-              fillOpacity: 1,
-              strokeColor: '#FFFFFF',
-              strokeWeight: 1.5
-            }
-          });
-
-          const infoWindow = new google.maps.InfoWindow({
-            content: `
-              <div style="font-family: Inter, sans-serif; padding: 6px; max-width: 240px;">
-                <strong style="color: #1F2937; font-size: 13px; display: block; margin-bottom: 3px;">${currentLang === 'hi' ? lab.name_hi : lab.name}</strong>
-                <p style="margin: 0 0 4px 0; color: #4B5563; font-size: 11px;">${lab.address}</p>
-                <span style="color: #15803D; font-weight: 700; font-size: 11px;">Turnaround: ${lab.tat}</span>
-              </div>
-            `
-          });
-
-          marker.addListener('click', () => {
-            infoWindow.open(map, marker);
-          });
-        });
-
-        return;
-      } catch (err) {
-        console.warn('[GoogleMaps] Live map initialization failed:', err);
-      }
+    if (typeof L === 'undefined') {
+      console.warn('[Leaflet] L is not defined. Falling back to offline lab list.');
+      renderSoilLabMapFallback(mapContainer, verifiedSoilLabs);
+      return;
     }
 
-    // Neobrutalist Fallback UI when API key is placeholder or offline
-    renderSoilLabMapFallback(mapContainer, verifiedSoilLabs);
-  }
+    try {
+      if (window.leafletMapInstance) {
+        window.leafletMapInstance.remove();
+        window.leafletMapInstance = null;
+      }
 
-  // Assign to global bridges
-  window.triggerInitMap = initMap;
-  window.initMap = initMap;
+      // Initialize map targeting soil-lab-map div, centering on Punjab/Indo-Gangetic region with zoom 6
+      const map = L.map('soil-lab-map', {
+        scrollWheelZoom: false
+      }).setView([30.9010, 75.8073], 6);
+
+      window.leafletMapInstance = map;
+
+      // Add OpenStreetMap tile layer
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; OpenStreetMap contributors'
+      }).addTo(map);
+
+      const isHi = (currentLang === 'hi');
+
+      // Plot verified ICAR & State Agricultural University soil testing labs
+      verifiedSoilLabs.forEach(lab => {
+        const popupContent = `
+          <div style="font-family: Inter, sans-serif; padding: 4px; max-width: 250px; line-height: 1.4;">
+            <strong style="color: #1F2937; font-size: 13px; display: block; margin-bottom: 4px; font-weight: 700;">
+              ${isHi ? lab.name_hi : lab.name}
+            </strong>
+            <p style="margin: 0 0 6px 0; color: #4B5563; font-size: 11px;">
+              <strong>${isHi ? 'प्राधिकरण:' : 'Authority:'}</strong> ${isHi ? lab.authority_hi : lab.authority}<br/>
+              <strong>${isHi ? 'स्थान:' : 'Address:'}</strong> ${lab.address}
+            </p>
+            <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #E5E7EB; padding-top: 4px;">
+              <span style="color: #15803D; font-weight: 700; font-size: 11px;">
+                ${isHi ? 'टर्नअराउंड समय:' : 'TAT:'} ${lab.tat}
+              </span>
+            </div>
+          </div>
+        `;
+
+        L.marker([lab.lat, lab.lng])
+          .addTo(map)
+          .bindPopup(popupContent);
+      });
+
+      // Try user geolocation to add user's farm pin if available
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (pos) => {
+            const userLat = pos.coords.latitude;
+            const userLng = pos.coords.longitude;
+            const farmLabel = isHi ? 'आपका खेत (जीपीएस स्थान)' : 'Your Farm Location (GPS)';
+
+            L.circleMarker([userLat, userLng], {
+              radius: 8,
+              fillColor: '#EA580C',
+              color: '#FFFFFF',
+              weight: 2,
+              opacity: 1,
+              fillOpacity: 0.95
+            }).addTo(map).bindPopup(`<strong>${farmLabel}</strong>`);
+          },
+          () => {
+            // Keep default center
+          },
+          { timeout: 5000 }
+        );
+      }
+
+      // Invalidate size to guarantee tile rendering within flex/grid containers
+      setTimeout(() => {
+        map.invalidateSize();
+      }, 350);
+
+    } catch (err) {
+      console.warn('[Leaflet] Error initializing Leaflet map:', err);
+      renderSoilLabMapFallback(mapContainer, verifiedSoilLabs);
+    }
+  }
 
   // Initial calculation and data rendering runs (wrapped defensively)
   try { calculateFormulation(); } catch (e) { console.warn('[Init] Formulation calculation error:', e); }
@@ -2983,7 +2976,7 @@ document.addEventListener('DOMContentLoaded', () => {
   try { renderFMEATable(); } catch (e) { console.warn('[Init] FMEA rendering error:', e); }
   try { renderFCOChecklist(); } catch (e) { console.warn('[Init] FCO rendering error:', e); }
   try { fetchLocalWeather(currentLat, currentLon); } catch (e) { console.warn('[Init] Weather fetch error:', e); }
-  try { initMap(); } catch (e) { console.warn('[Init] Map initialization error:', e); }
+  try { initLeafletMap(); } catch (e) { console.warn('Leaflet map error:', e); }
   try { selectRegionalState('PB', false); } catch (e) { console.warn('[Init] Regional state selection error:', e); }
   try { renderWasteAnalysis('rice-husk', false); } catch (e) { console.warn('[Init] Feedstock analysis rendering error:', e); }
 

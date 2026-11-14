@@ -7,11 +7,8 @@ const KrishiConfig = Object.freeze({
   ENV: 'development',
 
   API_KEYS: {
-    // OpenWeatherMap API Key (Replace with live key in production)
+    // OpenWeatherMap API Key (Replace with live key in production or use config.local.js)
     OPENWEATHER: 'YOUR_API_KEY_HERE',
-
-    // Google Maps JavaScript API Key (Replace with live restricted key in production)
-    GOOGLE_MAPS: 'YOUR_GOOGLE_MAPS_API_KEY_HERE',
 
     // Firebase Authentication SDK Configuration (Compat Version)
     FIREBASE: {
