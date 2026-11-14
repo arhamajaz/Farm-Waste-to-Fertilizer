@@ -3204,7 +3204,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // =========================================================================
   try {
     const animContainers = document.querySelectorAll(
-      '#baseline-mapping .section-container, #formulation .section-container, #tealca-dashboard .section-container, #compliance .section-container'
+      '#baseline-mapping .section-container, #formulation .section-container, #tealca-dashboard .section-container, #compliance .section-container, #gov-resources .section-container'
     );
 
     animContainers.forEach(container => {

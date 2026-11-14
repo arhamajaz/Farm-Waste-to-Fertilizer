@@ -169,6 +169,24 @@ const translations = {
     "auth_btn_google": "Sign In with Google",
     "auth_trust_note": "End-to-end encrypted biometric & Aadhaar/KVK SSO compliant.",
 
+    // Official Government Resources Module
+    "gov_badge": "National Agricultural Portals & Subsidies",
+    "gov_section_title": "Official Government Initiatives",
+    "gov_section_desc": "Direct access to statutory schemes, soil testing cards, GOBARdhan bio-energy incentives, and central renewable energy policies.",
+    "gov_card1_tag": "MoA&FW • Soil Fertility",
+    "gov_card1_title": "Soil Health Card Scheme",
+    "gov_card1_desc": "Test your soil nutrients and locate accredited labs.",
+    "gov_card2_tag": "Swachh Bharat • Bio-Waste",
+    "gov_card2_title": "GOBARdhan Scheme",
+    "gov_card2_desc": "Galvanizing Organic Bio-Agro Resources for wealth & clean energy.",
+    "gov_card3_tag": "Central Ministry • Bioenergy",
+    "gov_card3_title": "Ministry of New & Renewable Energy",
+    "gov_card3_desc": "Subsidies, policies, and financial assistance for bioenergy plants.",
+    "gov_card4_tag": "MoPNG • CBG Infrastructure",
+    "gov_card4_title": "SATAT Initiative",
+    "gov_card4_desc": "Sustainable Alternative Towards Affordable Transportation via CBG.",
+    "gov_visit_portal": "Visit Official Portal",
+
     // Footer
     "footer_tagline": "National Farm-Waste-to-Fertilizer Biorefinery Platform",
     "footer_rural_badge": "Designed for rural accessibility & high-contrast outdoor visibility."
@@ -336,6 +354,24 @@ const translations = {
     "auth_modal_lead": "सत्यापित मृदा परीक्षण रिकॉर्ड, टीईए व्यवहार्यता डोजियर और उपग्रह फसल-अपशिष्ट निगरानी तक पहुंचें।",
     "auth_btn_google": "गूगल के साथ साइन इन करें",
     "auth_trust_note": "सुरक्षित बायोमेट्रिक एवं आधार/केवीके एसएसओ संगत।",
+
+    // Official Government Resources Module
+    "gov_badge": "राष्ट्रीय कृषि पोर्टल एवं सरकारी योजनाएं",
+    "gov_section_title": "आधिकारिक सरकारी पहल",
+    "gov_section_desc": "मृदा स्वास्थ्य कार्ड, गोबरधन बायो-ऊर्जा प्रोत्साहन और केंद्रीय नवीकरणीय ऊर्जा नीतियों के लिए आधिकारिक सरकारी पोर्टल।",
+    "gov_card1_tag": "कृषि मंत्रालय • मृदा उर्वरता",
+    "gov_card1_title": "मृदा स्वास्थ्य कार्ड योजना",
+    "gov_card1_desc": "अपने मिट्टी के पोषक तत्वों का परीक्षण करें और मान्यता प्राप्त प्रयोगशालाओं का पता लगाएं।",
+    "gov_card2_tag": "स्वच्छ भारत • जैव-अपशिष्ट",
+    "gov_card2_title": "गोबरधन योजना (GOBARdhan)",
+    "gov_card2_desc": "कृषि-अवशेषों और पशु गोबर से जैविक खाद और संपीड़ित बायोगैस निर्माण की राष्ट्रीय पहल।",
+    "gov_card3_tag": "केंद्रीय मंत्रालय • जैव ऊर्जा",
+    "gov_card3_title": "नवीन एवं नवीकरणीय ऊर्जा मंत्रालय (MNRE)",
+    "gov_card3_desc": "बायोमास और बायोगैस संयंत्रों के लिए केंद्रीय सब्सिडी, नीतियां और वित्तीय सहायता।",
+    "gov_card4_tag": "पेट्रोलियम मंत्रालय • सीबीजी संयंत्र",
+    "gov_card4_title": "सतत पहल (SATAT)",
+    "gov_card4_desc": "किफायती परिवहन, कम्प्रेस्ड बायो-गैस (CBG) और जैविक खाद के लिए राष्ट्रीय पहल।",
+    "gov_visit_portal": "आधिकारिक पोर्टल पर जाएं",
 
     // Footer
     "footer_tagline": "राष्ट्रीय कृषि-अपशिष्ट से उर्वरक बायोरिफाइनरी मंच",
